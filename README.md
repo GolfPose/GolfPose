@@ -1,50 +1,106 @@
-# Welcome to your Expo app 👋
+# Bavel(가칭)-FE
+> **2023 LIKELION-SYU HACKATHON**  
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-## Get started
+## Frontend
+### Developer
+* **이윤수**
+* **김진홍**
 
-1. Install dependencies
 
-   ```bash
-   npm install
-   ```
+### Tech
+* React
+* TypeScript
+* Tailwind CSS
 
-2. Start the app
+## 깃 브랜치 전략
+깃 브랜치 전략은 `Github-Flow` 를 따릅니다.  
+세부 정책은 다음과 같습니다.
 
-   ```bash
-    npx expo start
-   ```
+### 1. 브랜치 정책
+1. `main` 브랜치에서 작업하지 않는다.
+2. 각 기능은 `feat/이슈번호` 의 브랜치를 만들어 작업한다.
+3. 기능 별 브랜치의 작업이 완료되면 `pull request`를 요청한다.
 
-In the output, you'll find options to open the app in a
+### 2. 커밋 메시지
+1. 커밋 메시지에는 이슈번호를 붙여주세요 (예시 : `git commit -m "#이슈번호 작업내용"` )
+2. 이슈 메시지는 첫 줄에는 전체적인 내용을 포함하고 , 줄 바꿈 후 상세한 내용을 적어주세요.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### 3. Prettier
+1. `prettier` 를 사용하여 코드를 포맷팅합니다.
+2. 설치 후 다음과 같은 `.prettierrc` 파일을 루트 파일에 추가합니다.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+```
+{
+  "singleQuote": true,
+  "semi": true,
+  "useTabs": false,
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "printWidth": 80,
+  "arrowParens": "avoid"
+}
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## 파일 네이밍 규칙
 
-## Learn more
+[`airbnb`](https://github.com/airbnb/javascript) 자바스크립트 스타일 가이드를 베이스로 한 네이밍 규칙을 따릅니다.
 
-To learn more about developing your project with Expo, look at the following resources:
+### 1. 컴포넌트 이름
+- `PascalCase`를 사용하여 컴포넌트의 이름을 작성합니다.
+- 컴포넌트의 이름은 명사로 지정하며, 최상위 부모 컴포넌트의 이름은 애플리케이션과 관련된 이름으로 작성합니다.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### 2. 변수 이름
+- 변수 이름은 `camelCase`를 사용합니다.
+- 상수는 모두 대문자로 작성하며, 단어는 밑줄(_)로 구분합니다.
+```
+// Good
+const userName = "John Doe";
+let itemCount = 5;
+const MAX_COUNT = 10;
 
-## Join the community
+// Bad
+const user_name = "John Doe";
+let ItemCount = 5;
+const maxCount = 10;
+```
 
-Join our community of developers creating universal apps.
+### 3. 함수 이름
+- 변수 이름은 `camelCase`를 사용합니다.
+- 함수 이름은 동사로 시작하여 함수의 동작을 명확히 드러낼 수 있도록 합니다.
+```
+// Good
+function getUserData() {
+  // ...
+}
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+// Bad
+function data() {
+  // ...
+}
+```
+
+### 4. 폴더 이름
+- 폴더 이름은 `camelCase`로 작성합니다.
+- 폴더 이름은 컴포넌트와 관련된 기능이나 역할을 잘 나타낼 수 있도록 작성합니다.
+
+### 5. 타입
+- 변수, 함수, 객체등의 타입을 `types/[name].type.ts` 로 명시적으로 선언합니다.
+
+### 6. 인터페이스
+- 객체의 구조를 명시하기 위해 인터페이스를 사용합니다.
+- 인터페이스 이름은 `PascalCase`를 사용하며 , 기본적으로 해당 객체와 같은 이름을 가집니다.
+- props에 대한 인터페이스는 후미에 props를 붙입니다.
+
+```
+interface Component1Props {
+  a: string;
+  b: number;
+  c: boolean;
+}
+
+const Component1 = ({ a, b, c }: ComponentProps) => {
+  // ...
+}
+```
