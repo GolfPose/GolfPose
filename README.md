@@ -1,17 +1,4 @@
-# Bavel(가칭)-FE
-> **2023 LIKELION-SYU HACKATHON**  
-
-
-## Frontend
-### Developer
-* **이윤수**
-* **김진홍**
-
-
-### Tech
-* React
-* TypeScript
-* Tailwind CSS
+# GolfPose
 
 ## 깃 브랜치 전략
 깃 브랜치 전략은 `Github-Flow` 를 따릅니다.  
