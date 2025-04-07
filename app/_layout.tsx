@@ -5,13 +5,15 @@ import {
 } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useCallback, useEffect, useState } from 'react';
-import 'react-native-reanimated';
-
+import { useEffect, useState } from 'react';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import CustomSplashScreen from './CustomSplashScreen';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -20,17 +22,21 @@ export default function RootLayout() {
   });
 
   const [isAppReady, setIsAppReady] = useState(false);
+  const opacity = useSharedValue(0);
 
-  // 앱 실행 시 1.5초간 로딩페이지 렌더링
   useEffect(() => {
     if (loaded) {
       const timer = setTimeout(() => {
         setIsAppReady(true);
-        SplashScreen.hideAsync();
-      }, 1500);
+        opacity.value = withTiming(1, { duration: 600 });
+      }, 2600);
       return () => clearTimeout(timer);
     }
   }, [loaded]);
+
+  const animatedMainStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+  }));
 
   if (!loaded || !isAppReady) {
     return <CustomSplashScreen />;
@@ -38,11 +44,13 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
+      <Animated.View style={[{ flex: 1 }, animatedMainStyle]}>
+        <Stack screenOptions={{ animation: 'fade' }}>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+      </Animated.View>
     </ThemeProvider>
   );
 }
