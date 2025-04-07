@@ -7,12 +7,11 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-
-SplashScreen.preventAutoHideAsync();
+import CustomSplashScreen from './CustomSplashScreen';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -20,14 +19,21 @@ export default function RootLayout() {
     Pretendard: require('../assets/fonts/PretendardVariable.ttf'),
   });
 
+  const [isAppReady, setIsAppReady] = useState(false);
+
+  // 앱 실행 시 1.5초간 로딩페이지 렌더링
   useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync();
+      const timer = setTimeout(() => {
+        setIsAppReady(true);
+        SplashScreen.hideAsync();
+      }, 1500);
+      return () => clearTimeout(timer);
     }
   }, [loaded]);
 
-  if (!loaded) {
-    return null;
+  if (!loaded || !isAppReady) {
+    return <CustomSplashScreen />;
   }
 
   return (
