@@ -1,11 +1,15 @@
 import { StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import Header from '@/components/Header';
 
 export default function HomeScreen() {
   return (
     <ThemedView style={styles.container}>
-      <ThemedText style={styles.title}>분석하기</ThemedText>
+      <Header showUserInfo />
+      <ThemedView style={styles.contents}>
+        <ThemedText style={styles.title}>분석하기</ThemedText>
+      </ThemedView>
     </ThemedView>
   );
 }
@@ -16,6 +20,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  contents: { flex: 1 },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
