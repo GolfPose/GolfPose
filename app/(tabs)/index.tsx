@@ -2,13 +2,16 @@ import { StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Header from '@/components/Header';
+import TitleSection from '@/components/home/TitleSection';
 
 export default function HomeScreen() {
   return (
     <ThemedView style={styles.container}>
       <Header showUserInfo />
       <ThemedView style={styles.contents}>
-        <ThemedText style={styles.title}>분석하기</ThemedText>
+        <TitleSection />
+        {/* <UploadBox /> */}
+        {/* <GolfImage /> */}
       </ThemedView>
     </ThemedView>
   );
