@@ -14,6 +14,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+import { SafeAreaView } from 'react-native';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -44,13 +45,15 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Animated.View style={[{ flex: 1 }, animatedMainStyle]}>
-        <Stack screenOptions={{ animation: 'fade' }}>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-      </Animated.View>
+      <SafeAreaView style={{ flex: 1 }}>
+        <Animated.View style={[{ flex: 1 }, animatedMainStyle]}>
+          <Stack screenOptions={{ animation: 'fade' }}>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+          <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+        </Animated.View>
+      </SafeAreaView>
     </ThemeProvider>
   );
 }
