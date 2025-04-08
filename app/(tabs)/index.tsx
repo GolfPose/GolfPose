@@ -3,6 +3,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Header from '@/components/Header';
 import TitleSection from '@/components/home/TitleSection';
+import UploadBox from '@/components/home/UploadBox';
 
 export default function HomeScreen() {
   return (
@@ -10,7 +11,7 @@ export default function HomeScreen() {
       <Header showUserInfo />
       <ThemedView style={styles.contents}>
         <TitleSection />
-        {/* <UploadBox /> */}
+        <UploadBox />
         {/* <GolfImage /> */}
       </ThemedView>
     </ThemedView>
