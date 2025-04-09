@@ -5,14 +5,16 @@ import {
 } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
-
+import { useEffect, useState } from 'react';
 import { useColorScheme } from '@/hooks/useColorScheme';
-
-SplashScreen.preventAutoHideAsync();
+import CustomSplashScreen from './CustomSplashScreen';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import { SafeAreaView } from 'react-native';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -20,23 +22,38 @@ export default function RootLayout() {
     Pretendard: require('../assets/fonts/PretendardVariable.ttf'),
   });
 
+  const [isAppReady, setIsAppReady] = useState(false);
+  const opacity = useSharedValue(0);
+
   useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync();
+      const timer = setTimeout(() => {
+        setIsAppReady(true);
+        opacity.value = withTiming(1, { duration: 600 });
+      }, 2600);
+      return () => clearTimeout(timer);
     }
   }, [loaded]);
 
-  if (!loaded) {
-    return null;
+  const animatedMainStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+  }));
+
+  if (!loaded || !isAppReady) {
+    return <CustomSplashScreen />;
   }
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
+      <SafeAreaView style={{ flex: 1 }}>
+        <Animated.View style={[{ flex: 1 }, animatedMainStyle]}>
+          <Stack screenOptions={{ animation: 'fade' }}>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+          <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+        </Animated.View>
+      </SafeAreaView>
     </ThemeProvider>
   );
 }
