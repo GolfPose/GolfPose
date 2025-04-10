@@ -23,9 +23,6 @@ export default function UploadBox() {
     'idle' | 'picking' | 'uploading' | 'done'
   >('idle');
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const colorScheme = useColorScheme();
-
   const player = useVideoPlayer(
     videoUri ? { uri: videoUri } : { uri: '' },
     player => {
