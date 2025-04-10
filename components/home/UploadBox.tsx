@@ -71,12 +71,7 @@ export default function UploadBox() {
         <Text style={styles.creditText}>남은 크레딧: {credit}</Text>
       </ThemedView>
 
-      <ThemedView
-        style={[
-          styles.uploadArea,
-          { backgroundColor: colorScheme === 'dark' ? '#000' : '#fff' },
-        ]}
-      >
+      <ThemedView style={styles.uploadArea}>
         {uploadStage === 'picking' ||
         (uploadStage === 'uploading' && !videoUri) ? (
           <ThemedView style={styles.loadingContainer}>
@@ -116,7 +111,7 @@ export default function UploadBox() {
           </>
         ) : (
           <>
-            <Feather name="file-plus" size={40} color="#B2B2B2" />
+            <Feather name="file-plus" size={45} color="#B2B2B2" />
             <Text style={styles.desc}>
               파일을 업로드하세요.{'\n'}
               MP4, MOV, AVI 파일을 50MB까지 업로드할 수 있습니다.
@@ -157,7 +152,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   creditText: {
-    marginBottom: 20,
+    marginBottom: 10,
     fontWeight: '500',
     color: '#aaa',
   },
@@ -177,7 +172,7 @@ const styles = StyleSheet.create({
   desc: {
     fontSize: 12,
     textAlign: 'center',
-    color: '#aaa',
+    color: 'gray',
     paddingHorizontal: 12,
   },
   button: {
@@ -202,7 +197,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 8,
     bottom: 8,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
