@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { BadgeCent } from 'lucide-react-native';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import * as ImagePicker from 'expo-image-picker';
 import useUserStore from '@/store/useUserStore';
@@ -22,6 +22,7 @@ export default function UploadBox() {
   const [uploadStage, setUploadStage] = useState<
     'idle' | 'picking' | 'uploading' | 'done'
   >('idle');
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const colorScheme = useColorScheme();
 
@@ -39,6 +40,14 @@ export default function UploadBox() {
     setIsDisabled(credit <= 0);
   }, [credit]);
 
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
   const handleUpload = async () => {
     try {
       setUploadStage('picking');
@@ -51,7 +60,8 @@ export default function UploadBox() {
 
       if (!result.canceled && result.assets?.[0]?.uri) {
         setUploadStage('uploading');
-        setTimeout(() => {
+
+        timeoutRef.current = setTimeout(() => {
           setVideoUri(result.assets[0].uri);
           setUploadStage('done');
         }, 3000);
