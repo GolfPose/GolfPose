@@ -1,6 +1,6 @@
 import useUserStore from '@/store/useUserStore';
 import { ThemedView } from './ThemedView';
-import { Image, Pressable, StyleSheet } from 'react-native';
+import { Image, Pressable, StyleSheet, useColorScheme } from 'react-native';
 import { ThemedText } from './ThemedText';
 
 interface HeaderProps {
@@ -11,18 +11,20 @@ export default function Header({ showUserInfo = false }: HeaderProps) {
   const user = useUserStore(state => state.user);
   const isLoggedIn = user?.isLoggedIn;
   const nickname = user?.name ?? '';
+  const colorScheme = useColorScheme();
 
   const onPress = () => {
     console.log('로그인 페이지로 이동');
   };
 
+  const logoSource =
+    colorScheme === 'dark'
+      ? require('../assets/images/logo.png')
+      : require('../assets/images/white-logo.png');
+
   return (
     <ThemedView style={styles.container}>
-      <Image
-        source={require('../assets/images/logo.png')}
-        style={styles.logo}
-        resizeMode="contain"
-      />
+      <Image source={logoSource} style={styles.logo} resizeMode="contain" />
       {showUserInfo &&
         (isLoggedIn ? (
           <ThemedText style={styles.text}>{nickname}</ThemedText>
@@ -45,11 +47,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    width: 100,
-    height: 30,
+    width: 130,
+    height: 40,
   },
   text: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '500',
   },
 });

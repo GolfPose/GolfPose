@@ -45,7 +45,12 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: colorScheme === 'dark' ? '#000' : '#fff',
+        }}
+      >
         <Animated.View style={[{ flex: 1 }, animatedMainStyle]}>
           <Stack screenOptions={{ animation: 'fade' }}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
