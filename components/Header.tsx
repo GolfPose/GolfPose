@@ -2,6 +2,7 @@ import useUserStore from '@/store/useUserStore';
 import { ThemedView } from './ThemedView';
 import { Image, Pressable, StyleSheet, useColorScheme } from 'react-native';
 import { ThemedText } from './ThemedText';
+import { Link } from 'expo-router';
 
 interface HeaderProps {
   showUserInfo?: boolean;
@@ -30,7 +31,9 @@ export default function Header({ showUserInfo = false }: HeaderProps) {
           <ThemedText style={styles.text}>{nickname}</ThemedText>
         ) : (
           <Pressable onPress={onPress}>
-            <ThemedText style={styles.text}>로그인</ThemedText>
+            <Link href={'/login'}>
+              <ThemedText style={styles.text}>로그인</ThemedText>
+            </Link>
           </Pressable>
         ))}
     </ThemedView>

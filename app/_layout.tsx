@@ -55,6 +55,14 @@ export default function RootLayout() {
           <Stack screenOptions={{ animation: 'fade' }}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
+            <Stack.Screen
+              name="login"
+              options={{ headerShown: false, animation: 'none' }}
+            />
+            <Stack.Screen
+              name="signup"
+              options={{ headerShown: false, animation: 'none' }}
+            />
           </Stack>
           <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
         </Animated.View>
