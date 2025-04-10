@@ -1,18 +1,29 @@
-import { StyleSheet, View, Text, Pressable } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  Pressable,
+  ActivityIndicator,
+  useColorScheme,
+} from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { BadgeCent } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { useVideoPlayer, VideoView } from 'expo-video';
-import { useEvent } from 'expo';
 import * as ImagePicker from 'expo-image-picker';
 import useUserStore from '@/store/useUserStore';
 import { ThemedText } from '../ThemedText';
+import { ThemedView } from '../ThemedView';
 
 export default function UploadBox() {
+  // const credit = useUserStore(state => state.user?.credit ?? 0);
   const credit = 64;
   const [isDisabled, setIsDisabled] = useState(credit <= 0);
   const [videoUri, setVideoUri] = useState<string | null>(null);
-  const [uploading, setUploading] = useState(false);
+  const [uploadStage, setUploadStage] = useState<
+    'idle' | 'picking' | 'uploading' | 'done'
+  >('idle');
+
+  const colorScheme = useColorScheme();
 
   const player = useVideoPlayer(
     videoUri ? { uri: videoUri } : { uri: '' },
@@ -23,41 +34,58 @@ export default function UploadBox() {
       }
     },
   );
-  const isPlaying = player
-    ? useEvent(player, 'playingChange', {
-        isPlaying: player.playing,
-      }).isPlaying
-    : false;
 
   useEffect(() => {
     setIsDisabled(credit <= 0);
   }, [credit]);
 
   const handleUpload = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['videos'],
-      allowsEditing: false,
-      quality: 1,
-    });
+    try {
+      setUploadStage('picking');
 
-    if (!result.canceled && result.assets?.[0]?.uri) {
-      setUploading(true);
-      setTimeout(() => {
-        setVideoUri(result.assets[0].uri);
-        setUploading(false);
-      }, 1000);
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['videos'],
+        allowsEditing: false,
+        quality: 1,
+      });
+
+      if (!result.canceled && result.assets?.[0]?.uri) {
+        setUploadStage('uploading');
+        setTimeout(() => {
+          setVideoUri(result.assets[0].uri);
+          setUploadStage('done');
+        }, 3000);
+      } else {
+        setUploadStage('idle');
+      }
+    } catch (error) {
+      console.error('비디오 선택 오류:', error);
+      setUploadStage('idle');
     }
   };
 
   return (
-    <View style={styles.wrapper}>
-      <View style={styles.creditRow}>
+    <ThemedView style={styles.wrapper}>
+      <ThemedView style={styles.creditRow}>
         <BadgeCent size={16} color="#aaa" />
         <Text style={styles.creditText}>남은 크레딧: {credit}</Text>
-      </View>
+      </ThemedView>
 
-      <View style={styles.uploadArea}>
-        {videoUri ? (
+      <ThemedView
+        style={[
+          styles.uploadArea,
+          { backgroundColor: colorScheme === 'dark' ? '#000' : '#fff' },
+        ]}
+      >
+        {uploadStage === 'picking' ||
+        (uploadStage === 'uploading' && !videoUri) ? (
+          <ThemedView style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#00C49A" />
+            <Text style={styles.loadingText}>
+              {uploadStage === 'picking' ? '업로드 준비 중...' : '업로드 중...'}
+            </Text>
+          </ThemedView>
+        ) : videoUri ? (
           <>
             <VideoView
               style={styles.video}
@@ -65,15 +93,23 @@ export default function UploadBox() {
               allowsFullscreen
               allowsPictureInPicture
             />
-            <View style={styles.overlay}>
-              <Text style={styles.overlayText}>
-                {uploading ? '업로드 중...' : '업로드 완료'}
-              </Text>
-            </View>
+            <ThemedView style={styles.overlay}>
+              {uploadStage === 'uploading' ? (
+                <ThemedView style={styles.uploadingRow}>
+                  <ActivityIndicator size="small" color="#00C49A" />
+                  <Text style={styles.overlayText}>업로드 중...</Text>
+                </ThemedView>
+              ) : (
+                <Text style={styles.overlayText}>업로드 완료</Text>
+              )}
+            </ThemedView>
 
             <Pressable
               style={styles.deleteButton}
-              onPress={() => setVideoUri(null)}
+              onPress={() => {
+                setVideoUri(null);
+                setUploadStage('idle');
+              }}
             >
               <Feather name="x" size={18} color="#fff" />
             </Pressable>
@@ -88,15 +124,15 @@ export default function UploadBox() {
             <Pressable
               style={[styles.button, isDisabled && styles.disabled]}
               onPress={handleUpload}
-              disabled={isDisabled || uploading}
+              disabled={isDisabled || uploadStage !== 'idle'}
             >
               <ThemedText style={styles.buttonText}>파일 업로드</ThemedText>
             </Pressable>
           </>
         )}
-      </View>
+      </ThemedView>
 
-      {videoUri && !uploading && (
+      {videoUri && uploadStage === 'done' && (
         <Pressable
           style={styles.analyzeButton}
           onPress={() => console.log('분석하기')}
@@ -104,7 +140,7 @@ export default function UploadBox() {
           <Text style={styles.buttonText}>분석하기</Text>
         </Pressable>
       )}
-    </View>
+    </ThemedView>
   );
 }
 
@@ -137,7 +173,6 @@ const styles = StyleSheet.create({
     gap: 20,
     maxWidth: 320,
     aspectRatio: 16 / 9,
-    backgroundColor: '#000',
   },
   desc: {
     fontSize: 12,
@@ -177,6 +212,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 12,
   },
+  uploadingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
   deleteButton: {
     position: 'absolute',
     top: 8,
@@ -195,5 +235,14 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 320,
     alignItems: 'center',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+  },
+  loadingText: {
+    color: '#aaa',
+    fontSize: 14,
   },
 });
