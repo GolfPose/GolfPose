@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  Pressable,
-  ActivityIndicator,
-  useColorScheme,
-} from 'react-native';
+import { StyleSheet, Text, Pressable, ActivityIndicator } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { BadgeCent } from 'lucide-react-native';
 import { useEffect, useState, useRef } from 'react';
@@ -13,6 +7,7 @@ import * as ImagePicker from 'expo-image-picker';
 import useUserStore from '@/store/useUserStore';
 import { ThemedText } from '../ThemedText';
 import { ThemedView } from '../ThemedView';
+import { Colors } from '@/constants/Colors';
 
 export default function UploadBox() {
   // const credit = useUserStore(state => state.user?.credit ?? 0);
@@ -74,7 +69,7 @@ export default function UploadBox() {
   return (
     <ThemedView style={styles.wrapper}>
       <ThemedView style={styles.creditRow}>
-        <BadgeCent size={16} color="#aaa" />
+        <BadgeCent size={16} color={Colors.common.gray500} />
         <Text style={styles.creditText}>남은 크레딧: {credit}</Text>
       </ThemedView>
 
@@ -82,7 +77,7 @@ export default function UploadBox() {
         {uploadStage === 'picking' ||
         (uploadStage === 'uploading' && !videoUri) ? (
           <ThemedView style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#00C49A" />
+            <ActivityIndicator size="large" color={Colors.common.primary500} />
             <Text style={styles.loadingText}>
               {uploadStage === 'picking' ? '업로드 준비 중...' : '업로드 중...'}
             </Text>
@@ -98,7 +93,10 @@ export default function UploadBox() {
             <ThemedView style={styles.overlay}>
               {uploadStage === 'uploading' ? (
                 <ThemedView style={styles.uploadingRow}>
-                  <ActivityIndicator size="small" color="#00C49A" />
+                  <ActivityIndicator
+                    size="small"
+                    color={Colors.common.primary500}
+                  />
                   <Text style={styles.overlayText}>업로드 중...</Text>
                 </ThemedView>
               ) : (
@@ -113,12 +111,12 @@ export default function UploadBox() {
                 setUploadStage('idle');
               }}
             >
-              <Feather name="x" size={18} color="#fff" />
+              <Feather name="x" size={18} color={Colors.common.white} />
             </Pressable>
           </>
         ) : (
           <>
-            <Feather name="file-plus" size={45} color="#B2B2B2" />
+            <Feather name="file-plus" size={45} color={Colors.common.gray400} />
             <Text style={styles.desc}>
               파일을 업로드하세요.{'\n'}
               MP4, MOV, AVI 파일을 50MB까지 업로드할 수 있습니다.
@@ -161,11 +159,11 @@ const styles = StyleSheet.create({
   creditText: {
     marginBottom: 10,
     fontWeight: '500',
-    color: '#aaa',
+    color: Colors.common.gray500,
   },
   uploadArea: {
     borderWidth: 1,
-    borderColor: '#888',
+    borderColor: Colors.common.gray600,
     borderStyle: 'dashed',
     borderRadius: 12,
     overflow: 'hidden',
@@ -179,21 +177,21 @@ const styles = StyleSheet.create({
   desc: {
     fontSize: 12,
     textAlign: 'center',
-    color: 'gray',
+    color: Colors.common.gray200,
     paddingHorizontal: 12,
   },
   button: {
-    backgroundColor: '#00C49A',
+    backgroundColor: Colors.common.primary500,
     paddingHorizontal: 24,
     paddingVertical: 8,
     borderRadius: 6,
   },
   disabled: {
-    backgroundColor: '#ccc',
+    backgroundColor: Colors.common.gray300,
   },
   buttonText: {
     fontWeight: 'bold',
-    color: '#000',
+    color: Colors.common.black,
   },
   video: {
     width: '100%',
@@ -210,7 +208,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   overlayText: {
-    color: '#fff',
+    color: Colors.common.white,
     fontSize: 12,
   },
   uploadingRow: {
@@ -222,14 +220,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 8,
     right: 8,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    backgroundColor: Colors.common.overlayBg,
     padding: 4,
     borderRadius: 16,
     zIndex: 2,
   },
   analyzeButton: {
     marginTop: 16,
-    backgroundColor: '#00C49A',
+    backgroundColor: Colors.common.primary500,
     paddingVertical: 10,
     paddingHorizontal: 32,
     borderRadius: 8,
@@ -243,7 +241,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   loadingText: {
-    color: '#aaa',
+    color: Colors.common.gray500,
     fontSize: 14,
   },
 });
