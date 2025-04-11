@@ -1,5 +1,6 @@
 import { Image, StyleSheet } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
+import { vs } from 'react-native-size-matters';
 
 export default function GolfImage() {
   return (
@@ -22,6 +23,6 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 300,
+    height: vs(280),
   },
 });

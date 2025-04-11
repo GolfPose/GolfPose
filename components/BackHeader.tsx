@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, SafeAreaView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { s, vs } from 'react-native-size-matters';
 
 export default function BackHeader() {
   const router = useRouter();
@@ -25,8 +26,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   backButton: {
-    width: 40,
-    height: 40,
+    width: s(40),
+    height: vs(40),
     justifyContent: 'center',
     marginLeft: 16,
   },

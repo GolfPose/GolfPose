@@ -3,6 +3,7 @@ import { ThemedView } from './ThemedView';
 import { Image, Pressable, StyleSheet, useColorScheme } from 'react-native';
 import { ThemedText } from './ThemedText';
 import { Link } from 'expo-router';
+import { s, vs } from 'react-native-size-matters';
 import Typography from '@/constants/Typography';
 
 interface HeaderProps {
@@ -51,8 +52,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    width: 130,
-    height: 40,
+    width: s(130),
+    height: vs(40),
   },
   text: {
     fontSize: Typography.lg,

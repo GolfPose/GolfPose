@@ -1,5 +1,6 @@
 import { SymbolView, SymbolViewProps, SymbolWeight } from 'expo-symbols';
 import { StyleProp, ViewStyle } from 'react-native';
+import { s, vs } from 'react-native-size-matters';
 
 export function IconSymbol({
   name,
@@ -22,8 +23,8 @@ export function IconSymbol({
       name={name}
       style={[
         {
-          width: size,
-          height: size,
+          width: s(size),
+          height: vs(size),
         },
         style,
       ]}

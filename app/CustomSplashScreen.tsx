@@ -1,7 +1,8 @@
 import { StyleSheet, Image } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { useColorScheme } from 'react-native';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
+import { s, vs } from 'react-native-size-matters';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
     paddingBottom: 80,
   },
   logo: {
-    width: 250,
-    height: 250,
+    width: s(250),
+    height: vs(250),
   },
 });
