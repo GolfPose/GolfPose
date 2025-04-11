@@ -4,7 +4,7 @@ import { s, vs } from 'react-native-size-matters';
 
 export function IconSymbol({
   name,
-  size = 24,
+  size = s(24),
   color,
   style,
   weight = 'regular',

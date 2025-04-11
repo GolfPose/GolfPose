@@ -8,6 +8,7 @@ import useUserStore from '@/store/useUserStore';
 import { ThemedText } from '../ThemedText';
 import { ThemedView } from '../ThemedView';
 import { Colors } from '@/constants/Colors';
+import { s, vs, ms } from 'react-native-size-matters';
 import Typography from '@/constants/Typography';
 
 export default function UploadBox() {
@@ -112,15 +113,19 @@ export default function UploadBox() {
                 setUploadStage('idle');
               }}
             >
-              <Feather name="x" size={18} color={Colors.common.white} />
+              <Feather name="x" size={s(18)} color={Colors.common.white} />
             </Pressable>
           </>
         ) : (
           <>
-            <Feather name="file-plus" size={45} color={Colors.common.gray400} />
+            <Feather
+              name="file-plus"
+              size={s(45)}
+              color={Colors.common.gray400}
+            />
             <Text style={styles.desc}>
               파일을 업로드하세요.{'\n'}
-              MP4, MOV, AVI 파일을 50MB까지 업로드할 수 있습니다.
+              MP4, MOV, AVI 파일을 50MB까지{'\n'}업로드할 수 있습니다.
             </Text>
             <Pressable
               style={[styles.button, isDisabled && styles.disabled]}
@@ -148,17 +153,17 @@ export default function UploadBox() {
 const styles = StyleSheet.create({
   wrapper: {
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: vs(24),
     width: '100%',
   },
   creditRow: {
     flexDirection: 'row',
     alignSelf: 'flex-start',
-    gap: 4,
-    paddingHorizontal: 16,
+    gap: s(4),
+    paddingHorizontal: s(12),
   },
   creditText: {
-    marginBottom: 10,
+    marginBottom: vs(10),
     fontWeight: '500',
     color: Colors.common.gray500,
   },
@@ -166,26 +171,26 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.common.gray600,
     borderStyle: 'dashed',
-    borderRadius: 12,
+    borderRadius: s(12),
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    gap: 20,
-    maxWidth: 320,
+    maxWidth: s(300),
     aspectRatio: 16 / 9,
+    gap: s(12),
   },
   desc: {
     fontSize: Typography.xs,
     textAlign: 'center',
     color: Colors.common.gray200,
-    paddingHorizontal: 12,
+    paddingHorizontal: s(12),
   },
   button: {
     backgroundColor: Colors.common.primary500,
-    paddingHorizontal: 24,
-    paddingVertical: 8,
-    borderRadius: 6,
+    paddingHorizontal: s(24),
+    paddingVertical: vs(6),
+    borderRadius: s(6),
   },
   disabled: {
     backgroundColor: Colors.common.gray300,
@@ -201,11 +206,11 @@ const styles = StyleSheet.create({
   },
   overlay: {
     position: 'absolute',
-    left: 8,
-    bottom: 8,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
+    left: s(8),
+    bottom: vs(8),
+    paddingHorizontal: s(6),
+    paddingVertical: vs(2),
+    borderRadius: s(4),
     zIndex: 1,
   },
   overlayText: {
@@ -215,31 +220,31 @@ const styles = StyleSheet.create({
   uploadingRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: s(6),
   },
   deleteButton: {
     position: 'absolute',
-    top: 8,
-    right: 8,
+    top: vs(8),
+    right: s(8),
     backgroundColor: Colors.common.overlayBg,
-    padding: 4,
-    borderRadius: 16,
+    padding: ms(4),
+    borderRadius: s(16),
     zIndex: 2,
   },
   analyzeButton: {
-    marginTop: 16,
+    marginTop: vs(16),
     backgroundColor: Colors.common.primary500,
-    paddingVertical: 10,
-    paddingHorizontal: 32,
-    borderRadius: 8,
+    paddingHorizontal: s(32),
+    paddingVertical: vs(10),
+    borderRadius: s(8),
     width: '100%',
-    maxWidth: 320,
+    maxWidth: s(320),
     alignItems: 'center',
   },
   loadingContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 12,
+    gap: s(12),
   },
   loadingText: {
     color: Colors.common.gray500,

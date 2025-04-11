@@ -18,8 +18,8 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     alignItems: 'center',
-    marginTop: 12,
-    marginBottom: 32,
+    marginTop: vs(12),
+    marginBottom: vs(32),
   },
   image: {
     width: '100%',

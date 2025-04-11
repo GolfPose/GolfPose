@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { s, vs } from 'react-native-size-matters';
 import Typography from '@/constants/Typography';
 
 interface TitleSectionProps {
@@ -18,9 +19,9 @@ export default function TitleSection({ title }: TitleSectionProps) {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginTop: 54,
-    marginBottom: 32,
-    paddingHorizontal: 16,
+    marginTop: vs(30),
+    marginBottom: vs(32),
+    paddingHorizontal: s(16),
   },
   title: {
     fontSize: Typography.title,

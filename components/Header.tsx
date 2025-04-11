@@ -45,8 +45,8 @@ export default function Header({ showUserInfo = false }: HeaderProps) {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingHorizontal: s(16),
+    paddingVertical: vs(10),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

@@ -24,11 +24,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    marginBottom: vs(16),
   },
   backButton: {
     width: s(40),
     height: vs(40),
     justifyContent: 'center',
-    marginLeft: 16,
+    marginLeft: s(16),
   },
 });
