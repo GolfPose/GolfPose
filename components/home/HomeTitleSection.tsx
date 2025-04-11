@@ -4,7 +4,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { s, vs } from 'react-native-size-matters';
 import Typography from '@/constants/Typography';
 
-export default function TitleSection() {
+export default function HomeTitleSection() {
   return (
     <ThemedView style={styles.container}>
       <ThemedText style={styles.title}>골프 포즈 분석하기</ThemedText>
