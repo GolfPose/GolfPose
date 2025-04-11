@@ -1,10 +1,10 @@
-// components/home/TitleSection.tsx
-
 import { StyleSheet, Text } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { s, vs } from 'react-native-size-matters';
+import Typography from '@/constants/Typography';
 
-export default function TitleSection() {
+export default function HomeTitleSection() {
   return (
     <ThemedView style={styles.container}>
       <ThemedText style={styles.title}>골프 포즈 분석하기</ThemedText>
@@ -19,19 +19,19 @@ export default function TitleSection() {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginTop: 32,
-    marginBottom: 20,
-    paddingHorizontal: 16,
+    marginTop: vs(20),
+    marginBottom: vs(20),
+    paddingHorizontal: s(16),
   },
   title: {
-    fontSize: 35,
+    fontSize: Typography.title,
     fontWeight: 'bold',
-    marginBottom: 12,
+    marginBottom: vs(12),
   },
   desc: {
-    fontSize: 16,
+    fontSize: Typography.md,
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: vs(16),
     color: 'gray',
   },
 });
