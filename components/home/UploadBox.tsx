@@ -8,6 +8,7 @@ import useUserStore from '@/store/useUserStore';
 import { ThemedText } from '../ThemedText';
 import { ThemedView } from '../ThemedView';
 import { Colors } from '@/constants/Colors';
+import Typography from '@/constants/Typography';
 
 export default function UploadBox() {
   // const credit = useUserStore(state => state.user?.credit ?? 0);
@@ -175,7 +176,7 @@ const styles = StyleSheet.create({
     aspectRatio: 16 / 9,
   },
   desc: {
-    fontSize: 12,
+    fontSize: Typography.xs,
     textAlign: 'center',
     color: Colors.common.gray200,
     paddingHorizontal: 12,
@@ -209,7 +210,7 @@ const styles = StyleSheet.create({
   },
   overlayText: {
     color: Colors.common.white,
-    fontSize: 12,
+    fontSize: Typography.xs,
   },
   uploadingRow: {
     flexDirection: 'row',
@@ -242,6 +243,6 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     color: Colors.common.gray500,
-    fontSize: 14,
+    fontSize: Typography.sm,
   },
 });

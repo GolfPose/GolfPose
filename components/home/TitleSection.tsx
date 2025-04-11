@@ -1,8 +1,7 @@
-// components/home/TitleSection.tsx
-
 import { StyleSheet, Text } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import Typography from '@/constants/Typography';
 
 export default function TitleSection() {
   return (
@@ -24,12 +23,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   title: {
-    fontSize: 35,
+    fontSize: Typography.title,
     fontWeight: 'bold',
     marginBottom: 12,
   },
   desc: {
-    fontSize: 16,
+    fontSize: Typography.md,
     textAlign: 'center',
     lineHeight: 20,
     color: 'gray',

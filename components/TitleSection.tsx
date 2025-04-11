@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import Typography from '@/constants/Typography';
 
 interface TitleSectionProps {
   title: string;
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   title: {
-    fontSize: 35,
+    fontSize: Typography.title,
     fontWeight: 'bold',
   },
 });

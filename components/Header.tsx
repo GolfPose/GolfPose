@@ -3,6 +3,7 @@ import { ThemedView } from './ThemedView';
 import { Image, Pressable, StyleSheet, useColorScheme } from 'react-native';
 import { ThemedText } from './ThemedText';
 import { Link } from 'expo-router';
+import Typography from '@/constants/Typography';
 
 interface HeaderProps {
   showUserInfo?: boolean;
@@ -54,7 +55,7 @@ const styles = StyleSheet.create({
     height: 40,
   },
   text: {
-    fontSize: 16,
+    fontSize: Typography.lg,
     fontWeight: '500',
   },
 });

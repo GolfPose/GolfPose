@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import TitleSection from '@/components/home/TitleSection';
 import UploadBox from '@/components/home/UploadBox';
 import GolfImage from '@/components/home/GolfImage';
+import Typography from '@/constants/Typography';
 
 export default function HomeScreen() {
   return (
@@ -28,7 +29,7 @@ const styles = StyleSheet.create({
   },
   contents: { flex: 1 },
   title: {
-    fontSize: 20,
+    fontSize: Typography.xl,
     fontWeight: 'bold',
   },
 });
