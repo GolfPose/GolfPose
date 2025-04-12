@@ -2,17 +2,24 @@ import { Pressable, StyleSheet, SafeAreaView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { s, vs } from 'react-native-size-matters';
+import { Colors } from '@/constants/Colors';
 
-export default function BackHeader() {
+type BackHeaderProps = {
+  theme: 'light' | 'dark';
+};
+
+export default function BackHeader({ theme }: BackHeaderProps) {
   const router = useRouter();
   const handleGoBack = () => {
     router.back();
   };
+  const iconColor =
+    theme === 'dark' ? Colors.common.white : Colors.common.black;
 
   return (
     <SafeAreaView style={styles.container}>
       <Pressable onPress={handleGoBack} style={styles.backButton}>
-        <Ionicons name="chevron-back" size={32} color="white" />
+        <Ionicons name="chevron-back" size={32} color={theme} />
       </Pressable>
     </SafeAreaView>
   );
