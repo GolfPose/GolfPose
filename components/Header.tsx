@@ -2,6 +2,7 @@ import useUserStore from '@/store/useUserStore';
 import { ThemedView } from './ThemedView';
 import { Image, Pressable, StyleSheet, useColorScheme } from 'react-native';
 import { ThemedText } from './ThemedText';
+import { useRouter } from 'expo-router';
 import { Link } from 'expo-router';
 import { s, vs } from 'react-native-size-matters';
 import Typography from '@/constants/Typography';
@@ -16,8 +17,9 @@ export default function Header({ showUserInfo = false }: HeaderProps) {
   const nickname = user?.name ?? '';
   const colorScheme = useColorScheme();
 
+  const router = useRouter();
   const onPress = () => {
-    console.log('로그인 페이지로 이동');
+    router.push('/login');
   };
 
   const logoSource =
