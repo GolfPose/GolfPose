@@ -19,7 +19,7 @@ export default function BackHeader({ theme }: BackHeaderProps) {
   return (
     <SafeAreaView style={styles.container}>
       <Pressable onPress={handleGoBack} style={styles.backButton}>
-        <Ionicons name="chevron-back" size={32} color={theme} />
+        <Ionicons name="chevron-back" size={32} color={iconColor} />
       </Pressable>
     </SafeAreaView>
   );
