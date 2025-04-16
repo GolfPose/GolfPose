@@ -14,7 +14,13 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { SafeAreaView } from 'react-native';
+import {
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  StatusBar as RNStatusBar,
+} from 'react-native';
+import { Colors } from '@/constants/Colors';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -39,6 +45,9 @@ export default function RootLayout() {
     opacity: opacity.value,
   }));
 
+  const topPadding =
+    Platform.OS === 'android' ? (RNStatusBar.currentHeight ?? 24) : 0;
+
   if (!loaded || !isAppReady) {
     return <CustomSplashScreen />;
   }
@@ -46,11 +55,18 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <SafeAreaView
-        style={{
-          flex: 1,
-          backgroundColor: colorScheme === 'dark' ? '#000' : '#fff',
-        }}
+        style={[
+          styles.safeview,
+          {
+            paddingTop: topPadding,
+            backgroundColor:
+              colorScheme === 'dark'
+                ? Colors.common.black
+                : Colors.common.white,
+          },
+        ]}
       >
+        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
         <Animated.View style={[{ flex: 1 }, animatedMainStyle]}>
           <Stack screenOptions={{ animation: 'fade' }}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -64,9 +80,14 @@ export default function RootLayout() {
               options={{ headerShown: false, animation: 'none' }}
             />
           </Stack>
-          <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
         </Animated.View>
       </SafeAreaView>
     </ThemeProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  safeview: {
+    flex: 1,
+  },
+});
