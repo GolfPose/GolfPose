@@ -1,19 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   TextInput,
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  Image,
-  Dimensions,
-  Linking,
-  StatusBar,
   Keyboard,
-  TouchableWithoutFeedback,
+  StyleSheet,
+  Linking,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useColorScheme } from 'react-native';
@@ -21,24 +16,28 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import BackHeader from '@/components/BackHeader';
 import TitleSection from '@/components/TitleSection';
+import { Colors } from '@/constants/Colors';
 import Typography from '@/constants/Typography';
-
-const screenHeight = Dimensions.get('window').height; //사용자 핸드폰에 따른 이미지 높이 설정정
+import { s, vs } from 'react-native-size-matters';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+  const scrollViewRef = useRef(null);
+  const theme = useColorScheme() as 'light' | 'dark';
 
   const handleEmailChange = (text: string) => {
     // 공백 제거
     const cleaned = text.replace(/\s/g, '');
     setEmail(cleaned);
   };
+
   const isEmailValid = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
+
   const handlePasswordChange = (text: string) => {
     // 영어 대소문자 + 숫자만 허용
     const cleaned = text.replace(/[^a-zA-Z0-9]/g, '');
@@ -64,128 +63,167 @@ export default function LoginScreen() {
     if (supported) {
       await Linking.openURL(url);
     } else {
-      console.warn("지원되지 않는 URL입니다:", url);
+      console.warn('지원되지 않는 URL입니다:', url);
     }
   };
 
-  const theme = useColorScheme() as 'light' | 'dark';
-
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-    <KeyboardAvoidingView
-    style={{ flex: 1 }}
-    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-  >
-     <ScrollView contentContainerStyle={styles.scrollContainer}>
-     <StatusBar barStyle="light-content" backgroundColor="#000" />
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor:
+            theme === 'dark' ? Colors.common.black : Colors.common.white,
+        },
+      ]}
+    >
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 10 : 0}
+      >
+        <ScrollView
+          ref={scrollViewRef}
+          style={{ flex: 1 }}
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="none"
+          showsVerticalScrollIndicator={true}
+        >
+          <BackHeader theme={theme} />
+          <ThemedView style={styles.innerContainer}>
+            <TitleSection title="로그인" />
+            <ThemedView style={styles.inputContainer}>
+              {/* 아이디 */}
+              <ThemedText style={styles.label}>아이디</ThemedText>
+              <TextInput
+                style={[
+                  styles.input,
+                  {
+                    color:
+                      theme === 'dark'
+                        ? Colors.common.white
+                        : Colors.common.black,
+                    backgroundColor:
+                      theme === 'dark'
+                        ? Colors.common.black
+                        : Colors.common.white,
+                  },
+                ]}
+                placeholder="아이디를 입력해 주세요."
+                placeholderTextColor={Colors.common.gray600}
+                value={email}
+                onChangeText={handleEmailChange}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
 
-    <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#000" />
+              {/* 비밀번호 */}
+              <ThemedText style={styles.label}>비밀번호</ThemedText>
+              <TextInput
+                style={[
+                  styles.input,
+                  {
+                    color:
+                      theme === 'dark'
+                        ? Colors.common.white
+                        : Colors.common.black,
+                    backgroundColor:
+                      theme === 'dark'
+                        ? Colors.common.black
+                        : Colors.common.white,
+                  },
+                ]}
+                placeholder="비밀번호를 입력해 주세요."
+                placeholderTextColor={Colors.common.gray600}
+                value={password}
+                onChangeText={handlePasswordChange}
+                secureTextEntry
+              />
 
-      {/* 로고 이미지 */}
-      <Image
-        source={require('../assets/images/white-logo.png')}
-        style={styles.image}
-        resizeMode="contain"
-      />
+              {/* 로그인 버튼 */}
+              <TouchableOpacity
+                style={styles.loginButton}
+                onPress={handleLogin}
+                activeOpacity={0.7}
+              >
+                <ThemedText style={styles.loginText}>로그인</ThemedText>
+              </TouchableOpacity>
 
-      {/* 아이디 입력 */}
-      <Text style={styles.label}>아이디</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="아이디를 입력하세요"
-        placeholderTextColor="#888"
-        value={email}
-        onChangeText={handleEmailChange}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
+              {/* 회원가입 버튼 */}
+              <TouchableOpacity
+                style={styles.signupButton}
+                onPress={handleSignup}
+                activeOpacity={0.7}
+              >
+                <ThemedText style={styles.signupText}>회원가입</ThemedText>
+              </TouchableOpacity>
 
-      {/* 비밀번호 입력 */}
-      <Text style={styles.label}>비밀번호</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="비밀번호를 입력하세요"
-        placeholderTextColor="#888"
-        value={password}
-        onChangeText={handlePasswordChange}
-        secureTextEntry
-      />
-
-      {/* 로그인 버튼 */}
-      <Pressable style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.loginText}>로그인</Text>
-      </Pressable>
-
-      {/* 회원가입 버튼 */}
-      <Pressable style={styles.signupButton} onPress={handleSignup}>
-        <Text style={styles.signupText}>회원가입</Text>
-      </Pressable>
+              {/* 추가 여백 */}
+              <View style={{ height: vs(40) }} />
+            </ThemedView>
+          </ThemedView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </View>
-    </ScrollView>
-    </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
   );
 }
 
-// 스타일
 const styles = StyleSheet.create({
-  scrollContainer: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    backgroundColor: '#000',
-  },
-  label: {
-    color: '#fff',
-    fontSize: 16,
-    marginBottom: 6,
-    marginTop: 12,
-  },
   container: {
     flex: 1,
-    backgroundColor: '#000', // 다크모드 배경
-    paddingHorizontal: 24,
-    padding: 24,
-    justifyContent: 'center',
   },
-  image: {
-    width: '100%',
-    height: screenHeight * 0.12,
-    marginBottom: 36,
+  scrollContainer: {
+    flexGrow: 1,
+    paddingBottom: vs(100),
+  },
+  innerContainer: {
+    flex: 1,
+    paddingHorizontal: s(24),
+  },
+  inputContainer: {
+    marginTop: vs(32),
+  },
+  label: {
+    fontSize: Typography.md,
+    marginBottom: vs(10),
+    marginTop: vs(10),
   },
   input: {
-    height: 48,
-    borderColor: '#444',
+    borderColor: Colors.common.gray500,
     borderWidth: 1,
-    borderRadius: 8,
-    backgroundColor: '#111',
-    color: '#fff',
-    paddingHorizontal: 12,
-    marginBottom: 16,
+    borderRadius: s(8),
+    paddingHorizontal: s(16),
+    paddingVertical: vs(10),
+    marginBottom: vs(16),
+    fontSize: Typography.md,
   },
   loginButton: {
-    backgroundColor: '#10B982', // 초록색 버튼
-    paddingVertical: 14,
-    borderRadius: 8,
-    marginTop: 8,
+    backgroundColor: Colors.common.primary500,
+    paddingVertical: vs(12),
+    borderRadius: s(8),
+    marginTop: vs(10),
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   loginText: {
-    color: '#000',
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: Typography.md,
     fontWeight: 'bold',
   },
   signupButton: {
-    borderColor: '#10B982',
+    borderColor: Colors.common.primary500,
     borderWidth: 1,
-    paddingVertical: 14,
-    borderRadius: 8,
-    marginTop: 12,
+    paddingVertical: vs(12),
+    borderRadius: s(8),
+    marginTop: vs(12),
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   signupText: {
-    color: '#10B982',
+    color: Colors.common.primary500,
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: Typography.md,
     fontWeight: 'bold',
   },
 });
