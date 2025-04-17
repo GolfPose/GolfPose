@@ -58,13 +58,7 @@ export default function LoginScreen() {
   };
 
   const handleSignup = async () => {
-    const url = 'https://www.jaisworks.com/signUp';
-    const supported = await Linking.canOpenURL(url);
-    if (supported) {
-      await Linking.openURL(url);
-    } else {
-      console.warn('지원되지 않는 URL입니다:', url);
-    }
+    router.push('/signup');
   };
 
   return (

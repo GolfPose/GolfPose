@@ -8,6 +8,7 @@ export const Colors = {
     tint: '#2f95dc',
     tabIconDefault: '#ccc',
     tabIconSelected: '#2f95dc',
+    primary: '#10B982',
   },
   dark: {
     text: '#fff',
@@ -15,6 +16,8 @@ export const Colors = {
     tint: '#fff',
     tabIconDefault: '#ccc',
     tabIconSelected: '#fff',
+    primary: '#10B982',
+    gray500: '#aaa'
   },
   common: {
     gray500: '#aaa',
@@ -25,6 +28,8 @@ export const Colors = {
     primary500: '#00C49A',
     black: '#000',
     white: '#fff',
+    gray: '#808080',
+    red: '#FF0000',
     overlayBg: 'rgba(0, 0, 0, 0.6)',
   },
 };
