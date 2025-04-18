@@ -90,9 +90,9 @@ export default function SignUpScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <BackHeader theme={theme} />
+          <TitleSection title="회원 가입" />
           <ThemedView style={styles.container}>
-            <BackHeader theme={theme} />
-            <TitleSection title="회원 가입" />
 
             {/* 이메일 */}
             <ThemedText style={styles.label}>이메일</ThemedText>
@@ -173,6 +173,7 @@ export default function SignUpScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginHorizontal: s(24),
   },
   scrollContainer: {
     flexGrow: 1,
@@ -191,6 +192,7 @@ const styles = StyleSheet.create({
     marginTop: vs(10),
   },
   input: {
+    backgroundColor: Colors.light.background,
     borderColor: Colors.common.gray500,
     borderWidth: 1,
     borderRadius: s(8),
@@ -228,7 +230,6 @@ const styles = StyleSheet.create({
   inputError: {
     borderColor: Colors.common.red,
   },
-
   errorText: {
     color: Colors.common.red,
     fontSize: Typography.sm,
