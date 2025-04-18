@@ -2,6 +2,10 @@ import useUserStore from '@/store/useUserStore';
 import { ThemedView } from './ThemedView';
 import { Image, Pressable, StyleSheet, useColorScheme } from 'react-native';
 import { ThemedText } from './ThemedText';
+import { useRouter } from 'expo-router';
+import { Link } from 'expo-router';
+import { s, vs } from 'react-native-size-matters';
+import Typography from '@/constants/Typography';
 
 interface HeaderProps {
   showUserInfo?: boolean;
@@ -13,8 +17,9 @@ export default function Header({ showUserInfo = false }: HeaderProps) {
   const nickname = user?.name ?? '';
   const colorScheme = useColorScheme();
 
+  const router = useRouter();
   const onPress = () => {
-    console.log('로그인 페이지로 이동');
+    router.push('/login');
   };
 
   const logoSource =
@@ -30,7 +35,9 @@ export default function Header({ showUserInfo = false }: HeaderProps) {
           <ThemedText style={styles.text}>{nickname}</ThemedText>
         ) : (
           <Pressable onPress={onPress}>
-            <ThemedText style={styles.text}>로그인</ThemedText>
+            <Link href={'/login'}>
+              <ThemedText style={styles.text}>로그인</ThemedText>
+            </Link>
           </Pressable>
         ))}
     </ThemedView>
@@ -40,18 +47,18 @@ export default function Header({ showUserInfo = false }: HeaderProps) {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingHorizontal: s(16),
+    paddingVertical: vs(10),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   logo: {
-    width: 130,
-    height: 40,
+    width: s(130),
+    height: vs(40),
   },
   text: {
-    fontSize: 16,
+    fontSize: Typography.lg,
     fontWeight: '500',
   },
 });

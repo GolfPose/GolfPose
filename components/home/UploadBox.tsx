@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  Pressable,
-  ActivityIndicator,
-  useColorScheme,
-} from 'react-native';
+import { StyleSheet, Text, Pressable, ActivityIndicator } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { BadgeCent } from 'lucide-react-native';
 import { useEffect, useState, useRef } from 'react';
@@ -13,6 +7,9 @@ import * as ImagePicker from 'expo-image-picker';
 import useUserStore from '@/store/useUserStore';
 import { ThemedText } from '../ThemedText';
 import { ThemedView } from '../ThemedView';
+import { Colors } from '@/constants/Colors';
+import { s, vs, ms } from 'react-native-size-matters';
+import Typography from '@/constants/Typography';
 
 export default function UploadBox() {
   // const credit = useUserStore(state => state.user?.credit ?? 0);
@@ -74,7 +71,7 @@ export default function UploadBox() {
   return (
     <ThemedView style={styles.wrapper}>
       <ThemedView style={styles.creditRow}>
-        <BadgeCent size={16} color="#aaa" />
+        <BadgeCent size={16} color={Colors.common.gray500} />
         <Text style={styles.creditText}>남은 크레딧: {credit}</Text>
       </ThemedView>
 
@@ -82,7 +79,7 @@ export default function UploadBox() {
         {uploadStage === 'picking' ||
         (uploadStage === 'uploading' && !videoUri) ? (
           <ThemedView style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#00C49A" />
+            <ActivityIndicator size="large" color={Colors.common.primary500} />
             <Text style={styles.loadingText}>
               {uploadStage === 'picking' ? '업로드 준비 중...' : '업로드 중...'}
             </Text>
@@ -98,7 +95,10 @@ export default function UploadBox() {
             <ThemedView style={styles.overlay}>
               {uploadStage === 'uploading' ? (
                 <ThemedView style={styles.uploadingRow}>
-                  <ActivityIndicator size="small" color="#00C49A" />
+                  <ActivityIndicator
+                    size="small"
+                    color={Colors.common.primary500}
+                  />
                   <Text style={styles.overlayText}>업로드 중...</Text>
                 </ThemedView>
               ) : (
@@ -113,15 +113,19 @@ export default function UploadBox() {
                 setUploadStage('idle');
               }}
             >
-              <Feather name="x" size={18} color="#fff" />
+              <Feather name="x" size={s(18)} color={Colors.common.white} />
             </Pressable>
           </>
         ) : (
           <>
-            <Feather name="file-plus" size={45} color="#B2B2B2" />
+            <Feather
+              name="file-plus"
+              size={s(45)}
+              color={Colors.common.gray400}
+            />
             <Text style={styles.desc}>
               파일을 업로드하세요.{'\n'}
-              MP4, MOV, AVI 파일을 50MB까지 업로드할 수 있습니다.
+              MP4, MOV, AVI 파일을 50MB까지{'\n'}업로드할 수 있습니다.
             </Text>
             <Pressable
               style={[styles.button, isDisabled && styles.disabled]}
@@ -149,51 +153,51 @@ export default function UploadBox() {
 const styles = StyleSheet.create({
   wrapper: {
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: vs(24),
     width: '100%',
   },
   creditRow: {
     flexDirection: 'row',
     alignSelf: 'flex-start',
-    gap: 4,
-    paddingHorizontal: 16,
+    gap: s(4),
+    paddingHorizontal: s(12),
   },
   creditText: {
-    marginBottom: 10,
+    marginBottom: vs(10),
     fontWeight: '500',
-    color: '#aaa',
+    color: Colors.common.gray500,
   },
   uploadArea: {
     borderWidth: 1,
-    borderColor: '#888',
+    borderColor: Colors.common.gray600,
     borderStyle: 'dashed',
-    borderRadius: 12,
+    borderRadius: s(12),
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    gap: 20,
-    maxWidth: 320,
+    maxWidth: s(300),
     aspectRatio: 16 / 9,
+    gap: s(12),
   },
   desc: {
-    fontSize: 12,
+    fontSize: Typography.xs,
     textAlign: 'center',
-    color: 'gray',
-    paddingHorizontal: 12,
+    color: Colors.common.gray200,
+    paddingHorizontal: s(12),
   },
   button: {
-    backgroundColor: '#00C49A',
-    paddingHorizontal: 24,
-    paddingVertical: 8,
-    borderRadius: 6,
+    backgroundColor: Colors.common.primary500,
+    paddingHorizontal: s(24),
+    paddingVertical: vs(6),
+    borderRadius: s(6),
   },
   disabled: {
-    backgroundColor: '#ccc',
+    backgroundColor: Colors.common.gray300,
   },
   buttonText: {
     fontWeight: 'bold',
-    color: '#000',
+    color: Colors.common.black,
   },
   video: {
     width: '100%',
@@ -202,48 +206,48 @@ const styles = StyleSheet.create({
   },
   overlay: {
     position: 'absolute',
-    left: 8,
-    bottom: 8,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
+    left: s(8),
+    bottom: vs(8),
+    paddingHorizontal: s(6),
+    paddingVertical: vs(2),
+    borderRadius: s(4),
     zIndex: 1,
   },
   overlayText: {
-    color: '#fff',
-    fontSize: 12,
+    color: Colors.common.white,
+    fontSize: Typography.xs,
   },
   uploadingRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: s(6),
   },
   deleteButton: {
     position: 'absolute',
-    top: 8,
-    right: 8,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    padding: 4,
-    borderRadius: 16,
+    top: vs(8),
+    right: s(8),
+    backgroundColor: Colors.common.overlayBg,
+    padding: ms(4),
+    borderRadius: s(16),
     zIndex: 2,
   },
   analyzeButton: {
-    marginTop: 16,
-    backgroundColor: '#00C49A',
-    paddingVertical: 10,
-    paddingHorizontal: 32,
-    borderRadius: 8,
+    marginTop: vs(16),
+    backgroundColor: Colors.common.primary500,
+    paddingHorizontal: s(32),
+    paddingVertical: vs(10),
+    borderRadius: s(8),
     width: '100%',
-    maxWidth: 320,
+    maxWidth: s(320),
     alignItems: 'center',
   },
   loadingContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 12,
+    gap: s(12),
   },
   loadingText: {
-    color: '#aaa',
-    fontSize: 14,
+    color: Colors.common.gray500,
+    fontSize: Typography.sm,
   },
 });
