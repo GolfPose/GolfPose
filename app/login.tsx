@@ -4,9 +4,7 @@ import {
   Platform,
   ScrollView,
   TextInput,
-  Keyboard,
   StyleSheet,
-  Linking,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -62,15 +60,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          backgroundColor:
-            theme === 'dark' ? Colors.common.black : Colors.common.white,
-        },
-      ]}
-    >
+    <ThemedView style={styles.container}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -159,7 +149,7 @@ export default function LoginScreen() {
           </ThemedView>
         </ScrollView>
       </KeyboardAvoidingView>
-    </View>
+    </ThemedView>
   );
 }
 

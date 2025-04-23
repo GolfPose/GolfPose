@@ -32,7 +32,12 @@ export default function SignUpScreen() {
 
   const handleSignup = () => {
     // TODO: 유효성 검사 및 회원가입 로직 추가
-    console.log('회원가입 시도:', { email, nickname, password, confirmPassword });
+    console.log('회원가입 시도:', {
+      email,
+      nickname,
+      password,
+      confirmPassword,
+    });
   };
 
   const handleEmailChange = (text: string) => {
@@ -85,87 +90,116 @@ export default function SignUpScreen() {
   };
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <BackHeader theme={theme} />
-          <TitleSection title="회원 가입" />
-          <ThemedView style={styles.container}>
+      <ThemedView style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <BackHeader theme={theme} />
+            <TitleSection title="회원 가입" />
+            <ThemedView style={styles.container}>
+              {/* 이메일 */}
+              <ThemedText style={styles.label}>이메일</ThemedText>
+              <TextInput
+                style={[
+                  styles.input,
+                  theme === 'dark' && styles.inputDark,
+                  emailError && styles.inputError,
+                ]}
+                placeholder="이메일을 입력해 주세요"
+                placeholderTextColor={
+                  theme === 'dark'
+                    ? Colors.common.gray600
+                    : Colors.common.gray600
+                }
+                value={email}
+                onChangeText={handleEmailChange}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+              {!!emailError && (
+                <ThemedText style={styles.errorText}>{emailError}</ThemedText>
+              )}
 
-            {/* 이메일 */}
-            <ThemedText style={styles.label}>이메일</ThemedText>
-            <TextInput
-              style={[styles.input, theme === 'dark' && styles.inputDark,
-              emailError && styles.inputError,
-              ]}
-              placeholder="이메일을 입력해 주세요"
-              placeholderTextColor={theme === 'dark' ? Colors.common.gray600 : Colors.common.gray600}
-              value={email}
-              onChangeText={handleEmailChange}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-            {!!emailError && (
-              <ThemedText style={styles.errorText}>{emailError}</ThemedText>
-            )}
+              {/* 닉네임 */}
+              <ThemedText style={styles.label}>닉네임</ThemedText>
+              <TextInput
+                style={[
+                  styles.input,
+                  theme === 'dark' && styles.inputDark,
+                  nicknameError && styles.inputError,
+                ]}
+                placeholder="닉네임을 입력해 주세요"
+                placeholderTextColor={
+                  theme === 'dark'
+                    ? Colors.common.gray600
+                    : Colors.common.gray600
+                }
+                value={nickname}
+                onChangeText={handleNicknameChange}
+                autoCapitalize="none"
+              />
+              {!!nicknameError && (
+                <ThemedText style={styles.errorText}>
+                  {nicknameError}
+                </ThemedText>
+              )}
 
-            {/* 닉네임 */}
-            <ThemedText style={styles.label}>닉네임</ThemedText>
-            <TextInput
-              style={[styles.input, theme === 'dark' && styles.inputDark,
-              nicknameError && styles.inputError,
-              ]}
-              placeholder="닉네임을 입력해 주세요"
-              placeholderTextColor={theme === 'dark' ? Colors.common.gray600 : Colors.common.gray600}
-              value={nickname}
-              onChangeText={handleNicknameChange}
-              autoCapitalize='none'
-            />
-            {!!nicknameError && (
-              <ThemedText style={styles.errorText}>{nicknameError}</ThemedText>
-            )}
+              {/* 비밀번호 */}
+              <ThemedText style={styles.label}>비밀번호</ThemedText>
+              <TextInput
+                style={[
+                  styles.input,
+                  theme === 'dark' && styles.inputDark,
+                  passwordError && styles.inputError,
+                ]}
+                placeholder="비밀번호를 입력해 주세요"
+                placeholderTextColor={
+                  theme === 'dark'
+                    ? Colors.common.gray600
+                    : Colors.common.gray600
+                }
+                value={password}
+                onChangeText={handlePasswordChange}
+                secureTextEntry
+              />
+              {!!passwordError && (
+                <ThemedText style={styles.errorText}>
+                  {passwordError}
+                </ThemedText>
+              )}
 
-            {/* 비밀번호 */}
-            <ThemedText style={styles.label}>비밀번호</ThemedText>
-            <TextInput
-              style={[styles.input, theme === 'dark' && styles.inputDark,
-              passwordError && styles.inputError,
-              ]}
-              placeholder="비밀번호를 입력해 주세요"
-              placeholderTextColor={theme === 'dark' ? Colors.common.gray600 : Colors.common.gray600}
-              value={password}
-              onChangeText={handlePasswordChange}
-              secureTextEntry
-            />
-            {!!passwordError && (
-              <ThemedText style={styles.errorText}>{passwordError}</ThemedText>
-            )}
+              {/* 비밀번호 확인 */}
+              <ThemedText style={styles.label}>비밀번호 확인</ThemedText>
+              <TextInput
+                style={[
+                  styles.input,
+                  theme === 'dark' && styles.inputDark,
+                  confirmError && styles.inputError,
+                ]}
+                placeholder="비밀번호를 다시 입력해 주세요"
+                placeholderTextColor={
+                  theme === 'dark'
+                    ? Colors.common.gray600
+                    : Colors.common.gray600
+                }
+                value={confirmPassword}
+                onChangeText={handleConfirmPasswordChange}
+                secureTextEntry
+              />
+              {!!confirmError && (
+                <ThemedText style={styles.errorText}>{confirmError}</ThemedText>
+              )}
 
-            {/* 비밀번호 확인 */}
-            <ThemedText style={styles.label}>비밀번호 확인</ThemedText>
-            <TextInput
-              style={[styles.input, theme === 'dark' && styles.inputDark,
-              confirmError && styles.inputError,
-              ]}
-              placeholder="비밀번호를 다시 입력해 주세요"
-              placeholderTextColor={theme === 'dark' ? Colors.common.gray600 : Colors.common.gray600}
-              value={confirmPassword}
-              onChangeText={handleConfirmPasswordChange}
-              secureTextEntry
-            />
-            {!!confirmError && (
-              <ThemedText style={styles.errorText}>{confirmError}</ThemedText>
-            )}
-
-            {/* 회원가입 버튼 */}
-            <Pressable style={styles.button} onPress={handleSignup}>
-              <ThemedText style={styles.buttonText}>회원가입</ThemedText>
-            </Pressable>
-          </ThemedView>
-        </ScrollView>
-      </KeyboardAvoidingView>
+              {/* 회원가입 버튼 */}
+              <Pressable style={styles.button} onPress={handleSignup}>
+                <ThemedText style={styles.buttonText}>회원가입</ThemedText>
+              </Pressable>
+            </ThemedView>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </ThemedView>
     </TouchableWithoutFeedback>
   );
 }
@@ -192,7 +226,6 @@ const styles = StyleSheet.create({
     marginTop: vs(10),
   },
   input: {
-    backgroundColor: Colors.light.background,
     borderColor: Colors.common.gray500,
     borderWidth: 1,
     borderRadius: s(8),
