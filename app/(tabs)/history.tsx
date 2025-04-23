@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import Typography from '@/constants/Typography';
 
 export default function HistoryScreen() {
   return (
@@ -17,7 +18,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 20,
+    fontSize: Typography.xl,
     fontWeight: 'bold',
   },
 });
