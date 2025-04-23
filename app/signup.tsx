@@ -22,11 +22,11 @@ import { s, vs } from 'react-native-size-matters';
 export default function SignUpScreen() {
   const theme = useColorScheme() as 'light' | 'dark';
   const [email, setEmail] = useState('');
-  const [emailError, setEmailError] = useState('이메일을 입력하세요');
+  const [emailError, setEmailError] = useState<string | null>(null);
   const [nickname, setNickname] = useState('');
-  const [nicknameError, setNicknameError] = useState('닉네임을 입력하세요');
+  const [nicknameError, setNicknameError] = useState<string | null>(null);
   const [password, setPassword] = useState('');
-  const [passwordError, setPasswordError] = useState('비밀번호를 입력하세요');
+  const [passwordError, setPasswordError] = useState<string | null>(null);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [confirmError, setConfirmError] = useState('');
 
@@ -41,16 +41,16 @@ export default function SignUpScreen() {
   };
 
   const handleEmailChange = (text: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; //이메일 조건문
-    const cleaned = text.replace(/\s/g, ''); // 공백 제거
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const cleaned = text.replace(/\s/g, '');
     setEmail(cleaned);
 
     if (cleaned.length === 0) {
-      setEmailError('이메일을 입력하세요');
+      setEmailError(null);
     } else if (!emailRegex.test(cleaned)) {
       setEmailError('이메일 형식이 올바르지 않습니다');
     } else {
-      setEmailError('');
+      setEmailError(null);
     }
   };
 
@@ -66,16 +66,19 @@ export default function SignUpScreen() {
       setNicknameError('');
     }
   };
+
   const handlePasswordChange = (text: string) => {
-    const filtered = text.replace(/[^a-zA-Z0-9!@#]/g, ''); // 영문, 숫자, !, @, #만 입력 가능
+    const filtered = text.replace(/[^a-zA-Z0-9!@#]/g, '');
     setPassword(filtered);
 
-    if (text !== filtered) {
+    if (filtered.length === 0) {
+      setPasswordError(null);
+    } else if (text !== filtered) {
       setPasswordError('사용할 수 없는 특수문자가 포함되어 있어요');
     } else if (filtered.length < 6) {
       setPasswordError('비밀번호는 6자 이상 입력해주세요');
     } else {
-      setPasswordError('');
+      setPasswordError(null);
     }
   };
 
@@ -88,6 +91,7 @@ export default function SignUpScreen() {
       setConfirmError('');
     }
   };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ThemedView style={{ flex: 1 }}>
