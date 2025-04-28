@@ -1,10 +1,205 @@
+import { useState } from 'react';
+import {
+  StyleSheet,
+  TextInput,
+  Pressable,
+  Alert,
+  useColorScheme,
+} from 'react-native';
 import { ThemedText } from '../ThemedText';
 import { ThemedView } from '../ThemedView';
+import Typography from '@/constants/Typography';
+import { Colors } from '@/constants/Colors';
+import { s, vs } from 'react-native-size-matters';
+import useUserStore from '@/store/useUserStore';
 
 export const ProfileTab = () => {
+  const user = useUserStore(state => state.user);
+  const [isEditing, setIsEditing] = useState(false);
+  const [tempName, setTempName] = useState(user?.name ?? '');
+  const theme = useColorScheme();
+
+  const handleSave = () => {
+    console.log('새 이름 저장:', tempName);
+    setIsEditing(false);
+  };
+
+  const handleCancelEdit = () => {
+    setTempName(user?.name ?? '');
+    setIsEditing(false);
+  };
+
+  const handleWithdraw = () => {
+    Alert.alert(
+      '회원탈퇴',
+      '정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.',
+      [
+        { text: '취소', style: 'cancel' },
+        {
+          text: '탈퇴하기',
+          style: 'destructive',
+          onPress: () => console.log('탈퇴 처리'),
+        },
+      ],
+    );
+  };
+
   return (
-    <ThemedView>
-      <ThemedText>프로필</ThemedText>
-    </ThemedView>
+    <>
+      <ThemedView
+        style={styles.container}
+        onStartShouldSetResponder={() => false}
+      >
+        <ThemedText style={styles.title}>회원정보</ThemedText>
+
+        {/* 이메일 */}
+        <ThemedView style={styles.informationContainer}>
+          <ThemedText style={styles.label}>이메일</ThemedText>
+          <ThemedText style={styles.content}>{user!.email}</ThemedText>
+        </ThemedView>
+
+        {/* 닉네임 */}
+        <ThemedView style={styles.informationContainer}>
+          <ThemedText style={styles.label}>닉네임</ThemedText>
+          {isEditing ? (
+            <ThemedView style={styles.editRow}>
+              <TextInput
+                scrollEnabled={false}
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor:
+                      theme === 'dark'
+                        ? Colors.common.black
+                        : Colors.common.white,
+                    color:
+                      theme === 'dark'
+                        ? Colors.common.white
+                        : Colors.common.black,
+                  },
+                ]}
+                value={tempName}
+                onChangeText={setTempName}
+                placeholder="닉네임 입력"
+                placeholderTextColor={Colors.common.gray400}
+              />
+              <Pressable style={styles.saveButton} onPress={handleSave}>
+                <ThemedText style={styles.saveButtonText}>저장</ThemedText>
+              </Pressable>
+              <Pressable style={styles.cancelButton} onPress={handleCancelEdit}>
+                <ThemedText style={styles.cancelButtonText}>취소</ThemedText>
+              </Pressable>
+            </ThemedView>
+          ) : (
+            <ThemedView style={styles.nicknameRow}>
+              <ThemedText style={styles.name}>{user!.name}</ThemedText>
+              <Pressable
+                style={styles.editButton}
+                onPress={() => setIsEditing(true)}
+              >
+                <ThemedText style={styles.editButtonText}>수정</ThemedText>
+              </Pressable>
+            </ThemedView>
+          )}
+        </ThemedView>
+      </ThemedView>
+
+      {/* 회원탈퇴 버튼 */}
+      <Pressable style={styles.withdrawButton} onPress={handleWithdraw}>
+        <ThemedText style={styles.withdrawButtonText}>회원탈퇴</ThemedText>
+      </Pressable>
+    </>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    gap: vs(12),
+    padding: s(16),
+    borderWidth: 1,
+    borderColor: Colors.common.gray400,
+    borderRadius: s(8),
+  },
+  title: {
+    fontSize: Typography['2xl'],
+    fontWeight: 'bold',
+    marginVertical: vs(5),
+  },
+  label: {
+    fontSize: Typography.sm,
+    color: Colors.common.gray500,
+  },
+  content: {
+    fontSize: Typography.md,
+    fontWeight: '500',
+  },
+  informationContainer: {
+    gap: vs(3),
+    marginBottom: vs(2),
+  },
+  nicknameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: s(8),
+  },
+  name: {
+    fontSize: Typography.md,
+    fontWeight: '500',
+  },
+  editRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: s(8),
+  },
+  input: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: Colors.common.gray400,
+    borderRadius: s(8),
+    paddingHorizontal: s(12),
+    paddingVertical: vs(8),
+    fontSize: Typography.md,
+  },
+  editButton: {
+    backgroundColor: Colors.common.primary500,
+    paddingVertical: vs(6),
+    paddingHorizontal: s(12),
+    borderRadius: s(8),
+  },
+  editButtonText: {
+    fontWeight: 'bold',
+    color: Colors.common.black,
+  },
+  saveButton: {
+    backgroundColor: Colors.common.primary500,
+    paddingVertical: vs(6),
+    paddingHorizontal: s(12),
+    borderRadius: s(8),
+  },
+  saveButtonText: {
+    fontWeight: 'bold',
+    color: Colors.common.black,
+  },
+  cancelButton: {
+    backgroundColor: Colors.common.gray400,
+    paddingVertical: vs(6),
+    paddingHorizontal: s(12),
+    borderRadius: s(8),
+  },
+  cancelButtonText: {
+    fontWeight: 'bold',
+    color: Colors.common.black,
+  },
+  withdrawButton: {
+    marginTop: vs(24),
+    backgroundColor: Colors.common.red,
+    paddingVertical: vs(10),
+    paddingHorizontal: s(16),
+    borderRadius: s(8),
+    alignSelf: 'flex-start',
+  },
+  withdrawButtonText: {
+    fontWeight: 'bold',
+    color: Colors.common.white,
+  },
+});

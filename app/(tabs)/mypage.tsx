@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
-  KeyboardAvoidingView,
   Platform,
-  ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
   StyleSheet,
   Pressable,
 } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import Typography from '@/constants/Typography';
@@ -25,55 +24,64 @@ export default function MyPageScreen() {
   const [section, setSection] = useState<
     'profile' | 'payments' | 'credits' | 'settings'
   >('profile');
+  const scrollViewRef = useRef<KeyboardAwareScrollView>(null);
+
+  const renderTabContent = () => {
+    switch (section) {
+      case 'profile':
+        return <ProfileTab />;
+      case 'payments':
+        return <PaymentHistoryTab />;
+      case 'credits':
+        return <CreditUsageTab />;
+      case 'settings':
+        return <SettingsTab />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <RequireLogin>
       <ThemedView style={{ flex: 1 }}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <KeyboardAvoidingView
-            style={{ flex: 1 }}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <KeyboardAwareScrollView
+            ref={scrollViewRef}
+            contentContainerStyle={styles.scrollContainer}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+            enableOnAndroid={true}
           >
             <Header />
-            <ScrollView
-              contentContainerStyle={styles.scrollContainer}
-              keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}
-            >
-              <ThemedView style={styles.innerContainer}>
-                <TitleSection title="마이페이지" />
-                <ThemedView style={styles.tabMenuContainer}>
-                  <TabButton
-                    label="회원정보"
-                    active={section === 'profile'}
-                    onPress={() => setSection('profile')}
-                  />
-                  <TabButton
-                    label="결제내역"
-                    active={section === 'payments'}
-                    onPress={() => setSection('payments')}
-                  />
-                  <TabButton
-                    label="크레딧 내역"
-                    active={section === 'credits'}
-                    onPress={() => setSection('credits')}
-                  />
-                  <TabButton
-                    label="환경설정"
-                    active={section === 'settings'}
-                    onPress={() => setSection('settings')}
-                  />
-                </ThemedView>
-                <ThemedView style={styles.sectionContainer}>
-                  {section === 'profile' && <ProfileTab />}
-                  {section === 'payments' && <PaymentHistoryTab />}
-                  {section === 'credits' && <CreditUsageTab />}
-                  {section === 'settings' && <SettingsTab />}
-                </ThemedView>
+            <ThemedView style={styles.innerContainer}>
+              <TitleSection title="마이페이지" />
+              <ThemedView style={styles.tabMenuContainer}>
+                <TabButton
+                  label="회원정보"
+                  active={section === 'profile'}
+                  onPress={() => setSection('profile')}
+                />
+                <TabButton
+                  label="결제내역"
+                  active={section === 'payments'}
+                  onPress={() => setSection('payments')}
+                />
+                <TabButton
+                  label="크레딧 내역"
+                  active={section === 'credits'}
+                  onPress={() => setSection('credits')}
+                />
+                <TabButton
+                  label="환경설정"
+                  active={section === 'settings'}
+                  onPress={() => setSection('settings')}
+                />
               </ThemedView>
-            </ScrollView>
-          </KeyboardAvoidingView>
+              <ThemedView style={styles.sectionContainer}>
+                {renderTabContent()}
+              </ThemedView>
+            </ThemedView>
+          </KeyboardAwareScrollView>
         </TouchableWithoutFeedback>
       </ThemedView>
     </RequireLogin>
@@ -128,7 +136,6 @@ const styles = StyleSheet.create({
   },
   tabButtonText: {
     fontSize: Typography.md,
-    color: Colors.common.black,
   },
   activeTabButtonText: {
     color: Colors.common.white,
