@@ -6,12 +6,17 @@ import { Colors } from '@/constants/Colors';
 
 type BackHeaderProps = {
   theme: 'light' | 'dark';
+  isFromRedirect?: boolean;
 };
 
-export default function BackHeader({ theme }: BackHeaderProps) {
+export default function BackHeader({ theme, isFromRedirect }: BackHeaderProps) {
   const router = useRouter();
   const handleGoBack = () => {
-    router.back();
+    if (isFromRedirect) {
+      router.replace('/');
+    } else {
+      router.back();
+    }
   };
   const iconColor =
     theme === 'dark' ? Colors.common.white : Colors.common.black;

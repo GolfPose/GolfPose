@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useColorScheme } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -22,6 +22,8 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+  const params = useLocalSearchParams();
+  const isFromRedirect = params.fromRedirect === 'true';
   const scrollViewRef = useRef(null);
   const theme = useColorScheme() as 'light' | 'dark';
 
@@ -74,7 +76,7 @@ export default function LoginScreen() {
           keyboardDismissMode="none"
           showsVerticalScrollIndicator={true}
         >
-          <BackHeader theme={theme} />
+          <BackHeader theme={theme} isFromRedirect={isFromRedirect} />
           <ThemedView style={styles.innerContainer}>
             <TitleSection title="로그인" />
             <ThemedView style={styles.inputContainer}>

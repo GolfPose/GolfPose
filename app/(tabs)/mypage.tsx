@@ -19,6 +19,7 @@ import { ProfileTab } from '@/components/mypage/ProfileTab';
 import { SettingsTab } from '@/components/mypage/SettingsTab';
 import TitleSection from '@/components/TitleSection';
 import Header from '@/components/Header';
+import { RequireLogin } from '@/components/auth/RequireLogin';
 
 export default function MyPageScreen() {
   const [section, setSection] = useState<
@@ -26,54 +27,56 @@ export default function MyPageScreen() {
   >('profile');
 
   return (
-    <ThemedView style={{ flex: 1 }}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
-        >
-          <Header />
-          <ScrollView
-            contentContainerStyle={styles.scrollContainer}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
+    <RequireLogin>
+      <ThemedView style={{ flex: 1 }}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
           >
-            <ThemedView style={styles.innerContainer}>
-              <TitleSection title="마이페이지" />
-              <ThemedView style={styles.tabMenuContainer}>
-                <TabButton
-                  label="회원정보"
-                  active={section === 'profile'}
-                  onPress={() => setSection('profile')}
-                />
-                <TabButton
-                  label="결제내역"
-                  active={section === 'payments'}
-                  onPress={() => setSection('payments')}
-                />
-                <TabButton
-                  label="크레딧 내역"
-                  active={section === 'credits'}
-                  onPress={() => setSection('credits')}
-                />
-                <TabButton
-                  label="환경설정"
-                  active={section === 'settings'}
-                  onPress={() => setSection('settings')}
-                />
+            <Header />
+            <ScrollView
+              contentContainerStyle={styles.scrollContainer}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+            >
+              <ThemedView style={styles.innerContainer}>
+                <TitleSection title="마이페이지" />
+                <ThemedView style={styles.tabMenuContainer}>
+                  <TabButton
+                    label="회원정보"
+                    active={section === 'profile'}
+                    onPress={() => setSection('profile')}
+                  />
+                  <TabButton
+                    label="결제내역"
+                    active={section === 'payments'}
+                    onPress={() => setSection('payments')}
+                  />
+                  <TabButton
+                    label="크레딧 내역"
+                    active={section === 'credits'}
+                    onPress={() => setSection('credits')}
+                  />
+                  <TabButton
+                    label="환경설정"
+                    active={section === 'settings'}
+                    onPress={() => setSection('settings')}
+                  />
+                </ThemedView>
+                <ThemedView style={styles.sectionContainer}>
+                  {section === 'profile' && <ProfileTab />}
+                  {section === 'payments' && <PaymentHistoryTab />}
+                  {section === 'credits' && <CreditUsageTab />}
+                  {section === 'settings' && <SettingsTab />}
+                </ThemedView>
               </ThemedView>
-              <ThemedView style={styles.sectionContainer}>
-                {section === 'profile' && <ProfileTab />}
-                {section === 'payments' && <PaymentHistoryTab />}
-                {section === 'credits' && <CreditUsageTab />}
-                {section === 'settings' && <SettingsTab />}
-              </ThemedView>
-            </ThemedView>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </TouchableWithoutFeedback>
-    </ThemedView>
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
+      </ThemedView>
+    </RequireLogin>
   );
 }
 
