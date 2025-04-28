@@ -19,8 +19,28 @@ import {
   SafeAreaView,
   StyleSheet,
   StatusBar as RNStatusBar,
+  Text,
+  TextInput,
 } from 'react-native';
 import { Colors } from '@/constants/Colors';
+
+interface TextWithDefaultProps extends Text {
+  defaultProps?: { allowFontScaling?: boolean };
+}
+interface TextInputWithDefaultProps extends TextInput {
+  defaultProps?: { allowFontScaling?: boolean };
+}
+
+(Text as unknown as TextWithDefaultProps).defaultProps =
+  (Text as unknown as TextWithDefaultProps).defaultProps || {};
+(Text as unknown as TextWithDefaultProps).defaultProps!.allowFontScaling =
+  false;
+
+(TextInput as unknown as TextInputWithDefaultProps).defaultProps =
+  (TextInput as unknown as TextInputWithDefaultProps).defaultProps || {};
+(
+  TextInput as unknown as TextInputWithDefaultProps
+).defaultProps!.allowFontScaling = false;
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
