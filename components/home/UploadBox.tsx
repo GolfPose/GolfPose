@@ -102,7 +102,7 @@ export default function UploadBox() {
                   <Text style={styles.overlayText}>업로드 중...</Text>
                 </ThemedView>
               ) : (
-                <Text style={styles.overlayText}>업로드 완료</Text>
+                <ThemedText style={styles.overlayText}>업로드 완료</ThemedText>
               )}
             </ThemedView>
 
@@ -214,7 +214,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   overlayText: {
-    color: Colors.common.white,
     fontSize: Typography.xs,
   },
   uploadingRow: {
