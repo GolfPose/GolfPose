@@ -23,6 +23,8 @@ import {
   TextInput,
 } from 'react-native';
 import { Colors } from '@/constants/Colors';
+import { UserInfo } from '@/types/user';
+import useUserStore from '@/store/useUserStore';
 
 interface TextWithDefaultProps extends Text {
   defaultProps?: { allowFontScaling?: boolean };
@@ -51,6 +53,21 @@ export default function RootLayout() {
   const [isAppReady, setIsAppReady] = useState(false);
   const opacity = useSharedValue(0);
 
+  /* 더미 로그인 구현 */
+  const dummyUser: UserInfo = {
+    name: '홍길동',
+    email: 'dummy@example.com',
+    plan: 'free',
+    isLoggedIn: true,
+    createdAt: new Date().toISOString(),
+    credit: 64,
+    creditRecord: [],
+    purchasedRecord: [],
+    myAnalysisVideos: [],
+    accessToken: 'dummy-access-token',
+    refreshToken: 'dummy-refresh-token',
+  };
+
   useEffect(() => {
     if (loaded) {
       const timer = setTimeout(() => {
@@ -60,6 +77,11 @@ export default function RootLayout() {
       return () => clearTimeout(timer);
     }
   }, [loaded]);
+
+  useEffect(() => {
+    const setUser = useUserStore.getState().setUser;
+    setUser(dummyUser);
+  }, []);
 
   const animatedMainStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
