@@ -12,6 +12,7 @@ import Typography from '@/constants/Typography';
 import { Colors } from '@/constants/Colors';
 import { s, vs } from 'react-native-size-matters';
 import useUserStore from '@/store/useUserStore';
+import { MyPageSection } from '@/components/mypage/MyPageSection';
 
 export const ProfileTab = () => {
   const user = useUserStore(state => state.user);
@@ -46,12 +47,7 @@ export const ProfileTab = () => {
 
   return (
     <>
-      <ThemedView
-        style={styles.container}
-        onStartShouldSetResponder={() => false}
-      >
-        <ThemedText style={styles.title}>회원정보</ThemedText>
-
+      <MyPageSection title="회원정보">
         {/* 이메일 */}
         <ThemedView style={styles.informationContainer}>
           <ThemedText style={styles.label}>이메일</ThemedText>
@@ -102,7 +98,7 @@ export const ProfileTab = () => {
             </ThemedView>
           )}
         </ThemedView>
-      </ThemedView>
+      </MyPageSection>
 
       {/* 회원탈퇴 버튼 */}
       <Pressable style={styles.withdrawButton} onPress={handleWithdraw}>
@@ -113,17 +109,9 @@ export const ProfileTab = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    gap: vs(12),
-    padding: s(16),
-    borderWidth: 1,
-    borderColor: Colors.common.gray400,
-    borderRadius: s(8),
-  },
-  title: {
-    fontSize: Typography['2xl'],
-    fontWeight: 'bold',
-    marginVertical: vs(5),
+  informationContainer: {
+    gap: vs(3),
+    marginBottom: vs(2),
   },
   label: {
     fontSize: Typography.sm,
@@ -132,10 +120,6 @@ const styles = StyleSheet.create({
   content: {
     fontSize: Typography.md,
     fontWeight: '500',
-  },
-  informationContainer: {
-    gap: vs(3),
-    marginBottom: vs(2),
   },
   nicknameRow: {
     flexDirection: 'row',
