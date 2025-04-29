@@ -1,11 +1,5 @@
 import { useState } from 'react';
-import {
-  StyleSheet,
-  TextInput,
-  Pressable,
-  Alert,
-  useColorScheme,
-} from 'react-native';
+import { StyleSheet, TextInput, Pressable, Alert } from 'react-native';
 import { ThemedText } from '../ThemedText';
 import { ThemedView } from '../ThemedView';
 import Typography from '@/constants/Typography';
@@ -13,12 +7,13 @@ import { Colors } from '@/constants/Colors';
 import { s, vs } from 'react-native-size-matters';
 import useUserStore from '@/store/useUserStore';
 import { MyPageSection } from '@/components/mypage/MyPageSection';
+import { useTheme } from '@/hooks/useTheme';
 
 export const ProfileTab = () => {
   const user = useUserStore(state => state.user);
   const [isEditing, setIsEditing] = useState(false);
   const [tempName, setTempName] = useState(user?.name ?? '');
-  const theme = useColorScheme();
+  const theme = useTheme();
 
   const handleSave = () => {
     console.log('새 이름 저장:', tempName);

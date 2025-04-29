@@ -7,7 +7,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { useTheme } from '@/hooks/useTheme';
 import CustomSplashScreen from './CustomSplashScreen';
 import Animated, {
   useAnimatedStyle,
@@ -45,7 +45,7 @@ interface TextInputWithDefaultProps extends TextInput {
 ).defaultProps!.allowFontScaling = false;
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const theme = useTheme();
   const [loaded] = useFonts({
     Pretendard: require('../assets/fonts/PretendardVariable.ttf'),
   });
@@ -95,20 +95,18 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
       <SafeAreaView
         style={[
           styles.safeview,
           {
             paddingTop: topPadding,
             backgroundColor:
-              colorScheme === 'dark'
-                ? Colors.common.black
-                : Colors.common.white,
+              theme === 'dark' ? Colors.common.black : Colors.common.white,
           },
         ]}
       >
-        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+        <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
         <Animated.View style={[{ flex: 1 }, animatedMainStyle]}>
           <Stack screenOptions={{ animation: 'fade' }}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

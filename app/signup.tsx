@@ -8,9 +8,8 @@ import {
   TouchableWithoutFeedback,
   StyleSheet,
   Pressable,
-  useColorScheme,
-  View,
 } from 'react-native';
+import { useTheme } from '@/hooks/useTheme';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import BackHeader from '@/components/BackHeader';
@@ -20,7 +19,7 @@ import Typography from '@/constants/Typography';
 import { s, vs } from 'react-native-size-matters';
 
 export default function SignUpScreen() {
-  const theme = useColorScheme() as 'light' | 'dark';
+  const theme = useTheme();
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState<string | null>(null);
   const [nickname, setNickname] = useState('');

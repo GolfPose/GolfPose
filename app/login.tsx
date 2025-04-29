@@ -9,7 +9,8 @@ import {
   View,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useColorScheme } from 'react-native';
+import { useTheme } from '@/hooks/useTheme';
+import { getColor } from '@/utils/getColor';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import BackHeader from '@/components/BackHeader';
@@ -25,7 +26,7 @@ export default function LoginScreen() {
   const params = useLocalSearchParams();
   const isFromRedirect = params.fromRedirect === 'true';
   const scrollViewRef = useRef(null);
-  const theme = useColorScheme() as 'light' | 'dark';
+  const theme = useTheme();
 
   const handleEmailChange = (text: string) => {
     // 공백 제거
@@ -86,14 +87,11 @@ export default function LoginScreen() {
                 style={[
                   styles.input,
                   {
-                    color:
-                      theme === 'dark'
-                        ? Colors.common.white
-                        : Colors.common.black,
-                    backgroundColor:
-                      theme === 'dark'
-                        ? Colors.common.black
-                        : Colors.common.white,
+                    color: getColor(Colors.common.black, Colors.common.white),
+                    backgroundColor: getColor(
+                      Colors.common.white,
+                      Colors.common.black,
+                    ),
                   },
                 ]}
                 placeholder="아이디를 입력해 주세요."
@@ -110,14 +108,11 @@ export default function LoginScreen() {
                 style={[
                   styles.input,
                   {
-                    color:
-                      theme === 'dark'
-                        ? Colors.common.white
-                        : Colors.common.black,
-                    backgroundColor:
-                      theme === 'dark'
-                        ? Colors.common.black
-                        : Colors.common.white,
+                    color: getColor(Colors.common.black, Colors.common.white),
+                    backgroundColor: getColor(
+                      Colors.common.white,
+                      Colors.common.black,
+                    ),
                   },
                 ]}
                 placeholder="비밀번호를 입력해 주세요."
