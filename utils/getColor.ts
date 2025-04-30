@@ -1,6 +1,6 @@
-import { useTheme } from '@/hooks/useTheme';
-
-export function getColor(lightColor: string, darkColor: string) {
-  const theme = useTheme();
-  return theme === 'dark' ? darkColor : lightColor;
+export function getColor(
+  theme: 'light' | 'dark',
+  colors: Record<'light' | 'dark', string>,
+): string {
+  return colors[theme];
 }
