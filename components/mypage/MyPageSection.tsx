@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, StyleProp, ViewStyle } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { s, vs } from 'react-native-size-matters';
@@ -8,11 +8,16 @@ import Typography from '@/constants/Typography';
 interface MyPageSectionProps {
   title: string;
   children: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
 }
 
-export const MyPageSection = ({ title, children }: MyPageSectionProps) => {
+export const MyPageSection = ({
+  title,
+  children,
+  style,
+}: MyPageSectionProps) => {
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView style={[styles.container, style]}>
       <ThemedText style={styles.title}>{title}</ThemedText>
       {children}
     </ThemedView>

@@ -1,12 +1,14 @@
+// hooks/useTheme.ts
 import { useColorScheme } from 'react-native';
 import { useThemeStore } from '@/store/useThemeStore';
 
-export function useTheme() {
-  const systemTheme = useColorScheme();
+export function useTheme(): 'light' | 'dark' {
   const mode = useThemeStore(state => state.mode);
+  const systemScheme = useColorScheme();
 
   if (mode === 'system') {
-    return systemTheme ?? 'light';
+    return systemScheme ?? 'light';
   }
+
   return mode;
 }
