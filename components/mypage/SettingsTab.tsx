@@ -41,36 +41,42 @@ export const SettingsTab = () => {
             }}
             setItems={setItems}
             style={{
-              backgroundColor: getColor(
-                Colors.light.background,
-                Colors.dark.background,
-              ),
-              borderColor: getColor(
-                Colors.common.gray300,
-                Colors.common.gray500,
-              ),
+              backgroundColor: getColor(theme, {
+                light: Colors.light.background,
+                dark: Colors.dark.background,
+              }),
+              borderColor: getColor(theme, {
+                light: Colors.common.gray300,
+                dark: Colors.common.gray500,
+              }),
             }}
             dropDownContainerStyle={{
-              backgroundColor: getColor(
-                Colors.light.background,
-                Colors.dark.background,
-              ),
-              borderColor: getColor(
-                Colors.common.gray300,
-                Colors.common.gray500,
-              ),
+              backgroundColor: getColor(theme, {
+                light: Colors.light.background,
+                dark: Colors.dark.background,
+              }),
+              borderColor: getColor(theme, {
+                light: Colors.common.gray300,
+                dark: Colors.common.gray500,
+              }),
             }}
             listItemContainerStyle={{
-              backgroundColor: getColor(
-                Colors.light.background,
-                Colors.dark.background,
-              ),
+              backgroundColor: getColor(theme, {
+                light: Colors.light.background,
+                dark: Colors.dark.background,
+              }),
             }}
             listItemLabelStyle={{
-              color: getColor(Colors.light.text, Colors.dark.text),
+              color: getColor(theme, {
+                light: Colors.light.text,
+                dark: Colors.dark.text,
+              }),
             }}
             textStyle={{
-              color: getColor(Colors.light.text, Colors.dark.text),
+              color: getColor(theme, {
+                light: Colors.light.text,
+                dark: Colors.dark.text,
+              }),
             }}
             labelStyle={{ fontWeight: '500' }}
             zIndex={1000}
@@ -79,7 +85,10 @@ export const SettingsTab = () => {
               <MaterialIcons
                 name="keyboard-arrow-down"
                 size={24}
-                color={getColor(Colors.light.text, Colors.dark.text)}
+                color={getColor(theme, {
+                  light: Colors.light.text,
+                  dark: Colors.dark.text,
+                })}
                 style={StyleSheet.flatten(style) as TextStyle}
               />
             )}
@@ -87,7 +96,10 @@ export const SettingsTab = () => {
               <MaterialIcons
                 name="keyboard-arrow-up"
                 size={24}
-                color={getColor(Colors.light.text, Colors.dark.text)}
+                color={getColor(theme, {
+                  light: Colors.light.text,
+                  dark: Colors.dark.text,
+                })}
                 style={StyleSheet.flatten(style) as TextStyle}
               />
             )}

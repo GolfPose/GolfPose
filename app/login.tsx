@@ -87,15 +87,21 @@ export default function LoginScreen() {
                 style={[
                   styles.input,
                   {
-                    color: getColor(Colors.common.black, Colors.common.white),
-                    backgroundColor: getColor(
-                      Colors.common.white,
-                      Colors.common.black,
-                    ),
+                    color: getColor(theme, {
+                      light: Colors.common.black,
+                      dark: Colors.common.white,
+                    }),
+                    backgroundColor: getColor(theme, {
+                      light: Colors.common.white,
+                      dark: Colors.common.black,
+                    }),
                   },
                 ]}
                 placeholder="아이디를 입력해 주세요."
-                placeholderTextColor={Colors.common.gray600}
+                placeholderTextColor={getColor(theme, {
+                  light: Colors.common.gray600,
+                  dark: Colors.common.gray400,
+                })}
                 value={email}
                 onChangeText={handleEmailChange}
                 keyboardType="email-address"
@@ -108,15 +114,21 @@ export default function LoginScreen() {
                 style={[
                   styles.input,
                   {
-                    color: getColor(Colors.common.black, Colors.common.white),
-                    backgroundColor: getColor(
-                      Colors.common.white,
-                      Colors.common.black,
-                    ),
+                    color: getColor(theme, {
+                      light: Colors.common.black,
+                      dark: Colors.common.white,
+                    }),
+                    backgroundColor: getColor(theme, {
+                      light: Colors.common.white,
+                      dark: Colors.common.black,
+                    }),
                   },
                 ]}
                 placeholder="비밀번호를 입력해 주세요."
-                placeholderTextColor={Colors.common.gray600}
+                placeholderTextColor={getColor(theme, {
+                  light: Colors.common.gray600,
+                  dark: Colors.common.gray400,
+                })}
                 value={password}
                 onChangeText={handlePasswordChange}
                 secureTextEntry
