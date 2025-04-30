@@ -61,7 +61,26 @@ export default function RootLayout() {
     isLoggedIn: true,
     createdAt: new Date().toISOString(),
     credit: 64,
-    creditRecord: [],
+    creditRecord: [
+      {
+        id: 'cr1',
+        date: '2025-03-18T10:44:23',
+        change: -8,
+        type: 'use',
+      },
+      {
+        id: 'cr2',
+        date: '2025-03-18T09:29:23',
+        change: -8,
+        type: 'use',
+      },
+      {
+        id: 'cr3',
+        date: '2025-03-18T01:36:08',
+        change: 60,
+        type: 'charge',
+      },
+    ],
     purchasedRecord: [],
     myAnalysisVideos: [],
     accessToken: 'dummy-access-token',
