@@ -3,7 +3,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { s, vs } from 'react-native-size-matters';
-import { Colors } from '@/constants/Colors'; // 경로는 프로젝트 구조에 맞게 조정해줘
+import { Colors } from '@/constants/Colors';
 
 export default function TabLayout() {
   return (
