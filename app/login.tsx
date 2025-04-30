@@ -8,8 +8,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useColorScheme } from 'react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useTheme } from '@/hooks/useTheme';
+import { getColor } from '@/utils/getColor';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import BackHeader from '@/components/BackHeader';
@@ -22,8 +23,10 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+  const params = useLocalSearchParams();
+  const isFromRedirect = params.fromRedirect === 'true';
   const scrollViewRef = useRef(null);
-  const theme = useColorScheme() as 'light' | 'dark';
+  const theme = useTheme();
 
   const handleEmailChange = (text: string) => {
     // 공백 제거
@@ -74,7 +77,7 @@ export default function LoginScreen() {
           keyboardDismissMode="none"
           showsVerticalScrollIndicator={true}
         >
-          <BackHeader theme={theme} />
+          <BackHeader theme={theme} isFromRedirect={isFromRedirect} />
           <ThemedView style={styles.innerContainer}>
             <TitleSection title="로그인" />
             <ThemedView style={styles.inputContainer}>
@@ -84,18 +87,21 @@ export default function LoginScreen() {
                 style={[
                   styles.input,
                   {
-                    color:
-                      theme === 'dark'
-                        ? Colors.common.white
-                        : Colors.common.black,
-                    backgroundColor:
-                      theme === 'dark'
-                        ? Colors.common.black
-                        : Colors.common.white,
+                    color: getColor(theme, {
+                      light: Colors.common.black,
+                      dark: Colors.common.white,
+                    }),
+                    backgroundColor: getColor(theme, {
+                      light: Colors.common.white,
+                      dark: Colors.common.black,
+                    }),
                   },
                 ]}
                 placeholder="아이디를 입력해 주세요."
-                placeholderTextColor={Colors.common.gray600}
+                placeholderTextColor={getColor(theme, {
+                  light: Colors.common.gray600,
+                  dark: Colors.common.gray400,
+                })}
                 value={email}
                 onChangeText={handleEmailChange}
                 keyboardType="email-address"
@@ -108,18 +114,21 @@ export default function LoginScreen() {
                 style={[
                   styles.input,
                   {
-                    color:
-                      theme === 'dark'
-                        ? Colors.common.white
-                        : Colors.common.black,
-                    backgroundColor:
-                      theme === 'dark'
-                        ? Colors.common.black
-                        : Colors.common.white,
+                    color: getColor(theme, {
+                      light: Colors.common.black,
+                      dark: Colors.common.white,
+                    }),
+                    backgroundColor: getColor(theme, {
+                      light: Colors.common.white,
+                      dark: Colors.common.black,
+                    }),
                   },
                 ]}
                 placeholder="비밀번호를 입력해 주세요."
-                placeholderTextColor={Colors.common.gray600}
+                placeholderTextColor={getColor(theme, {
+                  light: Colors.common.gray600,
+                  dark: Colors.common.gray400,
+                })}
                 value={password}
                 onChangeText={handlePasswordChange}
                 secureTextEntry

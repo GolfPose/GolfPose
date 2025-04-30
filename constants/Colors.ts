@@ -17,7 +17,7 @@ export const Colors = {
     tabIconDefault: '#ccc',
     tabIconSelected: '#fff',
     primary: '#10B982',
-    gray500: '#aaa'
+    gray500: '#aaa',
   },
   common: {
     gray500: '#aaa',
@@ -30,6 +30,7 @@ export const Colors = {
     white: '#fff',
     gray: '#808080',
     red: '#FF0000',
+    blue: '#3B82F6',
     overlayBg: 'rgba(0, 0, 0, 0.6)',
   },
 };

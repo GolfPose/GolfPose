@@ -7,7 +7,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { useTheme } from '@/hooks/useTheme';
 import CustomSplashScreen from './CustomSplashScreen';
 import Animated, {
   useAnimatedStyle,
@@ -19,17 +19,73 @@ import {
   SafeAreaView,
   StyleSheet,
   StatusBar as RNStatusBar,
+  Text,
+  TextInput,
 } from 'react-native';
 import { Colors } from '@/constants/Colors';
+import { UserInfo } from '@/types/user';
+import useUserStore from '@/store/useUserStore';
+
+interface TextWithDefaultProps extends Text {
+  defaultProps?: { allowFontScaling?: boolean };
+}
+interface TextInputWithDefaultProps extends TextInput {
+  defaultProps?: { allowFontScaling?: boolean };
+}
+
+(Text as unknown as TextWithDefaultProps).defaultProps =
+  (Text as unknown as TextWithDefaultProps).defaultProps || {};
+(Text as unknown as TextWithDefaultProps).defaultProps!.allowFontScaling =
+  false;
+
+(TextInput as unknown as TextInputWithDefaultProps).defaultProps =
+  (TextInput as unknown as TextInputWithDefaultProps).defaultProps || {};
+(
+  TextInput as unknown as TextInputWithDefaultProps
+).defaultProps!.allowFontScaling = false;
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const theme = useTheme();
   const [loaded] = useFonts({
     Pretendard: require('../assets/fonts/PretendardVariable.ttf'),
   });
 
   const [isAppReady, setIsAppReady] = useState(false);
   const opacity = useSharedValue(0);
+
+  /* 더미 로그인 구현 */
+  const dummyUser: UserInfo = {
+    name: '홍길동',
+    email: 'dummy@example.com',
+    plan: 'free',
+    isLoggedIn: true,
+    createdAt: new Date().toISOString(),
+    credit: 64,
+    creditRecord: [
+      {
+        id: 'cr1',
+        date: '2025-03-18T10:44:23',
+        change: -8,
+        type: 'use',
+      },
+      {
+        id: 'cr2',
+        date: '2025-03-18T09:29:23',
+        change: -8,
+        type: 'use',
+      },
+      {
+        id: 'cr3',
+        date: '2025-03-18T01:36:08',
+        change: 60,
+        type: 'charge',
+      },
+    ],
+    purchasedRecord: [],
+    myAnalysisVideos: [],
+    accessToken: 'dummy-access-token',
+    refreshToken: 'dummy-refresh-token',
+  };
 
   useEffect(() => {
     if (loaded) {
@@ -40,6 +96,11 @@ export default function RootLayout() {
       return () => clearTimeout(timer);
     }
   }, [loaded]);
+
+  useEffect(() => {
+    const setUser = useUserStore.getState().setUser;
+    setUser(dummyUser);
+  }, []);
 
   const animatedMainStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
@@ -53,20 +114,18 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
       <SafeAreaView
         style={[
           styles.safeview,
           {
             paddingTop: topPadding,
             backgroundColor:
-              colorScheme === 'dark'
-                ? Colors.common.black
-                : Colors.common.white,
+              theme === 'dark' ? Colors.common.black : Colors.common.white,
           },
         ]}
       >
-        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+        <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
         <Animated.View style={[{ flex: 1 }, animatedMainStyle]}>
           <Stack screenOptions={{ animation: 'fade' }}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

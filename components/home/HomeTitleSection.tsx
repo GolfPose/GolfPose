@@ -19,7 +19,7 @@ export default function HomeTitleSection() {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginTop: vs(20),
+    marginTop: vs(30),
     marginBottom: vs(20),
     paddingHorizontal: s(16),
   },

@@ -1,11 +1,11 @@
 import useUserStore from '@/store/useUserStore';
 import { ThemedView } from './ThemedView';
-import { Image, Pressable, StyleSheet, useColorScheme } from 'react-native';
+import { Image, Pressable, StyleSheet } from 'react-native';
 import { ThemedText } from './ThemedText';
-import { useRouter } from 'expo-router';
-import { Link } from 'expo-router';
+import { useRouter, Link } from 'expo-router';
 import { s, vs } from 'react-native-size-matters';
 import Typography from '@/constants/Typography';
+import { useTheme } from '@/hooks/useTheme';
 
 interface HeaderProps {
   showUserInfo?: boolean;
@@ -15,7 +15,7 @@ export default function Header({ showUserInfo = false }: HeaderProps) {
   const user = useUserStore(state => state.user);
   const isLoggedIn = user?.isLoggedIn;
   const nickname = user?.name ?? '';
-  const colorScheme = useColorScheme();
+  const theme = useTheme();
 
   const router = useRouter();
   const onPress = () => {
@@ -23,7 +23,7 @@ export default function Header({ showUserInfo = false }: HeaderProps) {
   };
 
   const logoSource =
-    colorScheme === 'dark'
+    theme === 'dark'
       ? require('../assets/images/logo.png')
       : require('../assets/images/white-logo.png');
 

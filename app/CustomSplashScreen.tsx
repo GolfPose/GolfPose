@@ -1,6 +1,5 @@
-import { StyleSheet, Image } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
-import { useColorScheme } from 'react-native';
 import { useEffect } from 'react';
 import { s, vs } from 'react-native-size-matters';
 import Animated, {
@@ -8,10 +7,11 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+import { useTheme } from '@/hooks/useTheme';
 
 export default function CustomSplashScreen() {
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
+  const theme = useTheme();
+  const isDark = theme === 'dark';
 
   const logoSource = isDark
     ? require('../assets/images/logo.png')
