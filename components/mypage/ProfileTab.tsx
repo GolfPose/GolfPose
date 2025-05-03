@@ -46,7 +46,7 @@ export const ProfileTab = () => {
         {/* 이메일 */}
         <ThemedView style={styles.informationContainer}>
           <ThemedText style={styles.label}>이메일</ThemedText>
-          <ThemedText style={styles.content}>{user!.email}</ThemedText>
+          <ThemedText style={styles.content}>{user?.email}</ThemedText>
         </ThemedView>
 
         {/* 닉네임 */}
@@ -83,7 +83,7 @@ export const ProfileTab = () => {
             </ThemedView>
           ) : (
             <ThemedView style={styles.nicknameRow}>
-              <ThemedText style={styles.name}>{user!.name}</ThemedText>
+              <ThemedText style={styles.name}>{user?.name}</ThemedText>
               <Pressable
                 style={styles.editButton}
                 onPress={() => setIsEditing(true)}
