@@ -12,7 +12,6 @@ import { ThemedText } from '@/components/ThemedText';
 import Typography from '@/constants/Typography';
 import { Colors } from '@/constants/Colors';
 import { s, vs } from 'react-native-size-matters';
-import { PaymentHistoryTab } from '@/components/mypage/PaymentHistoryTab';
 import { CreditUsageTab } from '@/components/mypage/CreditUsageTab';
 import { ProfileTab } from '@/components/mypage/ProfileTab';
 import { SettingsTab } from '@/components/mypage/SettingsTab';
@@ -30,8 +29,6 @@ export default function MyPageScreen() {
     switch (section) {
       case 'profile':
         return <ProfileTab />;
-      case 'payments':
-        return <PaymentHistoryTab />;
       case 'credits':
         return <CreditUsageTab />;
       case 'settings':
@@ -60,11 +57,6 @@ export default function MyPageScreen() {
                   label="회원정보"
                   active={section === 'profile'}
                   onPress={() => setSection('profile')}
-                />
-                <TabButton
-                  label="결제내역"
-                  active={section === 'payments'}
-                  onPress={() => setSection('payments')}
                 />
                 <TabButton
                   label="크레딧 내역"
