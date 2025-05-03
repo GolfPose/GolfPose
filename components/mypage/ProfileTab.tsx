@@ -39,10 +39,6 @@ export const ProfileTab = () => {
       { cancelable: false },
     );
     console.log('로그아웃 완료');
-    router.navigate('/');
-    setTimeout(() => {
-      useUserStore.getState().clearUser();
-    }, 0);
   };
 
   const handleCancelEdit = () => {
