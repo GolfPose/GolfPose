@@ -56,8 +56,8 @@ export default function SignUpScreen() {
   };
 
   const handleNicknameChange = (text: string) => {
-    const filtered = text.replace(/[^가-힣a-zA-Z0-9]/g, ''); // 한글, 영문, 숫자만 입력 가능
-    setNickname(filtered);
+    setNickname(text);
+    const filtered = text.replace(/[^ㄱ-ㅎ가-힣a-zA-Z0-9]/g, ''); // 한글, 영문, 숫자만 입력 가능
 
     if (text !== filtered) {
       setNicknameError('특수문자는 입력할 수 없습니다');
