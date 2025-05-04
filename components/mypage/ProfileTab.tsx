@@ -8,6 +8,7 @@ import { s, vs } from 'react-native-size-matters';
 import useUserStore from '@/store/useUserStore';
 import { MyPageSection } from '@/components/mypage/MyPageSection';
 import { useTheme } from '@/hooks/useTheme';
+import { router } from 'expo-router';
 
 export const ProfileTab = () => {
   const user = useUserStore(state => state.user);
@@ -18,6 +19,26 @@ export const ProfileTab = () => {
   const handleSave = () => {
     console.log('새 이름 저장:', tempName);
     setIsEditing(false);
+  };
+
+  const handleLogout = () => {
+    Alert.alert(
+      '로그아웃',
+      '로그아웃이 완료되었습니다.',
+      [
+        {
+          text: '확인',
+          onPress: () => {
+            router.navigate('/');
+            setTimeout(() => {
+              useUserStore.getState().clearUser();
+            }, 0);
+          },
+        },
+      ],
+      { cancelable: false },
+    );
+    console.log('로그아웃 완료');
   };
 
   const handleCancelEdit = () => {
@@ -41,65 +62,73 @@ export const ProfileTab = () => {
   };
 
   return (
-    <>
-      <MyPageSection title="회원정보">
-        {/* 이메일 */}
-        <ThemedView style={styles.informationContainer}>
-          <ThemedText style={styles.label}>이메일</ThemedText>
-          <ThemedText style={styles.content}>{user!.email}</ThemedText>
-        </ThemedView>
+    <MyPageSection title="회원정보">
+      {/* 이메일 */}
+      <ThemedView style={styles.informationContainer}>
+        <ThemedText style={styles.label}>이메일</ThemedText>
+        <ThemedText style={styles.content}>{user?.email}</ThemedText>
+      </ThemedView>
 
-        {/* 닉네임 */}
-        <ThemedView style={styles.informationContainer}>
-          <ThemedText style={styles.label}>닉네임</ThemedText>
-          {isEditing ? (
-            <ThemedView style={styles.editRow}>
-              <TextInput
-                scrollEnabled={false}
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor:
-                      theme === 'dark'
-                        ? Colors.common.black
-                        : Colors.common.white,
-                    color:
-                      theme === 'dark'
-                        ? Colors.common.white
-                        : Colors.common.black,
-                  },
-                ]}
-                value={tempName}
-                onChangeText={setTempName}
-                placeholder="닉네임 입력"
-                placeholderTextColor={Colors.common.gray400}
-              />
-              <Pressable style={styles.saveButton} onPress={handleSave}>
-                <ThemedText style={styles.saveButtonText}>저장</ThemedText>
-              </Pressable>
-              <Pressable style={styles.cancelButton} onPress={handleCancelEdit}>
-                <ThemedText style={styles.cancelButtonText}>취소</ThemedText>
-              </Pressable>
-            </ThemedView>
-          ) : (
-            <ThemedView style={styles.nicknameRow}>
-              <ThemedText style={styles.name}>{user!.name}</ThemedText>
-              <Pressable
-                style={styles.editButton}
-                onPress={() => setIsEditing(true)}
-              >
-                <ThemedText style={styles.editButtonText}>수정</ThemedText>
-              </Pressable>
-            </ThemedView>
-          )}
-        </ThemedView>
-      </MyPageSection>
-
+      {/* 닉네임 */}
+      <ThemedView style={styles.informationContainer}>
+        <ThemedText style={styles.label}>닉네임</ThemedText>
+        {isEditing ? (
+          <ThemedView style={styles.editRow}>
+            <TextInput
+              scrollEnabled={false}
+              style={[
+                styles.input,
+                {
+                  backgroundColor:
+                    theme === 'dark'
+                      ? Colors.common.black
+                      : Colors.common.white,
+                  color:
+                    theme === 'dark'
+                      ? Colors.common.white
+                      : Colors.common.black,
+                },
+              ]}
+              value={tempName}
+              onChangeText={setTempName}
+              placeholder="닉네임 입력"
+              placeholderTextColor={Colors.common.gray400}
+            />
+            <Pressable style={styles.saveButton} onPress={handleSave}>
+              <ThemedText style={styles.saveButtonText}>저장</ThemedText>
+            </Pressable>
+            <Pressable style={styles.cancelButton} onPress={handleCancelEdit}>
+              <ThemedText style={styles.cancelButtonText}>취소</ThemedText>
+            </Pressable>
+          </ThemedView>
+        ) : (
+          <ThemedView style={styles.nicknameRow}>
+            <ThemedText style={styles.name}>{user?.name}</ThemedText>
+            <Pressable
+              style={styles.editButton}
+              onPress={() => setIsEditing(true)}
+            >
+              <ThemedText style={styles.editButtonText}>수정</ThemedText>
+            </Pressable>
+          </ThemedView>
+        )}
+      </ThemedView>
       {/* 회원탈퇴 버튼 */}
-      <Pressable style={styles.withdrawButton} onPress={handleWithdraw}>
-        <ThemedText style={styles.withdrawButtonText}>회원탈퇴</ThemedText>
-      </Pressable>
-    </>
+      <ThemedView style={styles.buttonContainer}>
+        <Pressable style={styles.logoutButton} onPress={handleLogout}>
+          <ThemedText
+            style={[styles.buttonText, { color: Colors.common.primary500 }]}
+          >
+            로그아웃
+          </ThemedText>
+        </Pressable>
+        <Pressable style={styles.withdrawButton} onPress={handleWithdraw}>
+          <ThemedText style={[styles.buttonText, { color: Colors.common.red }]}>
+            회원탈퇴
+          </ThemedText>
+        </Pressable>
+      </ThemedView>
+    </MyPageSection>
   );
 };
 
@@ -169,15 +198,29 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.common.black,
   },
-  withdrawButton: {
-    marginTop: vs(24),
-    backgroundColor: Colors.common.red,
+  buttonContainer: {
+    flexDirection: 'row',
+    gap: s(8),
+  },
+  logoutButton: {
+    marginTop: vs(16),
+    borderColor: Colors.common.primary500,
+    borderWidth: s(1.5),
     paddingVertical: vs(10),
     paddingHorizontal: s(16),
     borderRadius: s(8),
     alignSelf: 'flex-start',
   },
-  withdrawButtonText: {
+  withdrawButton: {
+    marginTop: vs(16),
+    borderColor: Colors.common.red,
+    borderWidth: s(1.5),
+    paddingVertical: vs(10),
+    paddingHorizontal: s(16),
+    borderRadius: s(8),
+    alignSelf: 'flex-start',
+  },
+  buttonText: {
     fontWeight: 'bold',
     color: Colors.common.white,
   },
