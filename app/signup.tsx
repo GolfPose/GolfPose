@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   TextInput,
   KeyboardAvoidingView,
@@ -28,6 +28,7 @@ export default function SignUpScreen() {
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [confirmError, setConfirmError] = useState('');
+  const [isFormValid, setIsFormValid] = useState(false);
 
   const handleSignup = () => {
     // TODO: 유효성 검사 및 회원가입 로직 추가
@@ -36,6 +37,7 @@ export default function SignUpScreen() {
       nickname,
       password,
       confirmPassword,
+      isFormValid,
     });
   };
 
@@ -62,7 +64,7 @@ export default function SignUpScreen() {
     } else if (filtered.length > 0 && filtered.length < 2) {
       setNicknameError('닉네임은 2자 이상이어야 해요');
     } else {
-      setNicknameError('');
+      setNicknameError(null);
     }
   };
 
@@ -90,6 +92,20 @@ export default function SignUpScreen() {
       setConfirmError('');
     }
   };
+
+  useEffect(() => {
+    const isValid = 
+      email.length > 0 &&
+      nickname.length > 0 &&
+      password.length > 0 &&
+      confirmPassword.length > 0 &&
+      emailError === null &&
+      nicknameError === null &&
+      passwordError === null &&
+      confirmError === '';
+
+      setIsFormValid(isValid);
+  }, [email, nickname, password, confirmPassword, emailError, nicknameError, passwordError, confirmError]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -196,7 +212,15 @@ export default function SignUpScreen() {
               )}
 
               {/* 회원가입 버튼 */}
-              <Pressable style={styles.button} onPress={handleSignup}>
+              <Pressable
+                onPress={handleSignup}
+                disabled={!isFormValid}
+                style={({pressed}) => [
+                  styles.button,
+                  !isFormValid && styles.buttonDisabled,
+                  pressed && isFormValid && styles.buttonPressed
+                ]}
+              >
                 <ThemedText style={styles.buttonText}>회원가입</ThemedText>
               </Pressable>
             </ThemedView>
@@ -250,6 +274,7 @@ const styles = StyleSheet.create({
   },
   button: {
     borderColor: Colors.common.primary500,
+    backgroundColor: Colors.common.primary500,
     borderWidth: 1,
     paddingVertical: vs(12),
     borderRadius: s(8),
@@ -257,8 +282,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  buttonDisabled: {
+    borderColor: Colors.common.gray300,
+    backgroundColor: Colors.common.gray300,
+  },
+  buttonPressed: {
+    opacity: 0.85,
+  },
   buttonText: {
-    color: Colors.common.primary500,
+    color: Colors.common.white,
     fontSize: Typography.md,
     fontWeight: 'bold',
     textAlign: 'center',
