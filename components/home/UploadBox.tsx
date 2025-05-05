@@ -1,6 +1,6 @@
 import { StyleSheet, Text, Pressable, ActivityIndicator } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { BadgeCent } from 'lucide-react-native';
+import BadgeCent from '@/assets/svgs/badge-cent.svg';
 import { useEffect, useState, useRef } from 'react';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import * as ImagePicker from 'expo-image-picker';
@@ -19,7 +19,7 @@ export default function UploadBox() {
   const [uploadStage, setUploadStage] = useState<
     'idle' | 'picking' | 'uploading' | 'done'
   >('idle');
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<number | null>(null);
   const player = useVideoPlayer(
     videoUri ? { uri: videoUri } : { uri: '' },
     player => {
@@ -71,7 +71,11 @@ export default function UploadBox() {
   return (
     <ThemedView style={styles.wrapper}>
       <ThemedView style={styles.creditRow}>
-        <BadgeCent size={16} color={Colors.common.gray500} />
+        <BadgeCent
+          width={s(16)}
+          height={s(16)}
+          stroke={Colors.common.gray500}
+        />
         <Text style={styles.creditText}>남은 크레딧: {credit}</Text>
       </ThemedView>
 
@@ -158,14 +162,16 @@ const styles = StyleSheet.create({
   },
   creditRow: {
     flexDirection: 'row',
+    alignItems: 'center',
     alignSelf: 'flex-start',
     gap: s(4),
     paddingHorizontal: s(12),
+    marginBottom: vs(10),
   },
   creditText: {
-    marginBottom: vs(10),
     fontWeight: '500',
     color: Colors.common.gray500,
+    fontSize: Typography.sm,
   },
   uploadArea: {
     borderWidth: 1,
