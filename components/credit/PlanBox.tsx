@@ -4,6 +4,7 @@ import Typography from '@/constants/Typography';
 import { s, vs } from 'react-native-size-matters';
 import { ThemedText } from '../ThemedText';
 import { Colors } from '@/constants/Colors';
+import { Feather } from '@expo/vector-icons';
 
 interface PlanBoxProps {
   title: string;
@@ -46,9 +47,15 @@ export default function PlanBox({
         <ThemedText style={styles.buttonText}>결제하기</ThemedText>
       </Pressable>
       {features.map((feature, idx) => (
-        <ThemedText key={idx} style={styles.featureText}>
-          ✔️ {feature}
-        </ThemedText>
+        <ThemedView key={idx} style={styles.featureRow}>
+          <Feather
+            name="check"
+            size={16}
+            color={Colors.common.primary500}
+            style={{ marginRight: s(8) }}
+          />
+          <ThemedText style={styles.featureText}>{feature}</ThemedText>
+        </ThemedView>
       ))}
     </ThemedView>
   );
@@ -59,7 +66,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: s(12),
     paddingHorizontal: s(16),
-    paddingVertical: vs(20),
+    paddingVertical: vs(16),
     borderColor: Colors.common.gray200,
   },
   planTitle: {
@@ -103,8 +110,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: Typography.md,
   },
+  featureRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: vs(4),
+  },
   featureText: {
     fontSize: Typography.md,
-    marginVertical: vs(4),
+    marginVertical: vs(3),
   },
 });
