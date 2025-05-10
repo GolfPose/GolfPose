@@ -20,11 +20,14 @@ interface UserStore {
   // purchase
   addPurchase: (record: PurchaseRecord) => void;
 
-  // video
+  // analysis
   addAnalysisVideo: (video: AnalysisRecord) => void;
+  getRecentVideos: () => AnalysisRecord[];
+  getVideosByMonth: (year: number, month: number) => AnalysisRecord[];
+  getVideoById: (id: string) => AnalysisRecord | undefined;
 }
 
-const useUserStore = create<UserStore>(set => ({
+const useUserStore = create<UserStore>((set, get) => ({
   user: null,
 
   setUser: user => set({ user }),
@@ -76,6 +79,26 @@ const useUserStore = create<UserStore>(set => ({
         },
       };
     }),
+
+  getRecentVideos: () => {
+    const state = get();
+    return state.user?.myAnalysisVideos ?? [];
+  },
+
+  getVideosByMonth: (year, month) => {
+    const state = get();
+    return (
+      state.user?.myAnalysisVideos.filter(video => {
+        const date = new Date(video.uploadedAt);
+        return date.getFullYear() === year && date.getMonth() + 1 === month;
+      }) ?? []
+    );
+  },
+
+  getVideoById: id => {
+    const state = get();
+    return state.user?.myAnalysisVideos.find(video => video.id === id);
+  },
 }));
 
 export default useUserStore;
