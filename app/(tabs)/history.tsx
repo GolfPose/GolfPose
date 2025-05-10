@@ -1,6 +1,14 @@
 import React, { useState, useRef } from 'react';
 import Header from '@/components/Header';
-import { Image, Pressable, StyleSheet, useColorScheme, ScrollView, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  Pressable,
+  StyleSheet,
+  useColorScheme,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { s, vs } from 'react-native-size-matters';
@@ -11,7 +19,6 @@ import { Video } from 'expo-av';
 import type { Video as VideoType } from 'expo-av';
 import TitleSection from '@/components/TitleSection';
 import Collapsible from 'react-native-collapsible';
-
 
 export default function HistoryScreen() {
   const colorScheme = useColorScheme();
@@ -44,7 +51,10 @@ export default function HistoryScreen() {
   const poses = [
     { title: 'Address', image: require('@/assets/images/swing2.jpg') },
     { title: 'Top-up', image: require('@/assets/images/swing2.jpg') },
-    { title: 'Mid-backing swing', image: require('@/assets/images/swing2.jpg') },
+    {
+      title: 'Mid-backing swing',
+      image: require('@/assets/images/swing2.jpg'),
+    },
     { title: 'Top', image: require('@/assets/images/swing2.jpg') },
     { title: 'Mid-down swing', image: require('@/assets/images/swing2.jpg') },
     { title: 'Impact', image: require('@/assets/images/swing2.jpg') },
@@ -67,7 +77,11 @@ export default function HistoryScreen() {
         <TitleSection title="나의 분석 영상" />
         <ThemedView style={styles.videoRow}>
           {videoRecords.slice(0, 2).map((record, index) => (
-            <Pressable key={index} style={styles.videoCard} onPress={() => setSelectedDate(record.date)}>
+            <Pressable
+              key={index}
+              style={styles.videoCard}
+              onPress={() => setSelectedDate(record.date)}
+            >
               <Image source={record.image} style={styles.videoImage} />
               <Pressable style={styles.overlayButton}>
                 <ThemedText style={styles.overlayText}>분석중</ThemedText>
@@ -77,14 +91,23 @@ export default function HistoryScreen() {
           ))}
         </ThemedView>
 
-        <Pressable onPress={() => setIsCollapsed(!isCollapsed)} style={{ alignSelf: 'flex-end', marginBottom: vs(16) }}>
-          <ThemedText style={{ color: Colors.common.primary500 }}>{isCollapsed ? '+ 더보기' : '- 닫기'}</ThemedText>
+        <Pressable
+          onPress={() => setIsCollapsed(!isCollapsed)}
+          style={{ alignSelf: 'flex-end', marginBottom: vs(16) }}
+        >
+          <ThemedText style={{ color: Colors.common.primary500 }}>
+            {isCollapsed ? '+ 더보기' : '- 닫기'}
+          </ThemedText>
         </Pressable>
 
         <Collapsible collapsed={isCollapsed}>
           <ThemedView style={styles.videoRow}>
             {videoRecords.slice(2).map((record, index) => (
-              <Pressable key={index} style={styles.videoCard} onPress={() => setSelectedDate(record.date)}>
+              <Pressable
+                key={index}
+                style={styles.videoCard}
+                onPress={() => setSelectedDate(record.date)}
+              >
                 <Image source={record.image} style={styles.videoImage} />
                 <ThemedText style={styles.dateText}>{record.date}</ThemedText>
               </Pressable>
@@ -94,31 +117,74 @@ export default function HistoryScreen() {
 
         {selectedDate && (
           <>
-            <ThemedText style={styles.videoTitle}>{selectedDate} 영상</ThemedText>
+            <ThemedText style={styles.videoTitle}>
+              {selectedDate} 영상
+            </ThemedText>
             <ThemedView style={styles.buttonRow}>
               <Pressable
-                style={[styles.button, styles.play, selectedButton === 'play' && styles.selectedButton]}
+                style={[
+                  styles.button,
+                  styles.play,
+                  selectedButton === 'play' && styles.selectedButton,
+                ]}
                 onPress={() => handlePress('play')}
               >
-                <ThemedText style={[styles.buttonText, selectedButton === 'play' && styles.selectedButtonText]}>▷동시 재생</ThemedText>
+                <ThemedText
+                  style={[
+                    styles.buttonText,
+                    selectedButton === 'play' && styles.selectedButtonText,
+                  ]}
+                >
+                  ▷동시 재생
+                </ThemedText>
               </Pressable>
               <Pressable
-                style={[styles.button, selectedButton === 'pause' && styles.selectedButton]}
+                style={[
+                  styles.button,
+                  selectedButton === 'pause' && styles.selectedButton,
+                ]}
                 onPress={() => handlePress('pause')}
               >
-                <ThemedText style={[styles.buttonText, selectedButton === 'pause' && styles.selectedButtonText]}>⏸ 동시 정지</ThemedText>
+                <ThemedText
+                  style={[
+                    styles.buttonText,
+                    selectedButton === 'pause' && styles.selectedButtonText,
+                  ]}
+                >
+                  ⏸ 동시 정지
+                </ThemedText>
               </Pressable>
               <Pressable
-                style={[styles.button, selectedButton === 'reset' && styles.selectedButton]}
-                onPress={() => handlePress('reset') }
+                style={[
+                  styles.button,
+                  selectedButton === 'reset' && styles.selectedButton,
+                ]}
+                onPress={() => handlePress('reset')}
               >
-                <ThemedText style={[styles.buttonText, selectedButton === 'reset' && styles.selectedButtonText]}>◁영상 시간 초기화</ThemedText>
+                <ThemedText
+                  style={[
+                    styles.buttonText,
+                    selectedButton === 'reset' && styles.selectedButtonText,
+                  ]}
+                >
+                  ◁영상 시간 초기화
+                </ThemedText>
               </Pressable>
               <Pressable
-                style={[styles.button, selectedButton === 'analysis' && styles.selectedButton]}
+                style={[
+                  styles.button,
+                  selectedButton === 'analysis' && styles.selectedButton,
+                ]}
                 onPress={() => handlePress('analysis')}
               >
-                <ThemedText style={[styles.buttonText, selectedButton === 'analysis' && styles.selectedButtonText]}>솔루션 분석</ThemedText>
+                <ThemedText
+                  style={[
+                    styles.buttonText,
+                    selectedButton === 'analysis' && styles.selectedButtonText,
+                  ]}
+                >
+                  솔루션 분석
+                </ThemedText>
               </Pressable>
             </ThemedView>
 
@@ -127,12 +193,11 @@ export default function HistoryScreen() {
               <TouchableOpacity onPress={() => console.log('영상 클릭됨')}>
                 <Video
                   ref={videoRef}
-                  source={require('@/assets/images/hitcat.mp4')}
+                  source={require('@/assets/videos/ex_video_1.mp4')}
                   style={styles.fullThumbnail}
                   //resizeMode="cover"
                   shouldPlay={true}
                   isMuted={true}
-                 
                 />
               </TouchableOpacity>
             </View>
@@ -141,9 +206,12 @@ export default function HistoryScreen() {
             <View style={styles.poseGrid}>
               {poses.map((pose, index) => (
                 <View key={index} style={styles.poseItem}>
-                  <PoseThumbnail title={pose.title} imageSource={pose.image} onPress={() => console.log(`${pose.title} 클릭됨`)} />
+                  <PoseThumbnail
+                    title={pose.title}
+                    imageSource={pose.image}
+                    onPress={() => console.log(`${pose.title} 클릭됨`)}
+                  />
                 </View>
-
               ))}
             </View>
           </>
