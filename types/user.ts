@@ -38,6 +38,7 @@ export interface AnalysisRecord {
   videoUrl: string;
   status: AnalysisStatus;
   avatarUrl?: string;
+  thumbnailUrl?: string;
   swingImages: { title: string; image: string }[];
   graphUrls: {
     leftArm2D?: string;
