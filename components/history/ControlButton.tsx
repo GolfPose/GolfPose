@@ -43,8 +43,8 @@ const BUTTONS = [
     label: '분석결과',
     action: 'analysis',
     iconName: 'book-open',
-    bg: { light: Colors.common.white, dark: Colors.common.black },
-    fg: { light: Colors.common.black, dark: Colors.common.white },
+    bg: { light: Colors.common.white, dark: Colors.common.white },
+    fg: { light: Colors.common.black, dark: Colors.common.black },
     border: { light: Colors.common.gray600, dark: Colors.common.white },
   },
 ];
