@@ -8,31 +8,45 @@ import Typography from '@/constants/Typography';
 interface Props {
   title: string;
   imageSource: any;
-  onPress: () => void;
 }
 
-export default function PoseThumbnail({ title, imageSource, onPress }: Props) {
+export default function PoseThumbnail({ title, imageSource }: Props) {
   return (
-    <Pressable onPress={onPress} style={styles.container}>
+    <Pressable style={[styles.container, { marginRight: GAP }]}>
+      <ThemedView style={styles.titleBox}>
+        <ThemedText numberOfLines={2} ellipsizeMode="tail" style={styles.title}>
+          {title}
+        </ThemedText>
+      </ThemedView>
+
       <Image source={imageSource} style={styles.image} resizeMode="cover" />
-      <ThemedText style={styles.title}>{title}</ThemedText>
     </Pressable>
   );
 }
 
+const IMAGE_SIZE = s(72);
+const GAP = s(6);
+const TITLE_H = vs(32);
+
 const styles = StyleSheet.create({
   container: {
-    marginRight: s(8),
+    alignItems: 'center',
+    width: IMAGE_SIZE,
+  },
+  titleBox: {
+    width: '100%',
+    height: TITLE_H,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  image: {
-    width: s(60),
-    height: vs(60),
-    borderRadius: s(6),
-  },
   title: {
-    marginTop: vs(4),
     fontSize: Typography.xs,
+    lineHeight: vs(10),
     textAlign: 'center',
+  },
+  image: {
+    width: IMAGE_SIZE,
+    height: IMAGE_SIZE,
+    borderRadius: s(6),
   },
 });
