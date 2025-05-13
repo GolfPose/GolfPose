@@ -8,13 +8,24 @@ import { useTheme } from '@/hooks/useTheme';
 import Typography from '@/constants/Typography';
 import { s, vs } from 'react-native-size-matters';
 import { getColor } from '@/utils/getColor';
+import { ControlAction } from '@/app/(tabs)/history';
+import { ThemeColorMap } from '@/types/themeColorMap';
 
 interface Props {
   selected: string | null;
-  onPress: (action: string) => void;
+  onPress: (action: ControlAction) => void;
 }
 
-const BUTTONS = [
+type ButtonInfo = {
+  label: string;
+  action: ControlAction;
+  iconName: string;
+  bg: ThemeColorMap;
+  fg: ThemeColorMap;
+  border: ThemeColorMap;
+};
+
+const BUTTONS: ButtonInfo[] = [
   {
     label: '동시재생',
     action: 'play',

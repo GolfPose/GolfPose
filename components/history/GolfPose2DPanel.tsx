@@ -1,45 +1,35 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { StyleSheet, FlatList } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
 import { VideoView, useVideoPlayer } from 'expo-video';
 import { AnalysisRecord } from '@/types/user';
 import PoseThumbnail from '@/components/history/PoseThumbnail';
-import ControlButton from './ControlButton';
 import Typography from '@/constants/Typography';
-import { formatDate } from 'date-fns';
 import { s, vs } from 'react-native-size-matters';
 import { ThemedView } from '../ThemedView';
 
 interface Props {
   video: AnalysisRecord;
+  controlAction: 'play' | 'pause' | 'reset' | 'analysis' | null;
 }
 
-export default function GolfPose2DPanel({ video }: Props) {
+export default function GolfPose2DPanel({ video, controlAction }: Props) {
   const videoSource = useMemo(() => {
     return typeof video.videoUrl === 'string'
       ? { uri: video.videoUrl }
       : video.videoUrl;
   }, [video.videoUrl]);
 
-  const videoDate = useMemo(
-    () => `${formatDate(new Date(video.uploadedAt), 'yyyy. MM. dd.')} 영상`,
-    [video.uploadedAt],
-  );
-
   const player = useVideoPlayer(videoSource, p => {
     p.loop = true;
     p.play();
   });
 
-  useEffect(() => () => {}, [player]);
+  useEffect(() => {
+    if (!controlAction) return;
 
-  const [selected, setSelected] = useState<string | null>(null);
-  const handle = (action: string) => {
-    setSelected(action);
-    setTimeout(() => setSelected(null), 800);
-
-    switch (action) {
+    switch (controlAction) {
       case 'play':
         player.play();
         break;
@@ -54,12 +44,10 @@ export default function GolfPose2DPanel({ video }: Props) {
         console.log('분석 기능은 추후 구현 예정입니다.');
         break;
     }
-  };
+  }, [controlAction]);
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText style={styles.date}>{videoDate}</ThemedText>
-      <ControlButton selected={selected} onPress={handle} />
       <ThemedText style={styles.title}>골프자세 2D</ThemedText>
       <VideoView player={player} style={styles.mainVideo} allowsFullscreen />
 
@@ -81,11 +69,6 @@ export default function GolfPose2DPanel({ video }: Props) {
 const styles = StyleSheet.create({
   container: {
     marginTop: vs(16),
-  },
-  date: {
-    fontSize: Typography.xl,
-    fontWeight: '500',
-    marginBottom: vs(16),
   },
   title: {
     fontSize: Typography.xl,
