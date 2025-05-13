@@ -1,10 +1,8 @@
 import { create, UseBoundStore, StoreApi } from 'zustand';
-import {
-  UserInfo,
-  CreditRecord,
-  PurchaseRecord,
-  AnalysisRecord,
-} from '@/types/user';
+import { UserInfo } from '@/types/user';
+import { CreditRecord } from '@/types/credit';
+import { PurchaseRecord } from '@/types/purchase';
+import { AnalysisRecord } from '@/types/analysis';
 
 interface UserStore {
   user: UserInfo | null;

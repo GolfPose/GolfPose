@@ -9,7 +9,7 @@ import Typography from '@/constants/Typography';
 import { s, vs } from 'react-native-size-matters';
 import { getColor } from '@/utils/getColor';
 import { ControlAction } from '@/app/(tabs)/history';
-import { ThemeColorMap } from '@/types/themeColorMap';
+import { ThemeColorMap } from '@/types/ThemeColorMap';
 
 interface Props {
   selected: string | null;
