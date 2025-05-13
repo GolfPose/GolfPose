@@ -19,5 +19,5 @@ export const ThemedText = ({
       ? (darkColor ?? Colors.dark.text)
       : (lightColor ?? Colors.light.text);
 
-  return <Text style={[{ color }, style]} {...otherProps} />;
+  return <Text allowFontScaling={false} style={style} {...otherProps} />;
 };

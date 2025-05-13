@@ -8,10 +8,10 @@ export default function HomeTitleSection() {
   return (
     <ThemedView style={styles.container}>
       <ThemedText style={styles.title}>골프 포즈 분석하기</ThemedText>
-      <Text style={styles.desc}>
+      <ThemedText style={styles.desc}>
         mp4, mov, avi 파일을 업로드하여{'\n'}
         사용자의 포즈패턴을 분석하고{'\n'}스윙 자세를 진단합니다.
-      </Text>
+      </ThemedText>
     </ThemedView>
   );
 }

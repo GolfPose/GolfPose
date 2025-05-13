@@ -26,24 +26,6 @@ import { Colors } from '@/constants/Colors';
 import useUserStore from '@/store/useUserStore';
 import { dummyUser } from '@/constants/dummyUser';
 
-interface TextWithDefaultProps extends Text {
-  defaultProps?: { allowFontScaling?: boolean };
-}
-interface TextInputWithDefaultProps extends TextInput {
-  defaultProps?: { allowFontScaling?: boolean };
-}
-
-(Text as unknown as TextWithDefaultProps).defaultProps =
-  (Text as unknown as TextWithDefaultProps).defaultProps || {};
-(Text as unknown as TextWithDefaultProps).defaultProps!.allowFontScaling =
-  false;
-
-(TextInput as unknown as TextInputWithDefaultProps).defaultProps =
-  (TextInput as unknown as TextInputWithDefaultProps).defaultProps || {};
-(
-  TextInput as unknown as TextInputWithDefaultProps
-).defaultProps!.allowFontScaling = false;
-
 export default function RootLayout() {
   const theme = useTheme();
   const [loaded] = useFonts({
