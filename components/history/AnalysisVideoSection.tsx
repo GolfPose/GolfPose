@@ -49,7 +49,7 @@ export default function AnalysisVideoSection({ selectedId, onSelect }: Props) {
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <AnalysisCard
-            thumbnail={toImageSource(item.avatarUrl || item.thumbnailUrl)}
+            thumbnail={toImageSource(item.thumbnailUrl)}
             date={format(new Date(item.uploadedAt), 'yyyy.MM.dd')}
             status={item.status === 'IN_PROGRESS' ? 'IN_PROGRESS' : 'COMPLETE'}
             onPress={() => onSelect(item.id)}
