@@ -3,7 +3,7 @@ import { StyleSheet, FlatList } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
 import { VideoView, useVideoPlayer } from 'expo-video';
-import { AnalysisRecord } from '@/types/user';
+import { AnalysisRecord } from '@/types/analysis';
 import PoseThumbnail from '@/components/history/PoseThumbnail';
 import Typography from '@/constants/Typography';
 import { s, vs } from 'react-native-size-matters';
