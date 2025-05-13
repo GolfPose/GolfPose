@@ -1,6 +1,8 @@
+import { ThemeColorMap } from '@/types/themeColorMap';
+
 export function getColor(
   theme: 'light' | 'dark',
-  colors: Record<'light' | 'dark', string>,
+  colorMap: ThemeColorMap,
 ): string {
-  return colors[theme];
+  return theme === 'dark' ? colorMap.dark : colorMap.light;
 }
