@@ -1,5 +1,6 @@
-import { CreditRecord } from './\bcredit';
+import { CreditRecord } from './credit';
 import { AnalysisRecord } from './analysis';
+import { PurchaseRecord } from './purchase';
 
 export interface UserInfo {
   isLoggedIn: boolean;

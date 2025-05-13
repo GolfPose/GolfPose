@@ -58,7 +58,7 @@ export default function BodyPartGraphBlock({
   }, [controlAction]);
 
   return (
-    <ThemedView style={styles.wrapper}>
+    <ThemedView>
       <ThemedText style={styles.label}>{label}</ThemedText>
       <ThemedView style={styles.videoRow}>
         {video2D && <VideoView player={player2D} style={styles.graph} />}
@@ -69,9 +69,6 @@ export default function BodyPartGraphBlock({
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    marginBottom: vs(20),
-  },
   label: {
     marginLeft: s(8),
     marginBottom: vs(8),

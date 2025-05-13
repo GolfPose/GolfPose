@@ -25,9 +25,8 @@ export interface AnalysisRecord {
   uploadedAt: string;
   videoUrl: string;
   status: AnalysisStatus;
-  avatarUrl?: string;
   thumbnailUrl?: string;
   swingImages: SwingImage[];
   graphUrls: GraphUrls;
-  pose3DUrl?: string;
+  pose3DUrl: string;
 }

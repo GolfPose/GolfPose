@@ -15,6 +15,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { format as formatDate } from 'date-fns';
 import Typography from '@/constants/Typography';
 import BodyPartGraphSection from '@/components/history/BodyPartGraphSection';
+import GolfPose3DPanel from '@/components/history/GolfPose3DPanel';
 
 export type ControlAction = 'play' | 'pause' | 'reset' | 'analysis' | null;
 
@@ -61,9 +62,7 @@ export default function HistoryScreen() {
               controlAction={controlAction}
             />
             <BodyPartGraphSection video={video} controlAction={controlAction} />
-            {/*
-            <GolfPose3DPanel video={video} />
-            */}
+            <GolfPose3DPanel video={video} controlAction={controlAction} />
           </>
         )}
       </ThemedView>
