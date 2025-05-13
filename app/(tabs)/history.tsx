@@ -14,6 +14,7 @@ import { Colors } from '@/constants/Colors';
 import { ThemedText } from '@/components/ThemedText';
 import { format as formatDate } from 'date-fns';
 import Typography from '@/constants/Typography';
+import BodyPartGraphSection from '@/components/history/BodyPartGraphSection';
 
 export type ControlAction = 'play' | 'pause' | 'reset' | 'analysis' | null;
 
@@ -59,8 +60,8 @@ export default function HistoryScreen() {
               video={video}
               controlAction={controlAction}
             />
+            <BodyPartGraphSection video={video} controlAction={controlAction} />
             {/*
-            <BodyPartGraphSection video={video} />
             <GolfPose3DPanel video={video} />
             */}
           </>
