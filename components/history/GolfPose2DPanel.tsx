@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
 import { StyleSheet, FlatList } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
 import { VideoView, useVideoPlayer } from 'expo-video';
 import { AnalysisRecord } from '@/types/analysis';
@@ -8,6 +7,7 @@ import PoseThumbnail from '@/components/history/PoseThumbnail';
 import Typography from '@/constants/Typography';
 import { s, vs } from 'react-native-size-matters';
 import { ThemedView } from '../ThemedView';
+import HistoryTitleSection from './HistoryTitleSection';
 
 interface Props {
   video: AnalysisRecord;
@@ -48,7 +48,7 @@ export default function GolfPose2DPanel({ video, controlAction }: Props) {
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText style={styles.title}>골프자세 2D</ThemedText>
+      <HistoryTitleSection title="골프자세 2D" />
       <VideoView player={player} style={styles.mainVideo} allowsFullscreen />
 
       <FlatList
