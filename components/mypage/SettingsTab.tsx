@@ -28,7 +28,7 @@ export const SettingsTab = () => {
       <ThemedView style={styles.row}>
         <ThemedText style={styles.label}>화면모드</ThemedText>
 
-        <View style={styles.dropdownWrapper}>
+        <ThemedView style={styles.dropdownWrapper}>
           <DropDownPicker
             open={open}
             value={value}
@@ -104,7 +104,7 @@ export const SettingsTab = () => {
               />
             )}
           />
-        </View>
+        </ThemedView>
       </ThemedView>
     </MyPageSection>
   );

@@ -8,6 +8,7 @@ import VideoModal from '@/components/history/VideoModal';
 import { ThemedView } from '../ThemedView';
 import AnalysisCard from './AnalysisCard';
 import { vs } from 'react-native-size-matters';
+import { AnalysisRecord } from '@/types/analysis';
 
 interface Props {
   selectedId: string | null;
@@ -23,14 +24,34 @@ const toImageSource = (src?: string | number) =>
 
 export default function AnalysisVideoSection({ selectedId, onSelect }: Props) {
   const [modalVisible, setModalVisible] = useState(false);
+  const [extraVideo, setExtraVideo] = useState<AnalysisRecord | null>(null);
+
   const currentMonth = useMemo(() => new Date().getMonth() + 1, []);
   const currentYear = useMemo(() => new Date().getFullYear(), []);
 
   const getVideosByMonth = useUserStore(state => state.getVideosByMonth);
+  const getRecentVideos = useUserStore(state => state.getRecentVideos);
   const currentMonthVideos = useMemo(
     () => getVideosByMonth(currentYear, currentMonth),
     [getVideosByMonth, currentYear, currentMonth],
   );
+
+  const displayVideos = useMemo(() => {
+    if (extraVideo && !currentMonthVideos.find(v => v.id === extraVideo.id)) {
+      return [extraVideo, ...currentMonthVideos];
+    }
+    return currentMonthVideos;
+  }, [extraVideo, currentMonthVideos]);
+
+  const handleSelect = (id: string) => {
+    const allVideos = getRecentVideos();
+    const selected = allVideos.find(v => v.id === id);
+    if (selected) {
+      setExtraVideo(selected);
+    }
+    onSelect(id);
+    setModalVisible(false);
+  };
 
   return (
     <ThemedView style={styles.container}>
@@ -45,7 +66,7 @@ export default function AnalysisVideoSection({ selectedId, onSelect }: Props) {
 
       <FlatList
         horizontal
-        data={currentMonthVideos}
+        data={displayVideos}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <AnalysisCard
@@ -53,6 +74,7 @@ export default function AnalysisVideoSection({ selectedId, onSelect }: Props) {
             date={format(new Date(item.uploadedAt), 'yyyy.MM.dd')}
             status={item.status === 'IN_PROGRESS' ? 'IN_PROGRESS' : 'COMPLETE'}
             onPress={() => onSelect(item.id)}
+            selected={item.id === selectedId}
           />
         )}
         showsHorizontalScrollIndicator={false}
@@ -61,7 +83,7 @@ export default function AnalysisVideoSection({ selectedId, onSelect }: Props) {
       <VideoModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
-        onSelect={onSelect}
+        onSelect={handleSelect}
       />
     </ThemedView>
   );

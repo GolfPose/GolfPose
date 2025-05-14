@@ -4,12 +4,14 @@ import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
 import { s, vs } from 'react-native-size-matters';
 import Typography from '@/constants/Typography';
+import { ThemedView } from '../ThemedView';
 
 interface Props {
   thumbnail: any;
   date: string;
   status?: 'COMPLETE' | 'IN_PROGRESS';
   onPress: () => void;
+  selected: boolean;
 }
 
 export default function AnalysisCard({
@@ -17,29 +19,56 @@ export default function AnalysisCard({
   date,
   status,
   onPress,
+  selected,
 }: Props) {
   return (
-    <Pressable style={styles.card} onPress={onPress}>
-      <Image source={thumbnail} style={styles.thumb} resizeMode="cover" />
-      {status === 'IN_PROGRESS' && (
-        <View style={styles.overlayContainer}>
-          <View style={styles.overlay} />
-          <ThemedText style={styles.badge}>분석중</ThemedText>
-        </View>
+    <ThemedView style={styles.wrapper}>
+      {selected ? (
+        <ThemedView style={styles.borderWrapper}>
+          <Pressable style={styles.card} onPress={onPress}>
+            <Image source={thumbnail} style={styles.thumb} resizeMode="cover" />
+            {status === 'IN_PROGRESS' && (
+              <View style={styles.overlayContainer}>
+                <View style={styles.overlay} />
+                <ThemedText style={styles.badge}>분석중</ThemedText>
+              </View>
+            )}
+            <ThemedText style={styles.date}>{date}</ThemedText>
+          </Pressable>
+        </ThemedView>
+      ) : (
+        <Pressable style={styles.card} onPress={onPress}>
+          <Image source={thumbnail} style={styles.thumb} resizeMode="cover" />
+          {status === 'IN_PROGRESS' && (
+            <View style={styles.overlayContainer}>
+              <View style={styles.overlay} />
+              <ThemedText style={styles.badge}>분석중</ThemedText>
+            </View>
+          )}
+          <ThemedText style={styles.date}>{date}</ThemedText>
+        </Pressable>
       )}
-
-      <ThemedText style={styles.date}>{date}</ThemedText>
-    </Pressable>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    marginRight: s(12),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  borderWrapper: {
+    padding: s(1),
+    borderWidth: 2,
+    borderColor: Colors.common.primary600,
+    borderRadius: s(10),
+  },
   card: {
     width: s(130),
     height: vs(130),
     borderRadius: s(8),
     overflow: 'hidden',
-    marginRight: s(12),
     position: 'relative',
   },
   thumb: {
