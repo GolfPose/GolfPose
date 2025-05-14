@@ -22,12 +22,7 @@ function AnalysisCardComponent({
   selected,
 }: Props) {
   return (
-    <ThemedView
-      style={[
-        styles.wrapper,
-        selected && styles.borderWrapper, // ✅ 조건부 border만 추가
-      ]}
-    >
+    <ThemedView style={[styles.wrapper, selected && styles.borderWrapper]}>
       <Pressable style={styles.card} onPress={onPress}>
         <Image source={thumbnail} style={styles.thumb} resizeMode="cover" />
         {status === 'IN_PROGRESS' && (
