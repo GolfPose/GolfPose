@@ -1,10 +1,10 @@
 import React from 'react';
 import { Pressable, Image, StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
 import { s, vs } from 'react-native-size-matters';
 import Typography from '@/constants/Typography';
-import { ThemedView } from '../ThemedView';
 
 interface Props {
   thumbnail: any;
@@ -14,7 +14,7 @@ interface Props {
   selected: boolean;
 }
 
-export default function AnalysisCard({
+function AnalysisCardComponent({
   thumbnail,
   date,
   status,
@@ -22,41 +22,44 @@ export default function AnalysisCard({
   selected,
 }: Props) {
   return (
-    <ThemedView style={styles.wrapper}>
-      {selected ? (
-        <ThemedView style={styles.borderWrapper}>
-          <Pressable style={styles.card} onPress={onPress}>
-            <Image source={thumbnail} style={styles.thumb} resizeMode="cover" />
-            {status === 'IN_PROGRESS' && (
-              <View style={styles.overlayContainer}>
-                <View style={styles.overlay} />
-                <ThemedText style={styles.badge}>분석중</ThemedText>
-              </View>
-            )}
-            <ThemedText style={styles.date}>{date}</ThemedText>
-          </Pressable>
-        </ThemedView>
-      ) : (
-        <Pressable style={styles.card} onPress={onPress}>
-          <Image source={thumbnail} style={styles.thumb} resizeMode="cover" />
-          {status === 'IN_PROGRESS' && (
-            <View style={styles.overlayContainer}>
-              <View style={styles.overlay} />
-              <ThemedText style={styles.badge}>분석중</ThemedText>
-            </View>
-          )}
-          <ThemedText style={styles.date}>{date}</ThemedText>
-        </Pressable>
-      )}
+    <ThemedView
+      style={[
+        styles.wrapper,
+        selected && styles.borderWrapper, // ✅ 조건부 border만 추가
+      ]}
+    >
+      <Pressable style={styles.card} onPress={onPress}>
+        <Image source={thumbnail} style={styles.thumb} resizeMode="cover" />
+        {status === 'IN_PROGRESS' && (
+          <View style={styles.overlayContainer}>
+            <View style={styles.overlay} />
+            <ThemedText style={styles.badge}>분석중</ThemedText>
+          </View>
+        )}
+        <ThemedText style={styles.date}>{date}</ThemedText>
+      </Pressable>
     </ThemedView>
   );
 }
+
+function areEqual(prev: Props, next: Props) {
+  return (
+    prev.selected === next.selected &&
+    prev.thumbnail === next.thumbnail &&
+    prev.date === next.date &&
+    prev.status === next.status
+  );
+}
+
+const AnalysisCard = React.memo(AnalysisCardComponent, areEqual);
+export default AnalysisCard;
 
 const styles = StyleSheet.create({
   wrapper: {
     marginRight: s(12),
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: s(10),
   },
   borderWrapper: {
     padding: s(1),
