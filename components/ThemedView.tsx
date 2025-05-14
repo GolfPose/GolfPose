@@ -7,7 +7,7 @@ interface ThemedViewProps extends ViewProps {
   darkColor?: string;
 }
 
-export function ThemedView({
+function ThemedViewBase({
   style,
   lightColor,
   darkColor,
@@ -21,3 +21,5 @@ export function ThemedView({
 
   return <View style={[{ backgroundColor }, style]} {...otherProps} />;
 }
+
+export const ThemedView = ThemedViewBase;

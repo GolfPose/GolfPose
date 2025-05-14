@@ -1,3 +1,7 @@
+import { CreditRecord } from './credit';
+import { AnalysisRecord } from './analysis';
+import { PurchaseRecord } from './purchase';
+
 export interface UserInfo {
   isLoggedIn: boolean;
   name: string;
@@ -10,24 +14,4 @@ export interface UserInfo {
   myAnalysisVideos: AnalysisRecord[];
   accessToken: string;
   refreshToken?: string;
-}
-
-export interface CreditRecord {
-  id: string;
-  date: string;
-  change: number;
-  type: 'charge' | 'use';
-}
-
-export interface PurchaseRecord {
-  id: string;
-  plan: string;
-  price: number;
-  date: string;
-}
-
-export interface AnalysisRecord {
-  id: string;
-  uploadedAt: string;
-  videoUrl: string;
 }

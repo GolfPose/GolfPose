@@ -1,10 +1,8 @@
-import { create } from 'zustand';
-import {
-  UserInfo,
-  CreditRecord,
-  PurchaseRecord,
-  AnalysisRecord,
-} from '@/types/user';
+import { create, UseBoundStore, StoreApi } from 'zustand';
+import { UserInfo } from '@/types/user';
+import { CreditRecord } from '@/types/credit';
+import { PurchaseRecord } from '@/types/purchase';
+import { AnalysisRecord } from '@/types/analysis';
 
 interface UserStore {
   user: UserInfo | null;
@@ -12,6 +10,7 @@ interface UserStore {
   // setter
   setUser: (user: UserInfo) => void;
   clearUser: () => void;
+  logoutUser: () => void;
 
   // credit
   addCredit: (amount: number, record: CreditRecord) => void;
@@ -22,60 +21,92 @@ interface UserStore {
 
   // video
   addAnalysisVideo: (video: AnalysisRecord) => void;
+
+  // query
+  getVideosByMonth: (year: number, month: number) => AnalysisRecord[];
+  getRecentVideos: () => AnalysisRecord[];
 }
 
-const useUserStore = create<UserStore>(set => ({
-  user: null,
+const useUserStore: UseBoundStore<StoreApi<UserStore>> = create<UserStore>(
+  (set, get) => ({
+    user: null,
 
-  setUser: user => set({ user }),
-  clearUser: () => set({ user: null }),
+    setUser: user => set({ user }),
 
-  addCredit: (amount, record) =>
-    set(state => {
-      if (!state.user) return state;
-      return {
+    clearUser: () => set({ user: null }),
+
+    logoutUser: () => {
+      const currentUser = get().user;
+      if (!currentUser) return;
+      set({
         user: {
-          ...state.user,
-          credit: state.user.credit + amount,
-          creditRecord: [...state.user.creditRecord, record],
+          ...currentUser,
+          isLoggedIn: false,
         },
-      };
-    }),
+      });
+    },
 
-  useCredit: (amount, record) =>
-    set(state => {
-      if (!state.user) return state;
-      const newCredit = state.user.credit - amount;
-      return {
+    addCredit: (amount, record) => {
+      const currentUser = get().user;
+      if (!currentUser) return;
+      set({
         user: {
-          ...state.user,
+          ...currentUser,
+          credit: currentUser.credit + amount,
+          creditRecord: [...currentUser.creditRecord, record],
+        },
+      });
+    },
+
+    useCredit: (amount, record) => {
+      const currentUser = get().user;
+      if (!currentUser) return;
+      const newCredit = currentUser.credit - amount;
+      set({
+        user: {
+          ...currentUser,
           credit: newCredit < 0 ? 0 : newCredit,
-          creditRecord: [...state.user.creditRecord, record],
+          creditRecord: [...currentUser.creditRecord, record],
         },
-      };
-    }),
+      });
+    },
 
-  addPurchase: record =>
-    set(state => {
-      if (!state.user) return state;
-      return {
+    addPurchase: record => {
+      const currentUser = get().user;
+      if (!currentUser) return;
+      set({
         user: {
-          ...state.user,
-          purchasedRecord: [...state.user.purchasedRecord, record],
+          ...currentUser,
+          purchasedRecord: [...currentUser.purchasedRecord, record],
         },
-      };
-    }),
+      });
+    },
 
-  addAnalysisVideo: video =>
-    set(state => {
-      if (!state.user) return state;
-      return {
+    addAnalysisVideo: video => {
+      const currentUser = get().user;
+      if (!currentUser) return;
+      set({
         user: {
-          ...state.user,
-          myAnalysisVideos: [...state.user.myAnalysisVideos, video],
+          ...currentUser,
+          myAnalysisVideos: [...currentUser.myAnalysisVideos, video],
         },
-      };
-    }),
-}));
+      });
+    },
+
+    getVideosByMonth: (year: number, month: number): AnalysisRecord[] => {
+      const pad = (n: number) => n.toString().padStart(2, '0');
+      const prefix = `${year}-${pad(month)}`;
+      const videos = get().user?.myAnalysisVideos || [];
+      return videos.filter(v => v.uploadedAt.startsWith(prefix));
+    },
+
+    getRecentVideos: (): AnalysisRecord[] => {
+      const videos = get().user?.myAnalysisVideos || [];
+      return [...videos].sort((a, b) =>
+        b.uploadedAt.localeCompare(a.uploadedAt),
+      );
+    },
+  }),
+);
 
 export default useUserStore;

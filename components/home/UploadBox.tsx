@@ -76,7 +76,7 @@ export default function UploadBox() {
           height={s(16)}
           stroke={Colors.common.gray500}
         />
-        <Text style={styles.creditText}>남은 크레딧: {credit}</Text>
+        <ThemedText style={styles.creditText}>남은 크레딧: {credit}</ThemedText>
       </ThemedView>
 
       <ThemedView style={styles.uploadArea}>
@@ -84,9 +84,9 @@ export default function UploadBox() {
         (uploadStage === 'uploading' && !videoUri) ? (
           <ThemedView style={styles.loadingContainer}>
             <ActivityIndicator size="large" color={Colors.common.primary500} />
-            <Text style={styles.loadingText}>
+            <ThemedText style={styles.loadingText}>
               {uploadStage === 'picking' ? '업로드 준비 중...' : '업로드 중...'}
-            </Text>
+            </ThemedText>
           </ThemedView>
         ) : videoUri ? (
           <>
@@ -103,7 +103,9 @@ export default function UploadBox() {
                     size="small"
                     color={Colors.common.primary500}
                   />
-                  <Text style={styles.overlayText}>업로드 중...</Text>
+                  <ThemedText style={styles.overlayText}>
+                    업로드 중...
+                  </ThemedText>
                 </ThemedView>
               ) : (
                 <ThemedText style={styles.overlayText}>업로드 완료</ThemedText>
@@ -127,10 +129,10 @@ export default function UploadBox() {
               size={s(45)}
               color={Colors.common.gray400}
             />
-            <Text style={styles.desc}>
+            <ThemedText style={styles.desc}>
               파일을 업로드하세요.{'\n'}
               MP4, MOV, AVI 파일을 50MB까지{'\n'}업로드할 수 있습니다.
-            </Text>
+            </ThemedText>
             <Pressable
               style={[styles.button, isDisabled && styles.disabled]}
               onPress={handleUpload}
@@ -147,7 +149,7 @@ export default function UploadBox() {
           style={styles.analyzeButton}
           onPress={() => console.log('분석하기')}
         >
-          <Text style={styles.buttonText}>분석하기</Text>
+          <ThemedText style={styles.buttonText}>분석하기</ThemedText>
         </Pressable>
       )}
     </ThemedView>
