@@ -31,7 +31,9 @@ export const ProfileTab = () => {
           onPress: () => {
             router.navigate('/');
             setTimeout(() => {
-              useUserStore.getState().clearUser();
+              const { logoutUser, clearUser } = useUserStore.getState();
+              logoutUser();
+              clearUser();
             }, 0);
           },
         },

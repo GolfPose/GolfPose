@@ -10,6 +10,7 @@ interface UserStore {
   // setter
   setUser: (user: UserInfo) => void;
   clearUser: () => void;
+  logoutUser: () => void;
 
   // credit
   addCredit: (amount: number, record: CreditRecord) => void;
@@ -27,68 +28,80 @@ interface UserStore {
 }
 
 const useUserStore: UseBoundStore<StoreApi<UserStore>> = create<UserStore>(
-  set => ({
+  (set, get) => ({
     user: null,
 
     setUser: user => set({ user }),
+
     clearUser: () => set({ user: null }),
 
-    addCredit: (amount, record) =>
-      set(state => {
-        if (!state.user) return state;
-        return {
-          user: {
-            ...state.user,
-            credit: state.user.credit + amount,
-            creditRecord: [...state.user.creditRecord, record],
-          },
-        };
-      }),
+    logoutUser: () => {
+      const currentUser = get().user;
+      if (!currentUser) return;
+      set({
+        user: {
+          ...currentUser,
+          isLoggedIn: false,
+        },
+      });
+    },
 
-    useCredit: (amount, record) =>
-      set(state => {
-        if (!state.user) return state;
-        const newCredit = state.user.credit - amount;
-        return {
-          user: {
-            ...state.user,
-            credit: newCredit < 0 ? 0 : newCredit,
-            creditRecord: [...state.user.creditRecord, record],
-          },
-        };
-      }),
+    addCredit: (amount, record) => {
+      const currentUser = get().user;
+      if (!currentUser) return;
+      set({
+        user: {
+          ...currentUser,
+          credit: currentUser.credit + amount,
+          creditRecord: [...currentUser.creditRecord, record],
+        },
+      });
+    },
 
-    addPurchase: record =>
-      set(state => {
-        if (!state.user) return state;
-        return {
-          user: {
-            ...state.user,
-            purchasedRecord: [...state.user.purchasedRecord, record],
-          },
-        };
-      }),
+    useCredit: (amount, record) => {
+      const currentUser = get().user;
+      if (!currentUser) return;
+      const newCredit = currentUser.credit - amount;
+      set({
+        user: {
+          ...currentUser,
+          credit: newCredit < 0 ? 0 : newCredit,
+          creditRecord: [...currentUser.creditRecord, record],
+        },
+      });
+    },
 
-    addAnalysisVideo: video =>
-      set(state => {
-        if (!state.user) return state;
-        return {
-          user: {
-            ...state.user,
-            myAnalysisVideos: [...state.user.myAnalysisVideos, video],
-          },
-        };
-      }),
+    addPurchase: record => {
+      const currentUser = get().user;
+      if (!currentUser) return;
+      set({
+        user: {
+          ...currentUser,
+          purchasedRecord: [...currentUser.purchasedRecord, record],
+        },
+      });
+    },
+
+    addAnalysisVideo: video => {
+      const currentUser = get().user;
+      if (!currentUser) return;
+      set({
+        user: {
+          ...currentUser,
+          myAnalysisVideos: [...currentUser.myAnalysisVideos, video],
+        },
+      });
+    },
 
     getVideosByMonth: (year: number, month: number): AnalysisRecord[] => {
       const pad = (n: number) => n.toString().padStart(2, '0');
       const prefix = `${year}-${pad(month)}`;
-      const videos = useUserStore.getState().user?.myAnalysisVideos || [];
+      const videos = get().user?.myAnalysisVideos || [];
       return videos.filter(v => v.uploadedAt.startsWith(prefix));
     },
 
     getRecentVideos: (): AnalysisRecord[] => {
-      const videos = useUserStore.getState().user?.myAnalysisVideos || [];
+      const videos = get().user?.myAnalysisVideos || [];
       return [...videos].sort((a, b) =>
         b.uploadedAt.localeCompare(a.uploadedAt),
       );
