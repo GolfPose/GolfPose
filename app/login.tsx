@@ -18,6 +18,11 @@ import TitleSection from '@/components/TitleSection';
 import { Colors } from '@/constants/Colors';
 import Typography from '@/constants/Typography';
 import { s, vs } from 'react-native-size-matters';
+import { signIn } from '@/service/auth';
+import useUserStore from '@/store/useUserStore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { UserInfo } from '@/types/user';
+import { supabase } from '@/lib/supabase';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -40,22 +45,61 @@ export default function LoginScreen() {
   };
 
   const handlePasswordChange = (text: string) => {
-    // 영어 대소문자 + 숫자만 허용
-    const cleaned = text.replace(/[^a-zA-Z0-9]/g, '');
-    setPassword(cleaned);
+    setPassword(text); // 그냥 있는 그대로 받기
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!isEmailValid(email)) {
       alert('올바른 이메일 형식을 입력해주세요.');
       return;
     }
+
     if (password.length < 4) {
       alert('비밀번호는 4자 이상 입력해주세요.');
       return;
     }
+
     console.log('로그인 시도:', email, password);
-    console.log('로그인 성공!');
+
+    try {
+      const data = await signIn(email, password);
+      console.log('로그인 성공:', data);
+
+      const { user, access_token, refresh_token } = data.session;
+
+      const { data: profile, error: profileError } = await supabase
+        .from('users')
+        .select('display_name')
+        .eq('uid', user.id)
+        .single();
+
+      const userInfo: UserInfo = {
+        name: profile!.display_name,
+        email: user.email!,
+        plan: 'free',
+        isLoggedIn: true,
+        createdAt: user.created_at,
+        credit: 0,
+        creditRecord: [],
+        purchasedRecord: [],
+        myAnalysisVideos: [],
+        accessToken: access_token,
+        refreshToken: refresh_token,
+      };
+
+      // Zustand 저장
+      const setUser = useUserStore.getState().setUser;
+      setUser(userInfo);
+
+      // AsyncStorage 저장
+      await AsyncStorage.setItem('user', JSON.stringify(userInfo));
+
+      alert('로그인 성공!');
+      router.replace('/'); // 홈 또는 메인 페이지로 이동
+    } catch (err: any) {
+      console.error('로그인 실패:', err.message);
+      alert(`로그인 실패: ${err.message}`);
+    }
   };
 
   const handleSignup = async () => {
