@@ -8,7 +8,7 @@ export function RequireLogin({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!user?.isLoggedIn && pathname !== '/') {
+    if (!user || !user.isLoggedIn) {
       alert('로그인이 필요한 서비스입니다.');
       router.replace({ pathname: '/login', params: { fromRedirect: 'true' } });
     }
