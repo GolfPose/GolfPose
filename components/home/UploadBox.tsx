@@ -10,6 +10,7 @@ import { ThemedView } from '../ThemedView';
 import { Colors } from '@/constants/Colors';
 import { s, vs, ms } from 'react-native-size-matters';
 import Typography from '@/constants/Typography';
+import { router } from 'expo-router';
 
 export default function UploadBox() {
   // const credit = useUserStore(state => state.user?.credit ?? 0);
@@ -43,6 +44,12 @@ export default function UploadBox() {
   }, []);
 
   const handleUpload = async () => {
+    const user = useUserStore.getState().user;
+    if (!user || !user?.isLoggedIn) {
+      alert('로그인이 필요한 서비스입니다.');
+      router.replace({ pathname: '/login', params: { fromRedirect: 'true' } });
+      return;
+    }
     try {
       setUploadStage('picking');
 
