@@ -1,4 +1,4 @@
-import { StyleSheet, Text, Pressable, ActivityIndicator } from 'react-native';
+import { StyleSheet, Pressable, ActivityIndicator } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import BadgeCent from '@/assets/svgs/badge-cent.svg';
 import { useEffect, useState, useRef } from 'react';

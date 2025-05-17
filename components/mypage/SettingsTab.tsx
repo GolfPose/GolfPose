@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StyleSheet, TextStyle, View } from 'react-native';
+import { StyleSheet, TextStyle } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { ThemedText } from '@/components/ThemedText';
 import { MyPageSection } from '@/components/mypage/MyPageSection';
@@ -9,7 +9,7 @@ import { Colors } from '@/constants/Colors';
 import { getColor } from '@/utils/getColor';
 import { ThemedView } from '../ThemedView';
 import { MaterialIcons } from '@expo/vector-icons';
-import { s, vs } from 'react-native-size-matters';
+import { vs } from 'react-native-size-matters';
 import Typography from '@/constants/Typography';
 
 export const SettingsTab = () => {
