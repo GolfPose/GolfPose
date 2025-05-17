@@ -27,7 +27,7 @@ export const dummyUser: UserInfo = {
       type: 'charge',
     },
   ],
-  purchasedRecord: [],
+
   myAnalysisVideos: [
     {
       id: 'v1',

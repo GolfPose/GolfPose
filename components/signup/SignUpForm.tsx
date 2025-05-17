@@ -3,7 +3,6 @@ import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Touch
 import { SignUpInput } from './SignUpInput';
 import { SignUpButton } from './SignUpButton';
 import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
 import TitleSection from '@/components/TitleSection';
 import BackHeader from '@/components/BackHeader';
 import { useTheme } from '@/hooks/useTheme';

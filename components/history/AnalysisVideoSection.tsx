@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { View, FlatList, Pressable, StyleSheet } from 'react-native';
+import { FlatList, Pressable, StyleSheet } from 'react-native';
 import useUserStore from '@/store/useUserStore';
 import { format } from 'date-fns';
 import { ThemedText } from '@/components/ThemedText';

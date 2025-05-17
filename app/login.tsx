@@ -81,7 +81,6 @@ export default function LoginScreen() {
         createdAt: user.created_at,
         credit: 0,
         creditRecord: [],
-        purchasedRecord: [],
         myAnalysisVideos: [],
         accessToken: access_token,
         refreshToken: refresh_token,

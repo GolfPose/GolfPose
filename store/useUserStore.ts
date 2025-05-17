@@ -1,7 +1,6 @@
 import { create, UseBoundStore, StoreApi } from 'zustand';
 import { UserInfo } from '@/types/user';
 import { CreditRecord } from '@/types/credit';
-import { PurchaseRecord } from '@/types/purchase';
 import { AnalysisRecord } from '@/types/analysis';
 
 interface UserStore {
@@ -15,9 +14,6 @@ interface UserStore {
   // credit
   addCredit: (amount: number, record: CreditRecord) => void;
   useCredit: (amount: number, record: CreditRecord) => void;
-
-  // purchase
-  addPurchase: (record: PurchaseRecord) => void;
 
   // video
   addAnalysisVideo: (video: AnalysisRecord) => void;
@@ -67,17 +63,6 @@ const useUserStore: UseBoundStore<StoreApi<UserStore>> = create<UserStore>(
           ...currentUser,
           credit: newCredit < 0 ? 0 : newCredit,
           creditRecord: [...currentUser.creditRecord, record],
-        },
-      });
-    },
-
-    addPurchase: record => {
-      const currentUser = get().user;
-      if (!currentUser) return;
-      set({
-        user: {
-          ...currentUser,
-          purchasedRecord: [...currentUser.purchasedRecord, record],
         },
       });
     },

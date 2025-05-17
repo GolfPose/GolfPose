@@ -19,8 +19,6 @@ import {
   SafeAreaView,
   StyleSheet,
   StatusBar as RNStatusBar,
-  Text,
-  TextInput,
 } from 'react-native';
 import { Colors } from '@/constants/Colors';
 import useUserStore from '@/store/useUserStore';
