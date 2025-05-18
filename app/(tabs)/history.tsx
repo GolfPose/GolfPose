@@ -23,6 +23,7 @@ import { format as formatDate } from 'date-fns';
 import Typography from '@/constants/Typography';
 import BodyPartGraphSection from '@/components/history/BodyPartGraphSection';
 import GolfPose3DPanel from '@/components/history/GolfPose3DPanel';
+import { RequireLogin } from '@/components/auth/RequireLogin';
 
 export type ControlAction = 'play' | 'pause' | 'reset' | 'analysis' | null;
 
@@ -59,52 +60,54 @@ export default function HistoryScreen() {
   };
 
   return (
-    <View style={styles.wrapper}>
-      <ScrollView
-        style={[styles.root, { backgroundColor: bgColor }]}
-        onScroll={handleScroll}
-        scrollEventThrottle={s(16)}
-      >
-        <Header showUserInfo={false} />
-        <ThemedView style={styles.container}>
-          <TitleSection title="나의 분석 영상" />
-          <AnalysisVideoSection
-            selectedId={selectedVideoId}
-            onSelect={setSelectedVideoId}
-          />
-          {video?.status === 'COMPLETE' && (
-            <>
-              <ThemedText style={styles.date}>{videoDate}</ThemedText>
-              {!showFixed ? (
-                <ThemedView onLayout={handleLayout}>
-                  <ControlButton
-                    selected={controlAction}
-                    onPress={setControlAction}
-                  />
-                </ThemedView>
-              ) : (
-                <ThemedView style={styles.placeholder}></ThemedView>
-              )}
-              <GolfPose2DPanel
-                key={video.id}
-                video={video}
-                controlAction={controlAction}
-              />
-              <BodyPartGraphSection
-                video={video}
-                controlAction={controlAction}
-              />
-              <GolfPose3DPanel video={video} controlAction={controlAction} />
-            </>
-          )}
-        </ThemedView>
-      </ScrollView>
-      {showFixed && video?.status === 'COMPLETE' && (
-        <ThemedView style={styles.controlFixed}>
-          <ControlButton selected={controlAction} onPress={setControlAction} />
-        </ThemedView>
-      )}
-    </View>
+    <RequireLogin>
+      <View style={styles.wrapper}>
+        <ScrollView
+          style={[styles.root, { backgroundColor: bgColor }]}
+          onScroll={handleScroll}
+          scrollEventThrottle={s(16)}
+        >
+          <Header showUserInfo={false} />
+          <ThemedView style={styles.container}>
+            <TitleSection title="나의 분석 영상" />
+            <AnalysisVideoSection
+              selectedId={selectedVideoId}
+              onSelect={setSelectedVideoId}
+            />
+            {video?.status === 'COMPLETE' && (
+              <>
+                <ThemedText style={styles.date}>{videoDate}</ThemedText>
+                {!showFixed ? (
+                  <ThemedView onLayout={handleLayout}>
+                    <ControlButton
+                      selected={controlAction}
+                      onPress={setControlAction}
+                    />
+                  </ThemedView>
+                ) : (
+                  <ThemedView style={styles.placeholder}></ThemedView>
+                )}
+                <GolfPose2DPanel
+                  key={video.id}
+                  video={video}
+                  controlAction={controlAction}
+                />
+                <BodyPartGraphSection
+                  video={video}
+                  controlAction={controlAction}
+                />
+                <GolfPose3DPanel video={video} controlAction={controlAction} />
+              </>
+            )}
+          </ThemedView>
+        </ScrollView>
+        {showFixed && video?.status === 'COMPLETE' && (
+          <ThemedView style={styles.controlFixed}>
+            <ControlButton selected={controlAction} onPress={setControlAction} />
+          </ThemedView>
+        )}
+      </View>
+    </RequireLogin>
   );
 }
 

@@ -4,7 +4,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { MyPageSection } from './MyPageSection';
 import useUserStore from '@/store/useUserStore';
 import { Colors } from '@/constants/Colors';
-import { vs, s } from 'react-native-size-matters';
+import { vs } from 'react-native-size-matters';
 import dayjs from 'dayjs';
 import Typography from '@/constants/Typography';
 
