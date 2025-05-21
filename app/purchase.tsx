@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { StyleSheet, Pressable, Image, View, Text, useColorScheme } from 'react-native';
+import { StyleSheet, Pressable, Image } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
@@ -13,8 +13,6 @@ import { FontAwesome } from '@expo/vector-icons';
 export default function PurchaseScreen() {
   const { title, price } = useLocalSearchParams();
   const router = useRouter();
-  const colorScheme = useColorScheme();
-
   const theme = useTheme();
   const iconColor = getColor(theme, {
     light: Colors.common.black,
@@ -41,18 +39,31 @@ export default function PurchaseScreen() {
 
       <ThemedText style={styles.sectionTitle}>일반결제</ThemedText>
       <Pressable style={styles.paymentOption}>
-        <FontAwesome name="credit-card" size={24} color= {iconColor} style={{ marginRight: 12 }} />
+        <FontAwesome
+          name="credit-card"
+          size={24}
+          color={iconColor}
+          style={{ marginRight: 12 }}
+        />
         <ThemedText style={styles.paymentText}>신용카드</ThemedText>
       </Pressable>
 
       <ThemedText style={styles.sectionTitle}>간편결제</ThemedText>
       <ThemedView style={styles.quickRow}>
         <Pressable style={styles.quickOption}>
-          <Image source={require('@/assets/images/kakao.png')} style={styles.icon} resizeMode="contain" />
+          <Image
+            source={require('@/assets/images/kakao.png')}
+            style={styles.icon}
+            resizeMode="contain"
+          />
           <ThemedText style={styles.paymentText}>카카오페이</ThemedText>
         </Pressable>
         <Pressable style={styles.quickOption}>
-          <Image source={require('@/assets/images/Naver.png')} style={styles.icon} resizeMode="contain" />
+          <Image
+            source={require('@/assets/images/naver.png')}
+            style={styles.icon}
+            resizeMode="contain"
+          />
           <ThemedText style={styles.paymentText}>네이버페이</ThemedText>
         </Pressable>
       </ThemedView>
@@ -103,12 +114,12 @@ const styles = StyleSheet.create({
     marginTop: vs(4),
   },
   planTitle: {
-    fontSize: Typography.md,
+    fontSize: Typography.lg,
     fontWeight: '600',
-    marginTop: vs(4),
+    marginTop: vs(6),
   },
   modalPrice: {
-    fontSize: Typography.lg,
+    fontSize: Typography.xl,
     fontWeight: 'bold',
     color: Colors.common.primary500,
     textAlign: 'right',
@@ -118,7 +129,7 @@ const styles = StyleSheet.create({
     fontSize: Typography.md,
     fontWeight: '600',
     marginTop: vs(12),
-    marginBottom: vs(4),
+    marginBottom: vs(8),
   },
   paymentOption: {
     width: s(146),
@@ -144,7 +155,6 @@ const styles = StyleSheet.create({
     borderColor: Colors.common.gray300,
     borderRadius: s(8),
     marginRight: s(8),
-
   },
   icon: {
     width: s(24),
@@ -163,13 +173,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderRadius: s(8),
-    width: s(280),
-    borderColor: Colors.common.gray300,
+    width: '100%',
+    marginTop: vs(4),
   },
   paymentLabel: {
-    fontSize: Typography.sm,
+    fontSize: Typography.md,
     color: Colors.common.gray600,
   },
-
 });
