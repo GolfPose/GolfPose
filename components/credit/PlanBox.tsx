@@ -1,12 +1,15 @@
-import { StyleSheet, Pressable, Linking } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Pressable, } from 'react-native';
 import { ThemedView } from '../ThemedView';
 import Typography from '@/constants/Typography';
 import { s, vs } from 'react-native-size-matters';
 import { ThemedText } from '../ThemedText';
 import { Colors } from '@/constants/Colors';
 import { Feather } from '@expo/vector-icons';
+import type { Plan } from '@/constants/Plans';
+import { useRouter } from 'expo-router';
 
-interface PlanBoxProps {
+interface PlanBoxProps extends Plan {
   title: string;
   originalPrice?: string;
   discountLabel?: string;
@@ -23,29 +26,38 @@ export default function PlanBox({
   creditAmount,
   features,
 }: PlanBoxProps) {
+  const router = useRouter();
+
   const handlePurchase = () => {
-    const url = 'https://www.jaisworks.com/plans';
-    Linking.openURL(url).catch(err => console.error('링크 열기 실패:', err));
+     router.push({
+      pathname: '/purchase',
+      params: {
+        title,
+        price,
+      },
+    });
   };
 
   return (
-    <ThemedView style={styles.planBox}>
+     <ThemedView style={styles.planBox}>
       <ThemedText style={styles.planTitle}>{title}</ThemedText>
+
       <ThemedView style={styles.discountContainer}>
         {originalPrice && (
-          <ThemedText style={styles.originalPrice}>
-            {originalPrice}원
-          </ThemedText>
+          <ThemedText style={styles.originalPrice}>{originalPrice}원</ThemedText>
         )}
         {!!discountLabel && (
           <ThemedText style={styles.discountLabel}>{discountLabel}</ThemedText>
         )}
       </ThemedView>
+
       <ThemedText style={styles.price}>{price}원</ThemedText>
       <ThemedText style={styles.credit}>{creditAmount}</ThemedText>
+
       <Pressable style={styles.button} onPress={handlePurchase}>
         <ThemedText style={styles.buttonText}>결제하기</ThemedText>
       </Pressable>
+
       {features.map((feature, idx) => (
         <ThemedView key={idx} style={styles.featureRow}>
           <Feather
@@ -63,11 +75,12 @@ export default function PlanBox({
 
 const styles = StyleSheet.create({
   planBox: {
+    padding: s(16),
     borderWidth: 1,
     borderRadius: s(12),
     paddingHorizontal: s(16),
     paddingVertical: vs(16),
-    borderColor: Colors.common.gray200,
+    borderColor: Colors.common.gray300,
   },
   planTitle: {
     fontSize: Typography.xl,
@@ -82,7 +95,7 @@ const styles = StyleSheet.create({
   },
   originalPrice: {
     fontSize: Typography.sm,
-    color: Colors.common.gray500,
+    color: Colors.common.gray600,
     textDecorationLine: 'line-through',
   },
   discountLabel: {
