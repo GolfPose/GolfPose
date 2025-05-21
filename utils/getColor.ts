@@ -1,4 +1,4 @@
-import { ThemeColorMap } from '@/types/themeColorMap';
+import { ThemeColorMap } from '@/types/ThemeColorMap';
 
 export function getColor(
   theme: 'light' | 'dark',
