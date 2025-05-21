@@ -4,7 +4,7 @@ import {
   ThemeProvider,
 } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { useTheme } from '@/hooks/useTheme';
@@ -19,10 +19,12 @@ import {
   SafeAreaView,
   StyleSheet,
   StatusBar as RNStatusBar,
+  Pressable,
 } from 'react-native';
 import { Colors } from '@/constants/Colors';
 import useUserStore from '@/store/useUserStore';
 import { dummyUser } from '@/constants/dummyUser';
+import { Feather } from '@expo/vector-icons';
 
 export default function RootLayout() {
   const theme = useTheme();
@@ -82,6 +84,10 @@ export default function RootLayout() {
             />
             <Stack.Screen
               name="signup"
+              options={{ headerShown: false, animation: 'none' }}
+            />
+            <Stack.Screen
+              name="purchase"
               options={{ headerShown: false, animation: 'none' }}
             />
           </Stack>
