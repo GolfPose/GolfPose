@@ -223,6 +223,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   buttonText: {
+    fontSize: Typography.sm,
     fontWeight: 'bold',
     color: Colors.common.white,
   },
