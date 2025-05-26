@@ -54,7 +54,7 @@ export const ProfileTab = () => {
               return;
             }
 
-            const { success, message } = await withdrawAccount(user.uid);
+            const { success, message } = await withdrawAccount(user.email);
             alert(message);
 
             if (success) {
