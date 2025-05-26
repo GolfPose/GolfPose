@@ -5,16 +5,38 @@ import useUserStore from '@/store/useUserStore';
 export async function login(email: string, password: string) {
   const { setUser } = useUserStore.getState();
 
-  const { data, error } = await supabase.auth.signInWithPassword({
+  const { data: sessionData, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
 
-  if (error || !data.session) {
-    throw new Error(error?.message || '로그인 실패');
+  if (error) {
+    const { data: emailCheck } = await supabase
+      .from('users')
+      .select('*')
+      .eq('email', email)
+      .single();
+
+    if (error.message === 'Invalid login credentials') {
+      if (!emailCheck) {
+        throw new Error('존재하지 않는 이메일입니다.');
+      } else {
+        throw new Error('비밀번호가 일치하지 않습니다.');
+      }
+    }
+
+    if (error.message === 'Email not confirmed') {
+      await supabase.auth.resend({
+        type: 'signup',
+        email,
+      });
+      throw new Error('이메일 인증이 필요합니다. 이메일을 확인해주세요.');
+    }
+
+    throw new Error(error.message);
   }
 
-  const { user, access_token, refresh_token } = data.session;
+  const { user, session } = sessionData;
 
   const { data: profile, error: profileError } = await supabase
     .from('users')
@@ -37,8 +59,8 @@ export async function login(email: string, password: string) {
     myAnalysisVideos: [],
   });
 
-  await SecureStore.setItemAsync('access_token', access_token);
-  await SecureStore.setItemAsync('refresh_token', refresh_token);
+  await SecureStore.setItemAsync('access_token', session.access_token);
+  await SecureStore.setItemAsync('refresh_token', session.refresh_token);
 
   return true;
 }
