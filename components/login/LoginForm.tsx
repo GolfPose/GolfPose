@@ -10,6 +10,7 @@ import { login } from '@/service/auth';
 export const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleEmailChange = (text: string) => {
@@ -27,6 +28,8 @@ export const LoginForm = () => {
   };
 
   const handleLogin = async () => {
+    if (loading) return;
+
     if (!isEmailValid(email)) {
       alert('올바른 이메일 형식을 입력해주세요.');
       return;
@@ -37,6 +40,7 @@ export const LoginForm = () => {
       return;
     }
 
+    setLoading(true);
     try {
       await login(email, password);
       alert('로그인 성공!');
@@ -44,6 +48,8 @@ export const LoginForm = () => {
     } catch (err: any) {
       console.error('로그인 실패:', err.message);
       alert(`로그인 실패: ${err.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -68,7 +74,7 @@ export const LoginForm = () => {
         onChangeText={handlePasswordChange}
         secureTextEntry
       />
-      <LoginButton onPress={handleLogin} />
+      <LoginButton onPress={handleLogin} loading={loading} />
       <SignUpNavigateButton onPress={handleSignup} />
       <View style={{ height: vs(40) }} />
     </View>
