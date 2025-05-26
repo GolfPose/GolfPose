@@ -244,26 +244,35 @@ export async function withdrawAccount(email: string) {
   const { clearUser } = useUserStore.getState();
 
   try {
-    const { data: userRow, error: userFetchError } = await supabase
-      .from('users')
-      .select('uid')
-      .eq('email', email)
-      .single();
-
-    if (userFetchError || !userRow) {
-      console.error('uid 조회 실패:', userFetchError);
-      return { success: false, message: '회원 정보 조회에 실패했습니다.' };
-    }
-
-    const uid = userRow.uid;
-
-    const { error: authError } = await supabase.auth.admin.deleteUser(uid);
-
-    if (authError) {
-      console.error('auth 계정 삭제 실패:', authError);
+    const { data: sessionData, error: sessionError } =
+      await supabase.auth.getSession();
+    if (sessionError || !sessionData.session) {
+      console.error('세션 조회 실패:', sessionError);
       return {
         success: false,
-        message: '계정 삭제 중 오류가 발생했습니다. 관리자에게 문의하세요.',
+        message: '세션 정보가 없습니다. 다시 로그인해주세요.',
+      };
+    }
+
+    const accessToken = sessionData.session.access_token;
+
+    const { error: functionError } = await supabase.functions.invoke(
+      'delete-user-account',
+      {
+        method: 'POST',
+        body: { email },
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    if (functionError) {
+      console.error('Edge Function 회원탈퇴 실패:', functionError);
+      return {
+        success: false,
+        message: '회원탈퇴 중 오류가 발생했습니다. 관리자에게 문의하세요.',
       };
     }
 
