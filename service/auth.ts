@@ -42,10 +42,10 @@ export async function login(email: string, password: string) {
   const { data: profile, error: profileError } = await supabase
     .from('users')
     .select('display_name, credits')
-    .eq('uid', user.id)
+    .eq('email', user.email)
     .single();
 
-  if (profileError) {
+  if (profileError || !profile) {
     throw new Error('프로필 정보를 가져오지 못했습니다.');
   }
 
@@ -84,33 +84,42 @@ export async function signUp(
   }
 
   const {
-    error,
+    error: signUpError,
     data: { user },
   } = await supabase.auth.signUp({
     email,
     password,
     options: {
+      data: { display_name: displayName },
       emailRedirectTo: `${process.env.EXPO_PUBLIC_SITE_URL}/auth/callback`,
     },
   });
 
-  if (error) {
-    return { success: false, message: error.message };
+  if (signUpError || !user) {
+    return {
+      success: false,
+      message: signUpError?.message || '회원가입에 실패했습니다.',
+    };
   }
 
   const { error: insertError } = await supabase.from('users').insert({
     email,
     display_name: displayName,
-    uid: user?.id, // uuid
     credits: 80,
   });
 
   if (insertError) {
-    console.error(insertError);
-    return { success: false, message: '회원가입 중 오류가 발생했습니다.' };
+    console.error('users 테이블 insert 실패:', insertError);
+    return {
+      success: false,
+      message: '회원가입 중 오류가 발생했습니다.',
+    };
   }
 
-  return { success: true, message: '회원가입이 완료되었습니다.' };
+  return {
+    success: true,
+    message: '회원가입이 완료되었습니다. 이메일을 확인해주세요.',
+  };
 }
 
 // 로그아웃
@@ -152,10 +161,10 @@ export async function restoreSession() {
   const { data: profile, error: profileError } = await supabase
     .from('users')
     .select('display_name, credits')
-    .eq('uid', user.id)
+    .eq('email', user.email)
     .single();
 
-  if (profileError) {
+  if (profileError || !profile) {
     clearUser();
     return false;
   }
@@ -176,7 +185,7 @@ export async function restoreSession() {
 }
 
 // 닉네임 수정
-export async function updateDisplayName(userUid: string, newName: string) {
+export async function updateDisplayName(userEmail: string, newName: string) {
   if (!newName.trim()) {
     return { success: false, message: '닉네임을 입력해주세요.' };
   }
@@ -192,7 +201,7 @@ export async function updateDisplayName(userUid: string, newName: string) {
 
   const { data: existingName } = await supabase
     .from('users')
-    .select('uid')
+    .select('email')
     .eq('display_name', newName)
     .single();
 
@@ -203,7 +212,7 @@ export async function updateDisplayName(userUid: string, newName: string) {
   const { error: updateError } = await supabase
     .from('users')
     .update({ display_name: newName })
-    .eq('uid', userUid);
+    .eq('email', userEmail);
 
   if (updateError) {
     console.error('닉네임 업데이트 실패:', updateError);
@@ -217,4 +226,40 @@ export async function updateDisplayName(userUid: string, newName: string) {
   });
 
   return { success: true, message: '닉네임이 성공적으로 변경되었습니다.' };
+}
+
+// 회원탈퇴
+export async function withdrawAccount(userEmail: string) {
+  const { clearUser } = useUserStore.getState();
+
+  try {
+    const { error: deleteError } = await supabase
+      .from('users')
+      .delete()
+      .eq('email', userEmail);
+
+    if (deleteError) {
+      console.error('users 테이블 삭제 실패:', deleteError);
+      return { success: false, message: '회원 정보 삭제에 실패했습니다.' };
+    }
+
+    const { error: authError } = await supabase.auth.signOut();
+
+    if (authError) {
+      console.error('auth 계정 삭제 실패:', authError);
+      return {
+        success: false,
+        message: '계정 로그아웃 중 오류가 발생했습니다.',
+      };
+    }
+
+    clearUser();
+    await SecureStore.deleteItemAsync('access_token');
+    await SecureStore.deleteItemAsync('refresh_token');
+
+    return { success: true, message: '회원 탈퇴가 완료되었습니다.' };
+  } catch (err) {
+    console.error('회원탈퇴 예외 발생:', err);
+    return { success: false, message: '회원 탈퇴 중 예외가 발생했습니다.' };
+  }
 }
