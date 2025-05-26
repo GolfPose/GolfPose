@@ -34,7 +34,7 @@ export function useRestoreSession() {
 
         const { data: profile, error: profileError } = await supabase
           .from('users')
-          .select('display_name')
+          .select('display_name, credits')
           .eq('uid', user.id)
           .single();
 
@@ -45,12 +45,13 @@ export function useRestoreSession() {
         }
 
         setUser({
+          uid: user.id,
           name: profile.display_name,
           email: user.email!,
           plan: 'free',
           isLoggedIn: true,
           createdAt: user.created_at,
-          credit: 0,
+          credit: profile.credits || 0,
           creditRecord: [],
           myAnalysisVideos: [],
         });

@@ -41,7 +41,7 @@ export async function login(email: string, password: string) {
 
   const { data: profile, error: profileError } = await supabase
     .from('users')
-    .select('display_name')
+    .select('display_name, credits')
     .eq('uid', user.id)
     .single();
 
@@ -50,12 +50,13 @@ export async function login(email: string, password: string) {
   }
 
   setUser({
+    uid: user.id,
     name: profile.display_name,
     email: user.email!,
     plan: 'free',
     isLoggedIn: true,
     createdAt: user.created_at,
-    credit: 0,
+    credit: profile.credits || 0,
     creditRecord: [],
     myAnalysisVideos: [],
   });
@@ -100,7 +101,7 @@ export async function signUp(
   const { error: insertError } = await supabase.from('users').insert({
     email,
     display_name: displayName,
-    uid: user?.id,
+    uid: user?.id, // uuid
     credits: 80,
   });
 
@@ -124,6 +125,7 @@ export async function logout() {
   return true;
 }
 
+// 세션 복원
 export async function restoreSession() {
   const { setUser, clearUser } = useUserStore.getState();
 
@@ -149,7 +151,7 @@ export async function restoreSession() {
 
   const { data: profile, error: profileError } = await supabase
     .from('users')
-    .select('display_name')
+    .select('display_name, credits')
     .eq('uid', user.id)
     .single();
 
@@ -159,15 +161,60 @@ export async function restoreSession() {
   }
 
   setUser({
+    uid: user.id,
     name: profile.display_name,
     email: user.email!,
     plan: 'free',
     isLoggedIn: true,
     createdAt: user.created_at,
-    credit: 0,
+    credit: profile.credits || 0,
     creditRecord: [],
     myAnalysisVideos: [],
   });
 
   return true;
+}
+
+// 닉네임 수정
+export async function updateDisplayName(userUid: string, newName: string) {
+  if (!newName.trim()) {
+    return { success: false, message: '닉네임을 입력해주세요.' };
+  }
+
+  const currentUser = useUserStore.getState().user;
+  if (!currentUser) {
+    return { success: false, message: '사용자 정보가 없습니다.' };
+  }
+
+  if (newName === currentUser.name) {
+    return { success: false, message: '현재 닉네임과 동일합니다.' };
+  }
+
+  const { data: existingName } = await supabase
+    .from('users')
+    .select('uid')
+    .eq('display_name', newName)
+    .single();
+
+  if (existingName) {
+    return { success: false, message: '이미 존재하는 닉네임입니다.' };
+  }
+
+  const { error: updateError } = await supabase
+    .from('users')
+    .update({ display_name: newName })
+    .eq('uid', userUid);
+
+  if (updateError) {
+    console.error('닉네임 업데이트 실패:', updateError);
+    return { success: false, message: '닉네임 업데이트에 실패했습니다.' };
+  }
+
+  const setUser = useUserStore.getState().setUser;
+  setUser({
+    ...currentUser,
+    name: newName,
+  });
+
+  return { success: true, message: '닉네임이 성공적으로 변경되었습니다.' };
 }

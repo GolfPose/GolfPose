@@ -9,7 +9,7 @@ import useUserStore from '@/store/useUserStore';
 import { MyPageSection } from '@/components/mypage/MyPageSection';
 import { useTheme } from '@/hooks/useTheme';
 import { router } from 'expo-router';
-import { logout } from '@/service/auth';
+import { logout, updateDisplayName } from '@/service/auth';
 
 export const ProfileTab = () => {
   const user = useUserStore(state => state.user);
@@ -17,9 +17,15 @@ export const ProfileTab = () => {
   const [tempName, setTempName] = useState(user?.name ?? '');
   const theme = useTheme();
 
-  const handleSave = () => {
-    console.log('새 이름 저장:', tempName);
-    setIsEditing(false);
+  const handleSave = async () => {
+    if (!user) return;
+
+    const { success, message } = await updateDisplayName(user.uid, tempName);
+
+    alert(message);
+    if (success) {
+      setIsEditing(false);
+    }
   };
 
   const handleLogout = async () => {
