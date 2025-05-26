@@ -9,6 +9,7 @@ import useUserStore from '@/store/useUserStore';
 import { MyPageSection } from '@/components/mypage/MyPageSection';
 import { useTheme } from '@/hooks/useTheme';
 import { router } from 'expo-router';
+import { logout } from '@/service/auth';
 
 export const ProfileTab = () => {
   const user = useUserStore(state => state.user);
@@ -21,26 +22,9 @@ export const ProfileTab = () => {
     setIsEditing(false);
   };
 
-  const handleLogout = () => {
-    Alert.alert(
-      '로그아웃',
-      '로그아웃이 완료되었습니다.',
-      [
-        {
-          text: '확인',
-          onPress: () => {
-            router.navigate('/');
-            setTimeout(() => {
-              const { logoutUser, clearUser } = useUserStore.getState();
-              logoutUser();
-              clearUser();
-            }, 0);
-          },
-        },
-      ],
-      { cancelable: false },
-    );
-    console.log('로그아웃 완료');
+  const handleLogout = async () => {
+    await logout();
+    router.replace('/login');
   };
 
   const handleCancelEdit = () => {

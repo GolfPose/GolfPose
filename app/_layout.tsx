@@ -4,7 +4,7 @@ import {
   ThemeProvider,
 } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack, useRouter } from 'expo-router';
+import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { useTheme } from '@/hooks/useTheme';
@@ -19,12 +19,9 @@ import {
   SafeAreaView,
   StyleSheet,
   StatusBar as RNStatusBar,
-  Pressable,
 } from 'react-native';
 import { Colors } from '@/constants/Colors';
-import useUserStore from '@/store/useUserStore';
-import { dummyUser } from '@/constants/dummyUser';
-import { Feather } from '@expo/vector-icons';
+import { restoreSession } from '@/service/auth';
 
 export default function RootLayout() {
   const theme = useTheme();
@@ -46,9 +43,15 @@ export default function RootLayout() {
   }, [loaded]);
 
   useEffect(() => {
+    restoreSession();
+  }, []);
+
+  /* 더미 유저
+  useEffect(() => {
     const setUser = useUserStore.getState().setUser;
     setUser(dummyUser);
   }, []);
+  */
 
   const animatedMainStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,

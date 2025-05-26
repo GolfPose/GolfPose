@@ -1,15 +1,11 @@
-import { supabase } from "@/lib/supabase";
-import { signIn } from "@/service/auth";
-import useUserStore from "@/store/useUserStore";
-import { UserInfo } from "@/types/user";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
-import { useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { vs } from "react-native-size-matters";
-import { LoginInput } from "./LoginInput";
-import { LoginButton } from "./LoginButton";
-import { SignUpNavigateButton } from "./SignUpNavigateButton";
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { vs } from 'react-native-size-matters';
+import { LoginInput } from './LoginInput';
+import { LoginButton } from './LoginButton';
+import { SignUpNavigateButton } from './SignUpNavigateButton';
+import { login } from '@/service/auth';
 
 export const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -17,13 +13,12 @@ export const LoginForm = () => {
   const router = useRouter();
 
   const handleEmailChange = (text: string) => {
-    // 공백 제거
     const cleaned = text.replace(/\s/g, '');
     setEmail(cleaned);
   };
 
   const handlePasswordChange = (text: string) => {
-    setPassword(text); // 그냥 있는 그대로 받기
+    setPassword(text);
   };
 
   const isEmailValid = (email: string) => {
@@ -42,49 +37,17 @@ export const LoginForm = () => {
       return;
     }
 
-    console.log('로그인 시도:', email, password);
-
     try {
-      const data = await signIn(email, password);
-      console.log('로그인 성공:', data);
-
-      const { user, access_token, refresh_token } = data.session;
-
-      const { data: profile, error: profileError } = await supabase
-        .from('users')
-        .select('display_name')
-        .eq('uid', user.id)
-        .single();
-
-      const userInfo: UserInfo = {
-        name: profile!.display_name,
-        email: user.email!,
-        plan: 'free',
-        isLoggedIn: true,
-        createdAt: user.created_at,
-        credit: 0,
-        creditRecord: [],
-        myAnalysisVideos: [],
-        accessToken: access_token,
-        refreshToken: refresh_token,
-      };
-
-      // Zustand 저장
-      const setUser = useUserStore.getState().setUser;
-      setUser(userInfo);
-
-      // AsyncStorage 저장
-      await AsyncStorage.setItem('user', JSON.stringify(userInfo));
-
+      await login(email, password);
       alert('로그인 성공!');
-      router.replace('/'); // 홈 또는 메인 페이지로 이동
+      router.replace('/');
     } catch (err: any) {
       console.error('로그인 실패:', err.message);
       alert(`로그인 실패: ${err.message}`);
     }
   };
 
-  const handleSignup = async () => {
+  const handleSignup = () => {
     router.push('/signup');
   };
 
