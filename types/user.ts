@@ -10,6 +10,4 @@ export interface UserInfo {
   credit: number;
   creditRecord: CreditRecord[];
   myAnalysisVideos: AnalysisRecord[];
-  accessToken: string;
-  refreshToken?: string;
 }
