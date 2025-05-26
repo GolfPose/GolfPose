@@ -29,6 +29,9 @@ export const SignUpInput = ({
           error && styles.inputError,
         ]}
         placeholderTextColor="#999"
+        autoCapitalize="none"
+        textContentType="none"
+        autoComplete="off"
         {...props}
       />
       <FormErrorMessage message={error} />
@@ -37,32 +40,32 @@ export const SignUpInput = ({
 };
 
 const styles = StyleSheet.create({
-    label: {
-        fontSize: Typography.md,
-        marginBottom: vs(10),
-        marginTop: vs(10),
-      },
-      input: {
-        borderColor: Colors.common.gray500,
-        borderWidth: 1,
-        borderRadius: s(8),
-        paddingHorizontal: s(16),
-        paddingVertical: vs(10),
-        marginBottom: vs(16),
-        fontSize: Typography.md,
-      },
-      inputDark: {
-        backgroundColor: Colors.dark.background,
-        borderColor: Colors.dark.gray500,
-        borderWidth: 1,
-        borderRadius: s(8),
-        paddingHorizontal: s(16),
-        paddingVertical: vs(10),
-        marginBottom: vs(16),
-        fontSize: Typography.md,
-        color: Colors.dark.text,
-      },
-      inputError: {
-        borderColor: Colors.common.red,
-      },
-  });
+  label: {
+    fontSize: Typography.md,
+    marginBottom: vs(10),
+    marginTop: vs(10),
+  },
+  input: {
+    borderColor: Colors.common.gray500,
+    borderWidth: 1,
+    borderRadius: s(8),
+    paddingHorizontal: s(16),
+    paddingVertical: vs(10),
+    marginBottom: vs(16),
+    fontSize: Typography.md,
+  },
+  inputDark: {
+    backgroundColor: Colors.dark.background,
+    borderColor: Colors.dark.gray500,
+    borderWidth: 1,
+    borderRadius: s(8),
+    paddingHorizontal: s(16),
+    paddingVertical: vs(10),
+    marginBottom: vs(16),
+    fontSize: Typography.md,
+    color: Colors.dark.text,
+  },
+  inputError: {
+    borderColor: Colors.common.red,
+  },
+});

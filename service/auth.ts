@@ -2,6 +2,7 @@ import * as SecureStore from 'expo-secure-store';
 import { supabase } from '@/lib/supabase';
 import useUserStore from '@/store/useUserStore';
 
+// 로그인
 export async function login(email: string, password: string) {
   const { setUser } = useUserStore.getState();
 
@@ -65,6 +66,53 @@ export async function login(email: string, password: string) {
   return true;
 }
 
+// 회원가입
+export async function signUp(
+  email: string,
+  password: string,
+  displayName: string,
+) {
+  const { data: emailCheck } = await supabase
+    .from('users')
+    .select('*')
+    .eq('email', email)
+    .single();
+
+  if (emailCheck) {
+    return { success: false, message: '이미 가입된 이메일입니다.' };
+  }
+
+  const {
+    error,
+    data: { user },
+  } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: `${process.env.EXPO_PUBLIC_SITE_URL}/auth/callback`,
+    },
+  });
+
+  if (error) {
+    return { success: false, message: error.message };
+  }
+
+  const { error: insertError } = await supabase.from('users').insert({
+    email,
+    display_name: displayName,
+    uid: user?.id,
+    credits: 80,
+  });
+
+  if (insertError) {
+    console.error(insertError);
+    return { success: false, message: '회원가입 중 오류가 발생했습니다.' };
+  }
+
+  return { success: true, message: '회원가입이 완료되었습니다.' };
+}
+
+// 로그아웃
 export async function logout() {
   const { clearUser } = useUserStore.getState();
 

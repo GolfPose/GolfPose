@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import { SignUpInput } from './SignUpInput';
 import { SignUpButton } from './SignUpButton';
 import { ThemedView } from '@/components/ThemedView';
@@ -7,6 +14,8 @@ import TitleSection from '@/components/TitleSection';
 import BackHeader from '@/components/BackHeader';
 import { useTheme } from '@/hooks/useTheme';
 import { s, vs } from 'react-native-size-matters';
+import { signUp } from '@/service/auth';
+import { router } from 'expo-router';
 
 export const SignUpForm = () => {
   const theme = useTheme();
@@ -24,7 +33,11 @@ export const SignUpForm = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const cleaned = text.replace(/\s/g, '');
     setEmail(cleaned);
-    setEmailError(cleaned.length === 0 || emailRegex.test(cleaned) ? null : '이메일 형식이 올바르지 않습니다');
+    setEmailError(
+      cleaned.length === 0 || emailRegex.test(cleaned)
+        ? null
+        : '이메일 형식이 올바르지 않습니다',
+    );
   };
 
   const handleNicknameChange = (text: string) => {
@@ -43,8 +56,10 @@ export const SignUpForm = () => {
     const filtered = text.replace(/[^a-zA-Z0-9!@#]/g, '');
     setPassword(filtered);
     if (filtered.length === 0) setPasswordError(null);
-    else if (text !== filtered) setPasswordError('사용할 수 없는 특수문자가 포함되어 있어요');
-    else if (filtered.length < 6) setPasswordError('비밀번호는 6자 이상 입력해주세요');
+    else if (text !== filtered)
+      setPasswordError('사용할 수 없는 특수문자가 포함되어 있어요');
+    else if (filtered.length < 6)
+      setPasswordError('비밀번호는 6자 이상 입력해주세요');
     else setPasswordError(null);
   };
 
@@ -64,16 +79,57 @@ export const SignUpForm = () => {
       passwordError === null &&
       confirmError === '';
     setIsFormValid(isValid);
-  }, [email, nickname, password, confirmPassword, emailError, nicknameError, passwordError, confirmError]);
+  }, [
+    email,
+    nickname,
+    password,
+    confirmPassword,
+    emailError,
+    nicknameError,
+    passwordError,
+    confirmError,
+  ]);
 
-  const handleSignup = () => {
-    console.log('회원가입 시도:', { email, nickname, password, confirmPassword });
+  const [loading, setLoading] = useState(false);
+
+  const handleSignup = async () => {
+    if (loading) return;
+
+    setLoading(true);
+    console.log('회원가입 시도:', {
+      email,
+      nickname,
+      password,
+      confirmPassword,
+    });
+
+    try {
+      const { success, message } = await signUp(email, password, nickname);
+
+      if (success) {
+        alert(`${message} 이메일 인증을 완료해주세요.`);
+        router.replace('/login');
+      } else {
+        alert(`회원가입 실패: ${message}`);
+      }
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        alert(`회원가입 실패: ${err.message}`);
+      } else {
+        alert('회원가입 중 알 수 없는 오류가 발생했습니다.');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ThemedView style={{ flex: 1 }}>
-        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
           <ScrollView contentContainerStyle={styles.scrollContainer}>
             <BackHeader theme={theme} />
             <TitleSection title="회원 가입" />
@@ -109,7 +165,11 @@ export const SignUpForm = () => {
                 placeholder="비밀번호를 다시 입력해 주세요"
                 secureTextEntry
               />
-              <SignUpButton onPress={handleSignup} disabled={!isFormValid} />
+              <SignUpButton
+                onPress={handleSignup}
+                disabled={!isFormValid}
+                loading={loading}
+              />
             </ThemedView>
           </ScrollView>
         </KeyboardAvoidingView>
@@ -119,19 +179,19 @@ export const SignUpForm = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      marginHorizontal: s(24),
-    },
-    scrollContainer: {
-      flexGrow: 1,
-      paddingBottom: vs(100),
-    },
-    innerContainer: {
-      flex: 1,
-      paddingHorizontal: s(24),
-    },
-    inputContainer: {
-      marginTop: vs(32),
-    },
-  });
+  container: {
+    flex: 1,
+    marginHorizontal: s(24),
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    paddingBottom: vs(100),
+  },
+  innerContainer: {
+    flex: 1,
+    paddingHorizontal: s(24),
+  },
+  inputContainer: {
+    marginTop: vs(32),
+  },
+});
