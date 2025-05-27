@@ -11,19 +11,19 @@ export const dummyUser: UserInfo = {
   uid: 'aaaabbbbccccdddd',
   creditRecord: [
     {
-      id: 'cr1',
+      id: 1,
       date: '2025-03-18T10:44:23',
       change: -8,
       type: 'USE',
     },
     {
-      id: 'cr2',
+      id: 2,
       date: '2025-03-18T09:29:23',
       change: -8,
       type: 'USE',
     },
     {
-      id: 'cr3',
+      id: 3,
       date: '2025-03-18T01:36:08',
       change: 60,
       type: 'REFUND',
