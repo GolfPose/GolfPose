@@ -19,7 +19,7 @@ export const CreditUsageTab = () => {
           <ThemedView style={styles.itemRow}>
             <ThemedView style={styles.textBlock}>
               <ThemedText style={styles.itemLabel}>
-                {record.type === 'charge' ? '크레딧 충전' : '크레딧 사용'}
+                {record.type === 'REFUND' ? '크레딧 환불' : '크레딧 사용'}
               </ThemedText>
               <ThemedText style={styles.itemDate}>
                 {dayjs(record.date).format('YYYY.MM.DD A hh:mm:ss')}

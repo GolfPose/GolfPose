@@ -41,7 +41,7 @@ export async function login(email: string, password: string) {
 
   const { data: profile, error: profileError } = await supabase
     .from('users')
-    .select('display_name, credits')
+    .select('id, display_name, credits')
     .eq('email', email)
     .single();
 
@@ -50,6 +50,7 @@ export async function login(email: string, password: string) {
   }
 
   setUser({
+    id: profile.id,
     uid: user.id,
     name: profile.display_name,
     email: user.email!,
@@ -160,7 +161,7 @@ export async function restoreSession() {
 
   const { data: profile, error: profileError } = await supabase
     .from('users')
-    .select('display_name, credits')
+    .select('id, display_name, credits')
     .eq('email', user.email)
     .single();
 
@@ -170,6 +171,7 @@ export async function restoreSession() {
   }
 
   setUser({
+    id: profile.id,
     uid: user.id,
     name: profile.display_name,
     email: user.email!,
