@@ -9,7 +9,6 @@ interface UserStore {
   // setter
   setUser: (user: UserInfo) => void;
   clearUser: () => void;
-  logoutUser: () => void;
 
   // credit
   addCredit: (amount: number, record: CreditRecord) => void;
@@ -30,17 +29,6 @@ const useUserStore: UseBoundStore<StoreApi<UserStore>> = create<UserStore>(
     setUser: user => set({ user }),
 
     clearUser: () => set({ user: null }),
-
-    logoutUser: () => {
-      const currentUser = get().user;
-      if (!currentUser) return;
-      set({
-        user: {
-          ...currentUser,
-          isLoggedIn: false,
-        },
-      });
-    },
 
     addCredit: (amount, record) => {
       const currentUser = get().user;

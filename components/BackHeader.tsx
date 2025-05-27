@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, SafeAreaView } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useSegments } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { s, vs } from 'react-native-size-matters';
 import { Colors } from '@/constants/Colors';
@@ -11,8 +11,10 @@ type BackHeaderProps = {
 
 export default function BackHeader({ theme, isFromRedirect }: BackHeaderProps) {
   const router = useRouter();
+  const segments = useSegments();
+
   const handleGoBack = () => {
-    if (isFromRedirect) {
+    if (isFromRedirect || segments.length <= 1) {
       router.replace('/');
     } else {
       router.back();

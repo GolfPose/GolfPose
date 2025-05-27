@@ -2,6 +2,7 @@ import { CreditRecord } from './credit';
 import { AnalysisRecord } from './analysis';
 
 export interface UserInfo {
+  uid: string;
   isLoggedIn: boolean;
   name: string;
   email: string;
@@ -10,6 +11,4 @@ export interface UserInfo {
   credit: number;
   creditRecord: CreditRecord[];
   myAnalysisVideos: AnalysisRecord[];
-  accessToken: string;
-  refreshToken?: string;
 }

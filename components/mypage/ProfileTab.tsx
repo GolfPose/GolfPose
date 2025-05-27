@@ -9,6 +9,7 @@ import useUserStore from '@/store/useUserStore';
 import { MyPageSection } from '@/components/mypage/MyPageSection';
 import { useTheme } from '@/hooks/useTheme';
 import { router } from 'expo-router';
+import { logout, updateDisplayName, withdrawAccount } from '@/service/auth';
 
 export const ProfileTab = () => {
   const user = useUserStore(state => state.user);
@@ -16,31 +17,20 @@ export const ProfileTab = () => {
   const [tempName, setTempName] = useState(user?.name ?? '');
   const theme = useTheme();
 
-  const handleSave = () => {
-    console.log('새 이름 저장:', tempName);
-    setIsEditing(false);
+  const handleSave = async () => {
+    if (!user) return;
+
+    const { success, message } = await updateDisplayName(user.uid, tempName);
+
+    alert(message);
+    if (success) {
+      setIsEditing(false);
+    }
   };
 
-  const handleLogout = () => {
-    Alert.alert(
-      '로그아웃',
-      '로그아웃이 완료되었습니다.',
-      [
-        {
-          text: '확인',
-          onPress: () => {
-            router.navigate('/');
-            setTimeout(() => {
-              const { logoutUser, clearUser } = useUserStore.getState();
-              logoutUser();
-              clearUser();
-            }, 0);
-          },
-        },
-      ],
-      { cancelable: false },
-    );
-    console.log('로그아웃 완료');
+  const handleLogout = async () => {
+    await logout();
+    router.replace('/login');
   };
 
   const handleCancelEdit = () => {
@@ -57,7 +47,20 @@ export const ProfileTab = () => {
         {
           text: '탈퇴하기',
           style: 'destructive',
-          onPress: () => console.log('탈퇴 처리'),
+          onPress: async () => {
+            const user = useUserStore.getState().user;
+            if (!user) {
+              alert('사용자 정보가 없습니다.');
+              return;
+            }
+
+            const { success, message } = await withdrawAccount(user.email);
+            alert(message);
+
+            if (success) {
+              router.replace('/');
+            }
+          },
         },
       ],
     );
