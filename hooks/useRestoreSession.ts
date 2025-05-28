@@ -34,7 +34,7 @@ export function useRestoreSession() {
 
         const { data: profile, error: profileError } = await supabase
           .from('users')
-          .select('display_name, credits')
+          .select('id, display_name, credits')
           .eq('uid', user.id)
           .single();
 
@@ -45,6 +45,7 @@ export function useRestoreSession() {
         }
 
         setUser({
+          id: profile.id,
           uid: user.id,
           name: profile.display_name,
           email: user.email!,
