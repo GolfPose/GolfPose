@@ -34,8 +34,10 @@ export default function HistoryScreen() {
   const [showFixed, setShowFixed] = useState(false);
   const controlBtnY = useRef(0);
 
-  const video = useUserStore(state =>
-    state.user?.myAnalysisVideos.find(v => v.id === selectedVideoId),
+  const allVideos = useUserStore(state => state.user?.myAnalysisVideos) || [];
+  const video = useMemo(
+    () => allVideos.find(v => v.id === selectedVideoId),
+    [allVideos, selectedVideoId],
   );
   const theme = useTheme();
   const bgColor = getColor(theme, {

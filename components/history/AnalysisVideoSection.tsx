@@ -26,7 +26,7 @@ export default function AnalysisVideoSection({ selectedId, onSelect }: Props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [extraVideo, setExtraVideo] = useState<AnalysisRecord | null>(null);
 
-  const allVideos = useUserStore(state => state.user?.myAnalysisVideos || []);
+  const allVideos = useUserStore(state => state.user?.myAnalysisVideos) || [];
   const recentVideos = useMemo(() => allVideos.slice(0, 5), [allVideos]);
 
   const displayVideos = useMemo(() => {
