@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -24,6 +24,7 @@ import Typography from '@/constants/Typography';
 import BodyPartGraphSection from '@/components/history/BodyPartGraphSection';
 import GolfPose3DPanel from '@/components/history/GolfPose3DPanel';
 import { RequireLogin } from '@/components/auth/RequireLogin';
+import { fetchVideo } from '@/service/fetchVideo';
 
 export type ControlAction = 'play' | 'pause' | 'reset' | 'analysis' | null;
 
@@ -58,6 +59,10 @@ export default function HistoryScreen() {
   const handleLayout = (e: LayoutChangeEvent) => {
     controlBtnY.current = e.nativeEvent.layout.y;
   };
+
+  useEffect(() => {
+    fetchVideo();
+  }, []);
 
   return (
     <RequireLogin>
@@ -103,7 +108,10 @@ export default function HistoryScreen() {
         </ScrollView>
         {showFixed && video?.status === 'COMPLETE' && (
           <ThemedView style={styles.controlFixed}>
-            <ControlButton selected={controlAction} onPress={setControlAction} />
+            <ControlButton
+              selected={controlAction}
+              onPress={setControlAction}
+            />
           </ThemedView>
         )}
       </View>
