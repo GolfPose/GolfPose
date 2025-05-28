@@ -46,13 +46,29 @@ export default function GolfPose2DPanel({ video, controlAction }: Props) {
     }
   }, [controlAction]);
 
+  const swingTitles = [
+    'Address',
+    'Top-up',
+    'Mid-backing swing',
+    'Top',
+    'Mid-down swing',
+    'Impact',
+    'Mid follow throw',
+    'Finish',
+  ];
+
+  const swingImagesWithTitles = video.swingImages.map((item, index) => ({
+    ...item,
+    title: swingTitles[index],
+  }));
+
   return (
     <ThemedView style={styles.container}>
       <HistoryTitleSection title="골프자세 2D" />
       <VideoView player={player} style={styles.mainVideo} allowsFullscreen />
 
       <FlatList
-        data={video.swingImages}
+        data={swingImagesWithTitles}
         keyExtractor={(_, i) => i.toString()}
         numColumns={4}
         renderItem={({ item }) => (

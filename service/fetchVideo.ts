@@ -33,16 +33,22 @@ export async function fetchVideo() {
 
   if (!currentUser) return;
 
-  // 1️⃣ 새로 불러온 데이터 → AnalysisRecord로 매핑
+  // 새로 불러온 데이터 → AnalysisRecord로 매핑
   const newAnalysisVideos: AnalysisRecord[] = videoData.map(item => ({
     id: item.id.toString(),
     uploadedAt: item.created_at,
     videoUrl: item.original_video_url,
     status: item.status,
-    swingImages: Array.from({ length: 8 }, (_, i) => ({
-      title: `Swing ${i}`,
-      image: item[`swing_img_${i}`],
-    })),
+    swingImages: [
+      { title: 'Address', image: item.swing_img_0 },
+      { title: 'Top-up', image: item.swing_img_1 },
+      { title: 'Mid-backing swing', image: item.swing_img_2 },
+      { title: 'Top', image: item.swing_img_3 },
+      { title: 'Mid-down swing', image: item.swing_img_4 },
+      { title: 'Impact', image: item.swing_img_5 },
+      { title: 'Mid follow throw', image: item.swing_img_6 },
+      { title: 'Finish', image: item.swing_img_7 },
+    ],
     graphUrls: {
       leftArm2D: item.left_arm_2d_url,
       rightArm2D: item.right_arm_2d_url,
