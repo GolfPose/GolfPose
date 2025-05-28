@@ -61,6 +61,7 @@ export async function fetchVideo() {
     },
     thumbnailUrl: undefined,
     pose3DUrl: item.main_3d_url,
+    avatarUrl: item.avatar_url,
   }));
 
   setUser({
