@@ -13,8 +13,7 @@ import Typography from '@/constants/Typography';
 import { router } from 'expo-router';
 
 export default function UploadBox() {
-  // const credit = useUserStore(state => state.user?.credit ?? 0);
-  const credit = 64;
+  const credit = useUserStore(state => state.user?.credit ?? 0);
   const [isDisabled, setIsDisabled] = useState(credit <= 0);
   const [videoUri, setVideoUri] = useState<string | null>(null);
   const [uploadStage, setUploadStage] = useState<
