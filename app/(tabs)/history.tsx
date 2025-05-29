@@ -10,7 +10,6 @@ import {
 import Header from '@/components/Header';
 import TitleSection from '@/components/TitleSection';
 import AnalysisVideoSection from '@/components/history/AnalysisVideoSection';
-import GolfPose2DPanel from '@/components/history/GolfPose2DPanel';
 import ControlButton from '@/components/history/ControlButton';
 import { ms, s, vs } from 'react-native-size-matters';
 import useUserStore from '@/store/useUserStore';
@@ -26,6 +25,8 @@ import GolfPose3DPanel from '@/components/history/GolfPose3DPanel';
 import { RequireLogin } from '@/components/auth/RequireLogin';
 import { fetchVideo } from '@/service/fetchVideo';
 import { useGolfPoseRealtime } from '@/hooks/useGolfPoseRealtime';
+import GolfPoseSwingImageGrid from '@/components/history/GolfPoseSwingImageGrid';
+import GolfPose2DPanel from '@/components/history/GolfPose2DPanel';
 
 export type ControlAction = 'play' | 'pause' | 'reset' | 'analysis' | null;
 
@@ -92,7 +93,6 @@ export default function HistoryScreen() {
               <>
                 <ThemedText style={styles.date}>{videoDate}</ThemedText>
 
-                {/* 컨트롤 버튼 */}
                 {!showFixed ? (
                   <ThemedView onLayout={handleLayout}>
                     <ControlButton
@@ -104,17 +104,24 @@ export default function HistoryScreen() {
                   <ThemedView style={styles.placeholder}></ThemedView>
                 )}
 
-                {/* 골프포즈 2D */}
-                {(video.swingImages.some(img => !!img.image) ||
-                  !!video.videoUrl) && (
+                {/* 메인 2D 비디오 */}
+                {!!video.videoUrl && (
                   <GolfPose2DPanel
-                    key={video.id}
+                    key={`main2d-${video.id}`}
                     video={video}
                     controlAction={controlAction}
                   />
                 )}
 
-                {/* 부위별 2D/3D 섹션 */}
+                {/* 스윙 이미지 그리드 */}
+                {video.swingImages.some(img => !!img.image) && (
+                  <GolfPoseSwingImageGrid
+                    key={`grid-${video.id}`}
+                    video={video}
+                  />
+                )}
+
+                {/* 부위별 2D/3D */}
                 {[
                   video.graphUrls.leftArm2D,
                   video.graphUrls.rightArm2D,
@@ -131,7 +138,7 @@ export default function HistoryScreen() {
                   />
                 )}
 
-                {/* 골프포즈 3D */}
+                {/* 3D 아바타 */}
                 {video.avatarUrl && (
                   <GolfPose3DPanel
                     video={video}

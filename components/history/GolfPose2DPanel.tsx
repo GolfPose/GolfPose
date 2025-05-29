@@ -1,11 +1,9 @@
 import React, { useEffect, useMemo } from 'react';
-import { StyleSheet, FlatList } from 'react-native';
-import { Colors } from '@/constants/Colors';
+import { StyleSheet } from 'react-native';
 import { VideoView, useVideoPlayer } from 'expo-video';
 import { AnalysisRecord } from '@/types/analysis';
-import PoseThumbnail from '@/components/history/PoseThumbnail';
-import Typography from '@/constants/Typography';
 import { s, vs } from 'react-native-size-matters';
+import { Colors } from '@/constants/Colors';
 import { ThemedView } from '../ThemedView';
 import HistoryTitleSection from './HistoryTitleSection';
 
@@ -46,38 +44,10 @@ export default function GolfPose2DPanel({ video, controlAction }: Props) {
     }
   }, [controlAction]);
 
-  const swingTitles = [
-    'Address',
-    'Top-up',
-    'Mid-backing swing',
-    'Top',
-    'Mid-down swing',
-    'Impact',
-    'Mid follow throw',
-    'Finish',
-  ];
-
-  const swingImagesWithTitles = video.swingImages.map((item, index) => ({
-    ...item,
-    title: swingTitles[index],
-  }));
-
   return (
     <ThemedView style={styles.container}>
       <HistoryTitleSection title="골프자세 2D" />
       <VideoView player={player} style={styles.mainVideo} allowsFullscreen />
-
-      <FlatList
-        data={swingImagesWithTitles}
-        keyExtractor={(_, i) => i.toString()}
-        numColumns={4}
-        renderItem={({ item }) => (
-          <PoseThumbnail title={item.title} imageSource={item.image} />
-        )}
-        columnWrapperStyle={styles.row}
-        contentContainerStyle={styles.container}
-        scrollEnabled={false}
-      />
     </ThemedView>
   );
 }
@@ -86,20 +56,11 @@ const styles = StyleSheet.create({
   container: {
     marginTop: vs(16),
   },
-  title: {
-    fontSize: Typography.xl,
-    fontWeight: '600',
-    marginVertical: vs(14),
-  },
   mainVideo: {
     width: '100%',
     minHeight: vs(160),
     borderRadius: s(8),
     backgroundColor: Colors.common.white,
     marginBottom: vs(12),
-  },
-  row: {
-    justifyContent: 'space-between',
-    marginBottom: vs(8),
   },
 });
