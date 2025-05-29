@@ -70,7 +70,7 @@ export default function HistoryScreen() {
   }, []);
 
   if (userId != null) {
-    useGolfPoseRealtime(userId);
+    useGolfPoseRealtime(userId ?? 0);
   }
 
   return (

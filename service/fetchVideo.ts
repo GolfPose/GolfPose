@@ -6,8 +6,8 @@ import * as VideoThumbnails from 'expo-video-thumbnails';
 export async function fetchVideo() {
   const storeState = useUserStore.getState();
   const setUser = useUserStore.getState().setUser;
-  // const userId = storeState.user?.id;
-  const userId = 13;
+  const userId = storeState.user?.id;
+  // const userId = 18;
 
   let offset = 0;
   const limit = 5;

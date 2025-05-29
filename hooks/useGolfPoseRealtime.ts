@@ -18,7 +18,7 @@ export function useGolfPoseRealtime(userId: number) {
           filter: `user_id=eq.${userId}`,
         },
         async payload => {
-          console.log('Status 업데이트 감지:', payload);
+          console.log('Status 업데이트 감지:');
           const updatedId = payload.new.id;
           const updatedVideo = await fetchSingleVideo(updatedId);
           if (updatedVideo) {
