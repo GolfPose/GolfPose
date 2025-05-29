@@ -8,11 +8,15 @@ import { vs } from 'react-native-size-matters';
 import dayjs from 'dayjs';
 import Typography from '@/constants/Typography';
 import { getCreditUsageRecord } from '@/service/credit';
+import { useEffect } from 'react';
 
 export const CreditUsageTab = () => {
-  getCreditUsageRecord();
   const user = useUserStore(state => state.user);
   const creditRecords = user?.creditRecord ?? [];
+
+  useEffect(() => {
+    getCreditUsageRecord();
+  }, []);
 
   return (
     <MyPageSection title="크레딧 사용내역">
