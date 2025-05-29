@@ -30,8 +30,9 @@ export const SignUpInput = ({
         ]}
         placeholderTextColor="#999"
         autoCapitalize="none"
-        textContentType="none"
         autoComplete="off"
+        autoCorrect={false}
+        textContentType="oneTimeCode"
         {...props}
       />
       <FormErrorMessage message={error} />
