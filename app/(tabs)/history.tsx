@@ -87,9 +87,12 @@ export default function HistoryScreen() {
               selectedId={selectedVideoId}
               onSelect={setSelectedVideoId}
             />
-            {video?.status === 'COMPLETE' && (
+
+            {video && (
               <>
                 <ThemedText style={styles.date}>{videoDate}</ThemedText>
+
+                {/* 컨트롤 버튼 */}
                 {!showFixed ? (
                   <ThemedView onLayout={handleLayout}>
                     <ControlButton
@@ -100,21 +103,47 @@ export default function HistoryScreen() {
                 ) : (
                   <ThemedView style={styles.placeholder}></ThemedView>
                 )}
-                <GolfPose2DPanel
-                  key={video.id}
-                  video={video}
-                  controlAction={controlAction}
-                />
-                <BodyPartGraphSection
-                  video={video}
-                  controlAction={controlAction}
-                />
-                <GolfPose3DPanel video={video} controlAction={controlAction} />
+
+                {/* 골프포즈 2D */}
+                {(video.swingImages.some(img => !!img.image) ||
+                  !!video.videoUrl) && (
+                  <GolfPose2DPanel
+                    key={video.id}
+                    video={video}
+                    controlAction={controlAction}
+                  />
+                )}
+
+                {/* 부위별 2D/3D 섹션 */}
+                {[
+                  video.graphUrls.leftArm2D,
+                  video.graphUrls.rightArm2D,
+                  video.graphUrls.leftLeg2D,
+                  video.graphUrls.rightLeg2D,
+                  video.graphUrls.leftArm3D,
+                  video.graphUrls.rightArm3D,
+                  video.graphUrls.leftLeg3D,
+                  video.graphUrls.rightLeg3D,
+                ].some(url => !!url) && (
+                  <BodyPartGraphSection
+                    video={video}
+                    controlAction={controlAction}
+                  />
+                )}
+
+                {/* 골프포즈 3D */}
+                {video.avatarUrl && (
+                  <GolfPose3DPanel
+                    video={video}
+                    controlAction={controlAction}
+                  />
+                )}
               </>
             )}
           </ThemedView>
         </ScrollView>
-        {showFixed && video?.status === 'COMPLETE' && (
+
+        {showFixed && video && (
           <ThemedView style={styles.controlFixed}>
             <ControlButton
               selected={controlAction}
