@@ -25,6 +25,7 @@ import BodyPartGraphSection from '@/components/history/BodyPartGraphSection';
 import GolfPose3DPanel from '@/components/history/GolfPose3DPanel';
 import { RequireLogin } from '@/components/auth/RequireLogin';
 import { fetchVideo } from '@/service/fetchVideo';
+import { useGolfPoseRealtime } from '@/hooks/useGolfPoseRealtime';
 
 export type ControlAction = 'play' | 'pause' | 'reset' | 'analysis' | null;
 
@@ -33,6 +34,7 @@ export default function HistoryScreen() {
   const [controlAction, setControlAction] = useState<ControlAction>(null);
   const [showFixed, setShowFixed] = useState(false);
   const controlBtnY = useRef(0);
+  const userId = useUserStore(state => state.user?.id);
 
   const allVideos = useUserStore(state => state.user?.myAnalysisVideos) || [];
   const video = useMemo(
@@ -65,6 +67,10 @@ export default function HistoryScreen() {
   useEffect(() => {
     fetchVideo();
   }, []);
+
+  if (userId != null) {
+    useGolfPoseRealtime(userId);
+  }
 
   return (
     <RequireLogin>
