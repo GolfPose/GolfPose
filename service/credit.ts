@@ -24,7 +24,7 @@ export async function getCreditUsageRecord() {
             id: record.id,
             date: record.created_at,
             change: record.amount,
-            type: record.type as 'USE' | 'CHARGE' | 'REFUND',
+            type: record.type as 'USE' | 'PURCHASE' | 'REFUND',
         }));
 
         setUser({
