@@ -26,25 +26,17 @@ export default function AnalysisVideoSection({ selectedId, onSelect }: Props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [extraVideo, setExtraVideo] = useState<AnalysisRecord | null>(null);
 
-  const currentMonth = useMemo(() => new Date().getMonth() + 1, []);
-  const currentYear = useMemo(() => new Date().getFullYear(), []);
-
-  const getVideosByMonth = useUserStore(state => state.getVideosByMonth);
-  const getRecentVideos = useUserStore(state => state.getRecentVideos);
-  const currentMonthVideos = useMemo(
-    () => getVideosByMonth(currentYear, currentMonth),
-    [getVideosByMonth, currentYear, currentMonth],
-  );
+  const allVideos = useUserStore(state => state.user?.myAnalysisVideos) || [];
+  const recentVideos = useMemo(() => allVideos.slice(0, 5), [allVideos]);
 
   const displayVideos = useMemo(() => {
-    if (extraVideo && !currentMonthVideos.find(v => v.id === extraVideo.id)) {
-      return [extraVideo, ...currentMonthVideos];
+    if (extraVideo && !recentVideos.find(v => v.id === extraVideo.id)) {
+      return [extraVideo, ...recentVideos];
     }
-    return currentMonthVideos;
-  }, [extraVideo, currentMonthVideos]);
+    return recentVideos;
+  }, [extraVideo, recentVideos]);
 
   const handleSelect = (id: string) => {
-    const allVideos = getRecentVideos();
     const selected = allVideos.find(v => v.id === id);
     if (selected) {
       setExtraVideo(selected);

@@ -29,4 +29,5 @@ export interface AnalysisRecord {
   swingImages: SwingImage[];
   graphUrls: GraphUrls;
   pose3DUrl: string;
+  avatarUrl: string;
 }

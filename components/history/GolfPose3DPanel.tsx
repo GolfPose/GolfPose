@@ -13,10 +13,10 @@ interface Props {
 
 export default function GolfPose3DPanel({ video, controlAction }: Props) {
   const videoSource = useMemo(() => {
-    return typeof video.pose3DUrl === 'string'
-      ? { uri: video.pose3DUrl }
-      : video.pose3DUrl;
-  }, [video.pose3DUrl]);
+    return typeof video.avatarUrl === 'string'
+      ? { uri: video.avatarUrl }
+      : video.avatarUrl;
+  }, [video.avatarUrl]);
 
   const player = useVideoPlayer(videoSource, p => {
     p.loop = true;

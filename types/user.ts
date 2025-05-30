@@ -1,5 +1,5 @@
-import { CreditRecord } from './credit';
 import { AnalysisRecord } from './analysis';
+import { CreditRecord } from './credit';
 
 export interface UserInfo {
   id: number;

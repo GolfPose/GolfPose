@@ -26,11 +26,11 @@ interface Props {
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const MODAL_WIDTH = SCREEN_WIDTH * 0.9 - s(24);
+const ITEM_SIZE = (MODAL_WIDTH - s(6) * 2) / 2;
 
 export default function VideoModal({ visible, onClose, onSelect }: Props) {
-  const getRecentVideos = useUserStore(state => state.getRecentVideos);
-  const videos = useMemo(() => getRecentVideos(), [getRecentVideos]);
-  const ITEM_SIZE = (MODAL_WIDTH - s(6) * 2) / 2;
+  const user = useUserStore(state => state.user);
+  const videos = useMemo(() => user?.myAnalysisVideos || [], [user]);
 
   const theme = useTheme();
   const backgroundColor = getColor(theme, {

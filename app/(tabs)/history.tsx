@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -10,7 +10,6 @@ import {
 import Header from '@/components/Header';
 import TitleSection from '@/components/TitleSection';
 import AnalysisVideoSection from '@/components/history/AnalysisVideoSection';
-import GolfPose2DPanel from '@/components/history/GolfPose2DPanel';
 import ControlButton from '@/components/history/ControlButton';
 import { ms, s, vs } from 'react-native-size-matters';
 import useUserStore from '@/store/useUserStore';
@@ -24,6 +23,10 @@ import Typography from '@/constants/Typography';
 import BodyPartGraphSection from '@/components/history/BodyPartGraphSection';
 import GolfPose3DPanel from '@/components/history/GolfPose3DPanel';
 import { RequireLogin } from '@/components/auth/RequireLogin';
+import { fetchVideo } from '@/service/fetchVideo';
+import { useGolfPoseRealtime } from '@/hooks/useGolfPoseRealtime';
+import GolfPoseSwingImageGrid from '@/components/history/GolfPoseSwingImageGrid';
+import GolfPose2DPanel from '@/components/history/GolfPose2DPanel';
 
 export type ControlAction = 'play' | 'pause' | 'reset' | 'analysis' | null;
 
@@ -32,9 +35,12 @@ export default function HistoryScreen() {
   const [controlAction, setControlAction] = useState<ControlAction>(null);
   const [showFixed, setShowFixed] = useState(false);
   const controlBtnY = useRef(0);
+  const userId = useUserStore(state => state.user?.id);
 
-  const video = useUserStore(state =>
-    state.user?.myAnalysisVideos.find(v => v.id === selectedVideoId),
+  const allVideos = useUserStore(state => state.user?.myAnalysisVideos) || [];
+  const video = useMemo(
+    () => allVideos.find(v => v.id === selectedVideoId),
+    [allVideos, selectedVideoId],
   );
   const theme = useTheme();
   const bgColor = getColor(theme, {
@@ -59,6 +65,14 @@ export default function HistoryScreen() {
     controlBtnY.current = e.nativeEvent.layout.y;
   };
 
+  useEffect(() => {
+    fetchVideo();
+  }, []);
+
+  if (userId != null) {
+    useGolfPoseRealtime(userId ?? 0);
+  }
+
   return (
     <RequireLogin>
       <View style={styles.wrapper}>
@@ -74,9 +88,11 @@ export default function HistoryScreen() {
               selectedId={selectedVideoId}
               onSelect={setSelectedVideoId}
             />
-            {video?.status === 'COMPLETE' && (
+
+            {video && (
               <>
                 <ThemedText style={styles.date}>{videoDate}</ThemedText>
+
                 {!showFixed ? (
                   <ThemedView onLayout={handleLayout}>
                     <ControlButton
@@ -87,23 +103,59 @@ export default function HistoryScreen() {
                 ) : (
                   <ThemedView style={styles.placeholder}></ThemedView>
                 )}
-                <GolfPose2DPanel
-                  key={video.id}
-                  video={video}
-                  controlAction={controlAction}
-                />
-                <BodyPartGraphSection
-                  video={video}
-                  controlAction={controlAction}
-                />
-                <GolfPose3DPanel video={video} controlAction={controlAction} />
+
+                {/* 메인 2D 비디오 */}
+                {!!video.videoUrl && (
+                  <GolfPose2DPanel
+                    key={`main2d-${video.id}`}
+                    video={video}
+                    controlAction={controlAction}
+                  />
+                )}
+
+                {/* 스윙 이미지 그리드 */}
+                {video.swingImages.some(img => !!img.image) && (
+                  <GolfPoseSwingImageGrid
+                    key={`grid-${video.id}`}
+                    video={video}
+                  />
+                )}
+
+                {/* 부위별 2D/3D */}
+                {[
+                  video.graphUrls.leftArm2D,
+                  video.graphUrls.rightArm2D,
+                  video.graphUrls.leftLeg2D,
+                  video.graphUrls.rightLeg2D,
+                  video.graphUrls.leftArm3D,
+                  video.graphUrls.rightArm3D,
+                  video.graphUrls.leftLeg3D,
+                  video.graphUrls.rightLeg3D,
+                ].some(url => !!url) && (
+                  <BodyPartGraphSection
+                    video={video}
+                    controlAction={controlAction}
+                  />
+                )}
+
+                {/* 3D 아바타 */}
+                {video.avatarUrl && (
+                  <GolfPose3DPanel
+                    video={video}
+                    controlAction={controlAction}
+                  />
+                )}
               </>
             )}
           </ThemedView>
         </ScrollView>
-        {showFixed && video?.status === 'COMPLETE' && (
+
+        {showFixed && video && (
           <ThemedView style={styles.controlFixed}>
-            <ControlButton selected={controlAction} onPress={setControlAction} />
+            <ControlButton
+              selected={controlAction}
+              onPress={setControlAction}
+            />
           </ThemedView>
         )}
       </View>

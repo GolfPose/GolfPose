@@ -47,7 +47,7 @@ export const dummyUser: UserInfo = {
         rightLeg3D: require('@/assets/videos/graph.mp4'),
       },
       thumbnailUrl: require('@/assets/images/swingThumbnail.png'),
-      pose3DUrl: require('@/assets/videos/avatar.mp4'),
+      avatarUrl: require('@/assets/videos/avatar.mp4'),
       swingImages: [
         {
           title: 'Address',
@@ -99,7 +99,7 @@ export const dummyUser: UserInfo = {
         rightLeg3D: require('@/assets/videos/graph.mp4'),
       },
       thumbnailUrl: require('@/assets/images/swingThumbnail.png'),
-      pose3DUrl: require('@/assets/videos/avatar.mp4'),
+      avatarUrl: require('@/assets/videos/avatar.mp4'),
       swingImages: [
         {
           title: 'Address',
@@ -151,7 +151,7 @@ export const dummyUser: UserInfo = {
         rightLeg3D: require('@/assets/videos/graph.mp4'),
       },
       thumbnailUrl: require('@/assets/images/swingThumbnail.png'),
-      pose3DUrl: require('@/assets/videos/avatar.mp4'),
+      avatarUrl: require('@/assets/videos/avatar.mp4'),
       swingImages: [
         {
           title: 'Address',
@@ -203,7 +203,7 @@ export const dummyUser: UserInfo = {
         rightLeg3D: require('@/assets/videos/graph.mp4'),
       },
       thumbnailUrl: require('@/assets/images/swingThumbnail.png'),
-      pose3DUrl: require('@/assets/videos/avatar.mp4'),
+      avatarUrl: require('@/assets/videos/avatar.mp4'),
       swingImages: [
         {
           title: 'Address',
@@ -255,7 +255,7 @@ export const dummyUser: UserInfo = {
         rightLeg3D: require('@/assets/videos/graph.mp4'),
       },
       thumbnailUrl: require('@/assets/images/swingThumbnail.png'),
-      pose3DUrl: require('@/assets/videos/avatar.mp4'),
+      avatarUrl: require('@/assets/videos/avatar.mp4'),
       swingImages: [
         {
           title: 'Address',

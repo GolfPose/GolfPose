@@ -13,9 +13,7 @@ import Typography from '@/constants/Typography';
 import { router } from 'expo-router';
 
 export default function UploadBox() {
-  // const credit = useUserStore(state => state.user?.credit ?? 0);
-  const credit = 64;
-  const [isDisabled, setIsDisabled] = useState(credit <= 0);
+  const credit = useUserStore(state => state.user?.credit ?? 0);
   const [videoUri, setVideoUri] = useState<string | null>(null);
   const [uploadStage, setUploadStage] = useState<
     'idle' | 'picking' | 'uploading' | 'done'
@@ -32,16 +30,31 @@ export default function UploadBox() {
   );
 
   useEffect(() => {
-    setIsDisabled(credit <= 0);
-  }, [credit]);
-
-  useEffect(() => {
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
     };
   }, []);
+
+  const handlePressUpload = () => {
+    const user = useUserStore.getState().user;
+
+    if (!user || !user?.isLoggedIn) {
+      alert('로그인이 필요한 서비스입니다.');
+      router.replace({ pathname: '/login', params: { fromRedirect: 'true' } });
+      return;
+    }
+
+    if (user.credit <= 8) {
+      alert(
+        '보유 크레딧이 부족하여 분석을 할 수 없습니다. 크레딧을 충전해주세요.',
+      );
+      return;
+    }
+
+    handleUpload();
+  };
 
   const handleUpload = async () => {
     const user = useUserStore.getState().user;
@@ -141,9 +154,9 @@ export default function UploadBox() {
               MP4, MOV, AVI 파일을 50MB까지{'\n'}업로드할 수 있습니다.
             </ThemedText>
             <Pressable
-              style={[styles.button, isDisabled && styles.disabled]}
-              onPress={handleUpload}
-              disabled={isDisabled || uploadStage !== 'idle'}
+              style={styles.button}
+              onPress={handlePressUpload}
+              disabled={uploadStage !== 'idle'}
             >
               <ThemedText style={styles.buttonText}>파일 업로드</ThemedText>
             </Pressable>

@@ -25,7 +25,7 @@ function AnalysisCardComponent({
     <ThemedView style={[styles.wrapper, selected && styles.borderWrapper]}>
       <Pressable style={styles.card} onPress={onPress}>
         <Image source={thumbnail} style={styles.thumb} resizeMode="cover" />
-        {status === 'IN_PROGRESS' && (
+        {status !== 'COMPLETE' && (
           <View style={styles.overlayContainer}>
             <View style={styles.overlay} />
             <ThemedText style={styles.badge}>분석중</ThemedText>

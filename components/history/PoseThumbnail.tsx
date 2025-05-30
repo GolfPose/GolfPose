@@ -11,6 +11,11 @@ interface Props {
 }
 
 export default function PoseThumbnail({ title, imageSource }: Props) {
+  const resolvedSource =
+    typeof imageSource === 'string'
+      ? { uri: imageSource }
+      : imageSource || require('@/assets/images/noimage.jpg');
+
   return (
     <Pressable style={[styles.container, { marginRight: GAP }]}>
       <ThemedView style={styles.titleBox}>
@@ -19,7 +24,7 @@ export default function PoseThumbnail({ title, imageSource }: Props) {
         </ThemedText>
       </ThemedView>
 
-      <Image source={imageSource} style={styles.image} resizeMode="cover" />
+      <Image source={resolvedSource} style={styles.image} resizeMode="cover" />
     </Pressable>
   );
 }
