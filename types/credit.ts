@@ -1,6 +1,6 @@
 export interface CreditRecord {
-  id: string;
+  id: number;
   date: string;
   change: number;
-  type: 'charge' | 'use';
+  type: 'USE' | 'PURCHASE' | 'REFUND';
 }
