@@ -7,10 +7,16 @@ import { Colors } from '@/constants/Colors';
 import { vs } from 'react-native-size-matters';
 import dayjs from 'dayjs';
 import Typography from '@/constants/Typography';
+import { getCreditUsageRecord } from '@/service/credit';
+import { useEffect } from 'react';
 
 export const CreditUsageTab = () => {
   const user = useUserStore(state => state.user);
   const creditRecords = user?.creditRecord ?? [];
+
+  useEffect(() => {
+    getCreditUsageRecord();
+  }, []);
 
   return (
     <MyPageSection title="크레딧 사용내역">
@@ -19,7 +25,7 @@ export const CreditUsageTab = () => {
           <ThemedView style={styles.itemRow}>
             <ThemedView style={styles.textBlock}>
               <ThemedText style={styles.itemLabel}>
-                {record.type === 'charge' ? '크레딧 충전' : '크레딧 사용'}
+                {record.type === 'REFUND' ? '크레딧 환불' : '크레딧 사용'}
               </ThemedText>
               <ThemedText style={styles.itemDate}>
                 {dayjs(record.date).format('YYYY.MM.DD A hh:mm:ss')}
