@@ -25,6 +25,8 @@ import { Colors } from '@/constants/Colors';
 import { restoreSession } from '@/service/auth';
 import NetInfo from '@react-native-community/netinfo';
 import * as Updates from 'expo-updates';
+import { Buffer } from 'buffer';
+global.Buffer = Buffer;
 
 export default function RootLayout() {
   const theme = useTheme();
