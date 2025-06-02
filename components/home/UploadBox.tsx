@@ -25,6 +25,7 @@ export default function UploadBox() {
   >('idle');
   const [golfPoseId, setGolfPoseId] = useState<number | null>(null);
   const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const timeoutRef = useRef<number | null>(null);
   const player = useVideoPlayer(
@@ -190,15 +191,10 @@ export default function UploadBox() {
     }
   };
 
-  const handleAnalyze = async () => {
-    const user = useUserStore.getState().user;
-
-    if (!user || !golfPoseId || !uploadedFileUrl) {
-      Alert.alert('분석 오류', '업로드된 파일 정보가 없습니다.');
-      return;
-    }
-
+  const confirmAnalyzeRequest = async (user: UserInfo) => {
+    Alert.alert('분석 요청 중입니다. 잠시만 기다려주세요');
     try {
+      setIsAnalyzing(true);
       const analysisRes = await fetch(
         process.env.EXPO_PUBLIC_ANALYSIS_URL_ENDPOINT!,
         {
@@ -212,10 +208,10 @@ export default function UploadBox() {
         },
       );
 
-      router.replace('/history');
-      if (!analysisRes.ok) throw new Error('분석 서버 요청 실패');
+      console.log('분석 요청 결과', analysisRes);
 
       Alert.alert('분석 요청 성공', '분석이 시작되었습니다!');
+      router.replace('/history');
     } catch (error) {
       if (error instanceof Error) {
         console.error('분석 요청 오류:', error.message);
@@ -224,7 +220,36 @@ export default function UploadBox() {
         console.error('알 수 없는 오류:', error);
         Alert.alert('오류 발생', '알 수 없는 오류가 발생했습니다.');
       }
+    } finally {
+      setIsAnalyzing(false);
     }
+  };
+
+  const handleAnalyze = async () => {
+    const user = useUserStore.getState().user;
+
+    if (!user || !golfPoseId || !uploadedFileUrl) {
+      Alert.alert('분석 오류', '업로드된 파일 정보가 없습니다.');
+      return;
+    }
+
+    Alert.alert(
+      '분석 확인',
+      '이 영상을 분석하시겠습니까? 크레딧이 차감됩니다.',
+      [
+        {
+          text: '취소',
+          style: 'cancel',
+        },
+        {
+          text: '확인',
+          onPress: async () => {
+            await confirmAnalyzeRequest(user);
+          },
+        },
+      ],
+      { cancelable: false },
+    );
   };
 
   return (
@@ -306,8 +331,16 @@ export default function UploadBox() {
       </ThemedView>
 
       {videoUri && uploadStage === 'done' && (
-        <Pressable style={styles.analyzeButton} onPress={handleAnalyze}>
-          <ThemedText style={styles.buttonText}>분석하기</ThemedText>
+        <Pressable
+          style={styles.analyzeButton}
+          onPress={handleAnalyze}
+          disabled={isAnalyzing}
+        >
+          {isAnalyzing ? (
+            <ActivityIndicator size="small" color={Colors.common.black} />
+          ) : (
+            <ThemedText style={styles.buttonText}>분석하기</ThemedText>
+          )}
         </Pressable>
       )}
     </ThemedView>
@@ -364,6 +397,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontWeight: 'bold',
     color: Colors.common.black,
+    fontSize: Typography.sm,
   },
   video: {
     width: '100%',
