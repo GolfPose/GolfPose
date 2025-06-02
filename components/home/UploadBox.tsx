@@ -50,6 +50,7 @@ export default function UploadBox() {
       alert(
         '보유 크레딧이 부족하여 분석을 할 수 없습니다. 크레딧을 충전해주세요.',
       );
+      router.replace({ pathname: '/credit' });
       return;
     }
 
