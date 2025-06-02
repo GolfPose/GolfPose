@@ -19,9 +19,12 @@ import {
   SafeAreaView,
   StyleSheet,
   StatusBar as RNStatusBar,
+  Alert,
 } from 'react-native';
 import { Colors } from '@/constants/Colors';
 import { restoreSession } from '@/service/auth';
+import NetInfo from '@react-native-community/netinfo';
+import * as Updates from 'expo-updates';
 
 export default function RootLayout() {
   const theme = useTheme();
@@ -31,6 +34,14 @@ export default function RootLayout() {
 
   const [isAppReady, setIsAppReady] = useState(false);
   const opacity = useSharedValue(0);
+
+  const handleReload = async () => {
+    try {
+      await Updates.reloadAsync();
+    } catch (e) {
+      console.error('앱 재시작 실패', e);
+    }
+  };
 
   useEffect(() => {
     if (loaded) {
@@ -44,6 +55,21 @@ export default function RootLayout() {
 
   useEffect(() => {
     restoreSession();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      if (!state.isConnected) {
+        Alert.alert('네트워크 오류', '인터넷 연결이 끊어졌습니다.', [
+          {
+            text: '재시도',
+            onPress: handleReload,
+          },
+        ]);
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
   /* 더미 유저
