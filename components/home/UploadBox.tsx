@@ -1,4 +1,4 @@
-import { StyleSheet, Pressable, ActivityIndicator } from 'react-native';
+import { StyleSheet, Pressable, ActivityIndicator, Alert } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import BadgeCent from '@/assets/svgs/badge-cent.svg';
 import { useEffect, useState, useRef } from 'react';
@@ -11,6 +11,11 @@ import { Colors } from '@/constants/Colors';
 import { s, vs, ms } from 'react-native-size-matters';
 import Typography from '@/constants/Typography';
 import { router } from 'expo-router';
+import * as FileSystem from 'expo-file-system';
+import { supabase } from '@/lib/supabase';
+import { UserInfo } from '@/types/user';
+
+type PickedAsset = NonNullable<ImagePicker.ImagePickerResult['assets']>[0];
 
 export default function UploadBox() {
   const credit = useUserStore(state => state.user?.credit ?? 0);
@@ -18,6 +23,10 @@ export default function UploadBox() {
   const [uploadStage, setUploadStage] = useState<
     'idle' | 'picking' | 'uploading' | 'done'
   >('idle');
+  const [golfPoseId, setGolfPoseId] = useState<number | null>(null);
+  const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
   const timeoutRef = useRef<number | null>(null);
   const player = useVideoPlayer(
     videoUri ? { uri: videoUri } : { uri: '' },
@@ -37,32 +46,28 @@ export default function UploadBox() {
     };
   }, []);
 
-  const handlePressUpload = () => {
+  const handlePressUploadButton = async () => {
     const user = useUserStore.getState().user;
 
     if (!user || !user?.isLoggedIn) {
-      alert('로그인이 필요한 서비스입니다.');
+      Alert.alert('로그인 필요', '로그인이 필요한 서비스입니다.');
       router.replace({ pathname: '/login', params: { fromRedirect: 'true' } });
       return;
     }
 
     if (user.credit <= 8) {
-      alert(
+      Alert.alert(
+        '크레딧 부족',
         '보유 크레딧이 부족하여 분석을 할 수 없습니다. 크레딧을 충전해주세요.',
       );
+      router.replace({ pathname: '/credit' });
       return;
     }
 
-    handleUpload();
+    await handlePicking(user);
   };
 
-  const handleUpload = async () => {
-    const user = useUserStore.getState().user;
-    if (!user || !user?.isLoggedIn) {
-      alert('로그인이 필요한 서비스입니다.');
-      router.replace({ pathname: '/login', params: { fromRedirect: 'true' } });
-      return;
-    }
+  const handlePicking = async (user: UserInfo) => {
     try {
       setUploadStage('picking');
 
@@ -73,19 +78,178 @@ export default function UploadBox() {
       });
 
       if (!result.canceled && result.assets?.[0]?.uri) {
-        setUploadStage('uploading');
+        const fileUri = result.assets[0].uri;
+        const fileExt = fileUri.split('.').pop()?.toLowerCase();
 
-        timeoutRef.current = setTimeout(() => {
-          setVideoUri(result.assets[0].uri);
-          setUploadStage('done');
-        }, 3000);
+        const allowedExts = ['mp4', 'mov', 'avi'];
+        if (!fileExt || !allowedExts.includes(fileExt)) {
+          Alert.alert(
+            '지원되지 않는 파일 형식',
+            'MP4, MOV, AVI 파일만 업로드 가능합니다.',
+          );
+          setUploadStage('idle');
+          return;
+        }
+
+        setUploadStage('uploading');
+        await handleUpload(user, result.assets[0]);
       } else {
         setUploadStage('idle');
       }
     } catch (error) {
-      console.error('비디오 선택 오류:', error);
+      if (error instanceof Error) {
+        console.error('비디오 선택 오류:', error.message);
+      } else {
+        console.error('비디오 선택 알 수 없는 오류:', error);
+      }
       setUploadStage('idle');
     }
+  };
+
+  const handleUpload = async (user: UserInfo, asset: PickedAsset) => {
+    try {
+      const fileUri = asset.uri;
+      const fileExt = fileUri.split('.').pop()?.toLowerCase();
+      const fileInfo = await FileSystem.getInfoAsync(fileUri);
+
+      if (!fileInfo.exists || fileInfo.size === undefined) {
+        Alert.alert('파일 정보 오류', '파일 크기를 확인할 수 없습니다.');
+        setUploadStage('idle');
+        return;
+      }
+
+      if (fileInfo.size > 100 * 1024 * 1024) {
+        Alert.alert('파일 크기 초과', '100MB 이하 파일만 업로드 가능합니다.');
+        setUploadStage('idle');
+        return;
+      }
+
+      const fileName = `${Date.now()}.${fileExt}`;
+
+      // 1. pre-signed URL 요청
+      const presignRes = await fetch(
+        process.env.EXPO_PUBLIC_PRESIGNED_URL_ENDPOINT!,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fileName,
+            userId: user.id,
+          }),
+        },
+      );
+      const { uploadUrl, fileUrl } = await presignRes.json();
+
+      // 2. 파일 읽기 (binary)
+      const fileBinary = await FileSystem.readAsStringAsync(fileUri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      // 3. S3에 PUT 업로드
+      const uploadRes = await fetch(uploadUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': asset.mimeType || 'video/mp4',
+          'Content-Disposition': 'inline',
+        },
+        body: Buffer.from(fileBinary, 'base64'),
+      });
+
+      if (!uploadRes.ok) throw new Error('S3 업로드 실패');
+
+      console.log('S3 업로드 완료:', fileUrl);
+      setVideoUri(fileUri);
+      setUploadedFileUrl(fileUrl);
+
+      // 4. Supabase insert
+      const { data, error } = await supabase
+        .from('golfpose')
+        .insert({
+          user_id: user.id,
+          original_video_url: fileUrl,
+          status: 'IN_PROGRESS',
+          created_at: new Date().toISOString(),
+        })
+        .select('*');
+
+      if (error) throw error;
+
+      const golfPoseId = data[0].id;
+      console.log('Supabase 저장 완료:', golfPoseId);
+      setGolfPoseId(golfPoseId);
+
+      setUploadStage('done');
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error('업로드 오류:', error.message);
+        Alert.alert('오류 발생', error.message);
+      } else {
+        console.error('알 수 없는 오류:', error);
+        Alert.alert('오류 발생', '알 수 없는 오류가 발생했습니다.');
+      }
+      setUploadStage('idle');
+    }
+  };
+
+  const confirmAnalyzeRequest = async (user: UserInfo) => {
+    Alert.alert('분석 요청 중입니다. 잠시만 기다려주세요');
+    try {
+      setIsAnalyzing(true);
+      const analysisRes = await fetch(
+        process.env.EXPO_PUBLIC_ANALYSIS_URL_ENDPOINT!,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            golf_pose_id: golfPoseId,
+            s3_url: uploadedFileUrl,
+            user_id: user.id,
+          }),
+        },
+      );
+
+      console.log('분석 요청 결과', analysisRes);
+
+      Alert.alert('분석 요청 성공', '분석이 시작되었습니다!');
+      router.replace('/history');
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error('분석 요청 오류:', error.message);
+        Alert.alert('오류 발생', error.message);
+      } else {
+        console.error('알 수 없는 오류:', error);
+        Alert.alert('오류 발생', '알 수 없는 오류가 발생했습니다.');
+      }
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const handleAnalyze = async () => {
+    const user = useUserStore.getState().user;
+
+    if (!user || !golfPoseId || !uploadedFileUrl) {
+      Alert.alert('분석 오류', '업로드된 파일 정보가 없습니다.');
+      return;
+    }
+
+    Alert.alert(
+      '분석 확인',
+      '이 영상을 분석하시겠습니까? 크레딧이 차감됩니다.',
+      [
+        {
+          text: '취소',
+          style: 'cancel',
+        },
+        {
+          text: '확인',
+          onPress: async () => {
+            await confirmAnalyzeRequest(user);
+          },
+        },
+      ],
+      { cancelable: false },
+    );
   };
 
   return (
@@ -137,6 +301,8 @@ export default function UploadBox() {
               onPress={() => {
                 setVideoUri(null);
                 setUploadStage('idle');
+                setGolfPoseId(null);
+                setUploadedFileUrl(null);
               }}
             >
               <Feather name="x" size={s(18)} color={Colors.common.white} />
@@ -155,7 +321,7 @@ export default function UploadBox() {
             </ThemedText>
             <Pressable
               style={styles.button}
-              onPress={handlePressUpload}
+              onPress={handlePressUploadButton}
               disabled={uploadStage !== 'idle'}
             >
               <ThemedText style={styles.buttonText}>파일 업로드</ThemedText>
@@ -167,9 +333,14 @@ export default function UploadBox() {
       {videoUri && uploadStage === 'done' && (
         <Pressable
           style={styles.analyzeButton}
-          onPress={() => console.log('분석하기')}
+          onPress={handleAnalyze}
+          disabled={isAnalyzing}
         >
-          <ThemedText style={styles.buttonText}>분석하기</ThemedText>
+          {isAnalyzing ? (
+            <ActivityIndicator size="small" color={Colors.common.black} />
+          ) : (
+            <ThemedText style={styles.buttonText}>분석하기</ThemedText>
+          )}
         </Pressable>
       )}
     </ThemedView>
@@ -226,6 +397,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontWeight: 'bold',
     color: Colors.common.black,
+    fontSize: Typography.sm,
   },
   video: {
     width: '100%',

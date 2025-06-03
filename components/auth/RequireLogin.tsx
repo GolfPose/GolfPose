@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 export function RequireLogin({ children }: { children: React.ReactNode }) {
   const user = useUserStore(state => state.user);
   const router = useRouter();
-  const pathname = usePathname();
 
   useEffect(() => {
     if (!user || !user.isLoggedIn) {
