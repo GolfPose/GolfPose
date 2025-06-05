@@ -16,7 +16,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import {
   Platform,
-  SafeAreaView,
   StyleSheet,
   StatusBar as RNStatusBar,
   Alert,
@@ -26,6 +25,7 @@ import { restoreSession } from '@/service/auth';
 import NetInfo from '@react-native-community/netinfo';
 import * as Updates from 'expo-updates';
 import { Buffer } from 'buffer';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 global.Buffer = Buffer;
 
 export default function RootLayout() {
@@ -85,46 +85,45 @@ export default function RootLayout() {
     opacity: opacity.value,
   }));
 
-  const topPadding =
-    Platform.OS === 'android' ? (RNStatusBar.currentHeight ?? 24) : 0;
-
   if (!loaded || !isAppReady) {
     return <CustomSplashScreen />;
   }
 
   return (
-    <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
-      <SafeAreaView
-        style={[
-          styles.safeview,
-          {
-            paddingTop: topPadding,
-            backgroundColor:
-              theme === 'dark' ? Colors.common.black : Colors.common.white,
-          },
-        ]}
-      >
-        <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
-        <Animated.View style={[{ flex: 1 }, animatedMainStyle]}>
-          <Stack screenOptions={{ animation: 'fade' }}>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-            <Stack.Screen
-              name="login"
-              options={{ headerShown: false, animation: 'none' }}
-            />
-            <Stack.Screen
-              name="signup"
-              options={{ headerShown: false, animation: 'none' }}
-            />
-            <Stack.Screen
-              name="purchase"
-              options={{ headerShown: false, animation: 'none' }}
-            />
-          </Stack>
-        </Animated.View>
-      </SafeAreaView>
-    </ThemeProvider>
+    <SafeAreaProvider>
+      <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
+        <SafeAreaView
+          style={[
+            styles.safeview,
+            {
+              backgroundColor:
+                theme === 'dark' ? Colors.common.black : Colors.common.white,
+            },
+          ]}
+          edges={['top', 'bottom']}
+        >
+          <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
+          <Animated.View style={[{ flex: 1 }, animatedMainStyle]}>
+            <Stack screenOptions={{ animation: 'fade' }}>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+              <Stack.Screen
+                name="login"
+                options={{ headerShown: false, animation: 'none' }}
+              />
+              <Stack.Screen
+                name="signup"
+                options={{ headerShown: false, animation: 'none' }}
+              />
+              <Stack.Screen
+                name="purchase"
+                options={{ headerShown: false, animation: 'none' }}
+              />
+            </Stack>
+          </Animated.View>
+        </SafeAreaView>
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 }
 
