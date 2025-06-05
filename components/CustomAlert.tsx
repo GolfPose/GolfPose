@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
     message: {
         fontSize: s(16),
         marginBottom: vs(16),
+        lineHeight: vs(22),
     },
     buttonRow: {
         flexDirection: 'row',

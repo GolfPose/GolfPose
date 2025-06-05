@@ -240,7 +240,7 @@ export default function UploadBox() {
       return;
     }
     setAlertConfirmOnly(false);
-    setAlertMessage('이 영상을 분석하시겠습니까? 8크레딧이 차감됩니다.');
+    setAlertMessage('이 영상을 분석하시겠습니까?\n8크레딧이 차감됩니다.');
     setOnAlertConfirm(() => async () => {
       setAlertVisible(false);
       setIsAnalyzing(true);
