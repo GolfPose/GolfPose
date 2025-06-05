@@ -14,6 +14,7 @@ import { router } from 'expo-router';
 import * as FileSystem from 'expo-file-system';
 import { supabase } from '@/lib/supabase';
 import { UserInfo } from '@/types/user';
+import { CustomAlert } from '../CustomAlert';
 
 type PickedAsset = NonNullable<ImagePicker.ImagePickerResult['assets']>[0];
 
@@ -27,6 +28,10 @@ export default function UploadBox() {
     'idle' | 'picking' | 'selected' | 'uploading' | 'analyzing'
   >('idle');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertConfirmOnly, setAlertConfirmOnly] = useState(true);
+  const [onAlertConfirm, setOnAlertConfirm] = useState<() => void>(() => () => { });
 
   const timeoutRef = useRef<number | null>(null);
   const player = useVideoPlayer(
@@ -47,21 +52,23 @@ export default function UploadBox() {
     };
   }, []);
 
+  const showAlert = (message: string, confirmOnly = true, onConfirm?: () => void) => {
+    setAlertMessage(message);
+    setAlertConfirmOnly(confirmOnly);
+    setOnAlertConfirm(() => onConfirm || (() => { }));
+    setAlertVisible(true);
+  };
+
   const handlePressUploadButton = async () => {
     const user = useUserStore.getState().user;
 
     if (!user || !user?.isLoggedIn) {
-      Alert.alert('로그인 필요', '로그인이 필요한 서비스입니다.');
-      router.replace({ pathname: '/login', params: { fromRedirect: 'true' } });
+      showAlert('로그인이 필요한 서비스입니다.', true, () => router.replace({ pathname: '/login', params: { fromRedirect: 'true' } }));
       return;
     }
 
     if (user.credit <= 8) {
-      Alert.alert(
-        '크레딧 부족',
-        '보유 크레딧이 부족하여 분석을 할 수 없습니다. 크레딧을 충전해주세요.',
-      );
-      router.replace({ pathname: '/credit' });
+      showAlert('보유 크레딧이 부족하여 분석을 할 수 없습니다. 크레딧을 충전해주세요.', true, () => router.replace({ pathname: '/credit' }));
       return;
     }
 
@@ -71,42 +78,27 @@ export default function UploadBox() {
   const handlePicking = async () => {
     try {
       setUploadStage('picking');
-
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['videos'],
-        allowsEditing: false,
-        quality: 1,
-      });
-
+      const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['videos'], allowsEditing: false, quality: 1 });
       if (!result.canceled && result.assets?.[0]?.uri) {
         const fileUri = result.assets[0].uri;
         const fileExt = fileUri.split('.').pop()?.toLowerCase();
-
         const allowedExts = ['mp4', 'mov', 'avi'];
         if (!fileExt || !allowedExts.includes(fileExt)) {
-          Alert.alert(
-            '지원되지 않는 파일 형식',
-            'MP4, MOV, AVI 파일만 업로드 가능합니다.',
-          );
+          showAlert('MP4, MOV, AVI 파일만 업로드 가능합니다.');
           setUploadStage('idle');
           return;
         }
-
-        // 파일 크기 검증
         const fileInfo = await FileSystem.getInfoAsync(fileUri);
         if (!fileInfo.exists || fileInfo.size === undefined) {
-          Alert.alert('파일 정보 오류', '파일 크기를 확인할 수 없습니다.');
+          showAlert('파일 크기를 확인할 수 없습니다.');
           setUploadStage('idle');
           return;
         }
-
         if (fileInfo.size > 100 * 1024 * 1024) {
-          Alert.alert('파일 크기 초과', '100MB 이하 파일만 업로드 가능합니다.');
+          showAlert('100MB 이하 파일만 업로드 가능합니다.');
           setUploadStage('idle');
           return;
         }
-
-        // 로컬에만 저장하고 업로드는 하지 않음
         setVideoUri(fileUri);
         setSelectedAsset(result.assets[0]);
         setUploadStage('selected');
@@ -114,11 +106,7 @@ export default function UploadBox() {
         setUploadStage('idle');
       }
     } catch (error) {
-      if (error instanceof Error) {
-        console.error('비디오 선택 오류:', error.message);
-      } else {
-        console.error('비디오 선택 알 수 없는 오류:', error);
-      }
+      showAlert('비디오 선택 중 오류가 발생했습니다.');
       setUploadStage('idle');
     }
   };
@@ -250,33 +238,23 @@ export default function UploadBox() {
     const user = useUserStore.getState().user;
 
     if (!user || !selectedAsset) {
-      Alert.alert('분석 오류', '선택된 파일 정보가 없습니다.');
+      showAlert('선택된 파일 정보가 없습니다.');
       return;
     }
-
-    Alert.alert(
-      '분석 확인',
-      '이 영상을 분석하시겠습니까? 8크레딧이 차감됩니다.',
-      [
-        {
-          text: '취소',
-          style: 'cancel',
-        },
-        {
-          text: '확인',
-          onPress: async () => {
-            setIsAnalyzing(true);
-            try {
-              await handleUploadAndAnalyze(user, selectedAsset);
-            } finally {
-              setIsAnalyzing(false);
-            }
-          },
-        },
-      ],
-      { cancelable: false },
-    );
+    setAlertConfirmOnly(false);
+    setAlertMessage('이 영상을 분석하시겠습니까?\n8크레딧이 차감됩니다.');
+    setOnAlertConfirm(() => async () => {
+      setAlertVisible(false);
+      setIsAnalyzing(true);
+      try {
+        await handleUploadAndAnalyze(user, selectedAsset);
+      } finally {
+        setIsAnalyzing(false);
+      }
+    });
+    setAlertVisible(true);
   };
+
 
   const handleReset = () => {
     setVideoUri(null);
@@ -287,6 +265,17 @@ export default function UploadBox() {
 
   return (
     <ThemedView style={styles.wrapper}>
+      <CustomAlert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={() => setAlertVisible(false)}
+        confirmText="확인"
+        cancelText={!alertConfirmOnly ? '취소' : undefined}
+        onConfirm={() => {
+          onAlertConfirm();
+          setAlertVisible(false);
+        }}
+      />
       <ThemedView style={styles.creditRow}>
         <BadgeCent
           width={s(16)}

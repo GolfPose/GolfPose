@@ -16,6 +16,8 @@ import { useTheme } from '@/hooks/useTheme';
 import { s, vs } from 'react-native-size-matters';
 import { signUp } from '@/service/auth';
 import { router } from 'expo-router';
+import { CustomAlert } from '../CustomAlert';
+
 
 export const SignUpForm = () => {
   const theme = useTheme();
@@ -28,6 +30,9 @@ export const SignUpForm = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [confirmError, setConfirmError] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertAfterSignup, setAlertAfterSignup] = useState(false);
 
   const handleEmailChange = (text: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -107,17 +112,20 @@ export const SignUpForm = () => {
       const { success, message } = await signUp(email, password, nickname);
 
       if (success) {
-        alert(`${message} 이메일 인증을 완료해주세요.`);
-        router.replace('/login');
+        setAlertMessage(`${message} 이메일 인증을 완료해주세요.`);
+        setAlertVisible(true);
+        setAlertAfterSignup(true);
       } else {
-        alert(`회원가입 실패: ${message}`);
+        setAlertMessage(`회원가입 실패: ${message}`);
+        setAlertVisible(true);
       }
     } catch (err: unknown) {
       if (err instanceof Error) {
-        alert(`회원가입 실패: ${err.message}`);
+        setAlertMessage(`회원가입 실패: ${err.message}`);
       } else {
-        alert('회원가입 중 알 수 없는 오류가 발생했습니다.');
+        setAlertMessage('회원가입 중 알 수 없는 오류가 발생했습니다.');
       }
+      setAlertVisible(true);
     } finally {
       setLoading(false);
     }
@@ -173,6 +181,19 @@ export const SignUpForm = () => {
             </ThemedView>
           </ScrollView>
         </KeyboardAvoidingView>
+        <CustomAlert
+          visible={alertVisible}
+          message={alertMessage}
+          confirmText="확인"
+          onConfirm={() => {
+            setAlertVisible(false);
+            if (alertAfterSignup) {
+              setAlertAfterSignup(false);
+              router.replace('/login');
+            }
+          }}
+          onClose={() => setAlertVisible(false)}
+        />
       </ThemedView>
     </TouchableWithoutFeedback>
   );
