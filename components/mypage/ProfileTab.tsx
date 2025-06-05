@@ -20,7 +20,7 @@ export const ProfileTab = () => {
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-
+  const [confirmText, setConfirmText] = useState('확인');
 
   const handleSave = async () => {
     if (!user) return;
@@ -40,6 +40,7 @@ export const ProfileTab = () => {
 
   const handleLogoutAlert = () => {
     setAlertMessage('정말 로그아웃 하시겠습니까?');
+    setConfirmText('로그아웃');
     setShowLogoutConfirm(true);
     setAlertVisible(true);
   };
@@ -51,6 +52,7 @@ export const ProfileTab = () => {
 
   const handleWithdraw = () => {
     setAlertMessage('정말로 탈퇴하시겠습니까? \n이 작업은 되돌릴 수 없습니다.');
+    setConfirmText('탈퇴하기');
     setAlertVisible(true);
   };
 
@@ -110,9 +112,11 @@ export const ProfileTab = () => {
       <CustomAlert
         visible={alertVisible}
         message={alertMessage}
-        confirmText="탈퇴하기"
+        confirmText={confirmText}
         cancelText="취소"
-        onClose={() => { setAlertVisible(false); }}
+        onClose={() => {
+          setAlertVisible(false);
+        }}
         onCancel={() => setAlertVisible(false)}
         onConfirm={async () => {
           const user = useUserStore.getState().user;
