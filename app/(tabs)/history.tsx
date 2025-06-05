@@ -69,9 +69,7 @@ export default function HistoryScreen() {
     fetchVideo();
   }, []);
 
-  if (userId != null) {
-    useGolfPoseRealtime(userId ?? 0);
-  }
+  useGolfPoseRealtime(userId ?? 0);
 
   return (
     <RequireLogin>
@@ -132,11 +130,11 @@ export default function HistoryScreen() {
                   video.graphUrls.leftLeg3D,
                   video.graphUrls.rightLeg3D,
                 ].some(url => !!url) && (
-                  <BodyPartGraphSection
-                    video={video}
-                    controlAction={controlAction}
-                  />
-                )}
+                    <BodyPartGraphSection
+                      video={video}
+                      controlAction={controlAction}
+                    />
+                  )}
 
                 {/* 3D 아바타 */}
                 {video.avatarUrl && (

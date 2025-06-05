@@ -10,12 +10,17 @@ import { MyPageSection } from '@/components/mypage/MyPageSection';
 import { useTheme } from '@/hooks/useTheme';
 import { router } from 'expo-router';
 import { logout, updateDisplayName, withdrawAccount } from '@/service/auth';
+import { CustomAlert } from '../CustomAlert';
 
 export const ProfileTab = () => {
   const user = useUserStore(state => state.user);
   const [isEditing, setIsEditing] = useState(false);
   const [tempName, setTempName] = useState(user?.name ?? '');
   const theme = useTheme();
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
 
   const handleSave = async () => {
     if (!user) return;
@@ -33,37 +38,20 @@ export const ProfileTab = () => {
     router.replace('/login');
   };
 
+  const handleLogoutAlert = () => {
+    setAlertMessage('정말 로그아웃 하시겠습니까?');
+    setShowLogoutConfirm(true);
+    setAlertVisible(true);
+  };
+
   const handleCancelEdit = () => {
     setTempName(user?.name ?? '');
     setIsEditing(false);
   };
 
   const handleWithdraw = () => {
-    Alert.alert(
-      '회원탈퇴',
-      '정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.',
-      [
-        { text: '취소', style: 'cancel' },
-        {
-          text: '탈퇴하기',
-          style: 'destructive',
-          onPress: async () => {
-            const user = useUserStore.getState().user;
-            if (!user) {
-              alert('사용자 정보가 없습니다.');
-              return;
-            }
-
-            const { success, message } = await withdrawAccount(user.email);
-            alert(message);
-
-            if (success) {
-              router.replace('/');
-            }
-          },
-        },
-      ],
-    );
+    setAlertMessage('정말로 탈퇴하시겠습니까? \n이 작업은 되돌릴 수 없습니다.');
+    setAlertVisible(true);
   };
 
   return (
@@ -119,14 +107,61 @@ export const ProfileTab = () => {
         )}
       </ThemedView>
       {/* 회원탈퇴 버튼 */}
+      <CustomAlert
+        visible={alertVisible}
+        message={alertMessage}
+        confirmText="탈퇴하기"
+        cancelText="취소"
+        onClose={() => { setAlertVisible(false); }}
+        onCancel={() => setAlertVisible(false)}
+        onConfirm={async () => {
+          const user = useUserStore.getState().user;
+          if (!user) {
+            setAlertMessage('사용자 정보가 없습니다.');
+            setAlertVisible(true);
+            return;
+          }
+
+          const { success, message } = await withdrawAccount(user.email);
+          setAlertMessage(message);
+          setAlertVisible(true);
+
+          if (success) {
+            setTimeout(() => {
+              router.replace('/');
+            }, 1000);
+          }
+        }}
+      />
       <ThemedView style={styles.buttonContainer}>
-        <Pressable style={styles.logoutButton} onPress={handleLogout}>
+        <Pressable style={styles.logoutButton} onPress={handleLogoutAlert}>
           <ThemedText
             style={[styles.buttonText, { color: Colors.common.primary500 }]}
           >
             로그아웃
           </ThemedText>
         </Pressable>
+        <CustomAlert
+          visible={alertVisible}
+          message={alertMessage}
+          confirmText="확인"
+          cancelText="취소"
+          onConfirm={() => {
+            if (showLogoutConfirm) {
+              handleLogout();
+            }
+            setAlertVisible(false);
+            setShowLogoutConfirm(false);
+          }}
+          onCancel={() => {
+            setAlertVisible(false);
+            setShowLogoutConfirm(false);
+          }}
+          onClose={() => {
+            setAlertVisible(false);
+            setShowLogoutConfirm(false);
+          }}
+        />
         <Pressable style={styles.withdrawButton} onPress={handleWithdraw}>
           <ThemedText style={[styles.buttonText, { color: Colors.common.red }]}>
             회원탈퇴
