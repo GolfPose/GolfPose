@@ -66,8 +66,10 @@ export default function HistoryScreen() {
   };
 
   useEffect(() => {
-    fetchVideo();
-  }, []);
+    if (userId) {
+      fetchVideo();
+    }
+  }, [userId]);
 
   useGolfPoseRealtime(userId ?? 0);
 
