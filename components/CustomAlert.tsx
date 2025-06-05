@@ -40,7 +40,7 @@ export const CustomAlert = ({
         <Modal transparent visible={visible} animationType="fade">
             <View style={styles.overlay}>
                 <View style={styles.alertBox}>
-                    <Text style={styles.title}>⚠ 알림</Text>
+                    <Text style={styles.title}>알림</Text>
                     <Text style={styles.message}>{message}</Text>
 
                     <View style={styles.buttonRow}>
