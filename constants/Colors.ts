@@ -35,4 +35,5 @@ export const Colors = {
     blue: '#3B82F6',
     overlayBg: 'rgba(0, 0, 0, 0.6)',
   },
+  darkModal: '#1C1C1E',
 };
