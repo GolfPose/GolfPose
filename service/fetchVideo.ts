@@ -5,21 +5,23 @@ import * as VideoThumbnails from 'expo-video-thumbnails';
 
 export async function fetchVideo() {
   const storeState = useUserStore.getState();
-  const setUser = useUserStore.getState().setUser;
+  const setUser = storeState.setUser;
   const userId = storeState.user?.id;
-  // const userId = 18;
+
+  if (!userId) return;
 
   let offset = 0;
-  const limit = 5;
   let hasMore = true;
 
   while (hasMore) {
+    const dynamicLimit = offset < 5 ? 1 : 5;
+
     const { data: videoData, error } = await supabase
       .from('golfpose')
       .select('*')
       .eq('user_id', userId)
       .order('created_at', { ascending: false })
-      .range(offset, offset + limit - 1);
+      .range(offset, offset + dynamicLimit - 1);
 
     if (error) {
       console.error('Supabase fetch 에러:', error);
@@ -34,7 +36,7 @@ export async function fetchVideo() {
     const currentUser = useUserStore.getState().user;
     if (!currentUser) return;
 
-    const newAnalysisVideos: AnalysisRecord[] = videoData.map(item => ({
+    const newAnalysisVideosBase: AnalysisRecord[] = videoData.map(item => ({
       id: item.id.toString(),
       uploadedAt: item.created_at,
       videoUrl: item.original_video_url,
@@ -64,58 +66,42 @@ export async function fetchVideo() {
       avatarUrl: item.avatar_url,
     }));
 
-    // 최신 상태 기준으로 안전하게 업데이트
+    // 썸네일 생성 시도
+    const enrichedVideos = await Promise.all(
+      newAnalysisVideosBase.map(async video => {
+        try {
+          const { uri } = await VideoThumbnails.getThumbnailAsync(
+            video.videoUrl,
+            {
+              time: 0,
+            },
+          );
+
+          return { ...video, thumbnailUrl: uri };
+        } catch (err) {
+          console.warn(`썸네일 생성 실패 (id: ${video.id}):`, err);
+          return { ...video, thumbnailUrl: undefined };
+        }
+      }),
+    );
+
+    // 이전 데이터와 합쳐서 한 번에 업데이트
     setUser({
       ...currentUser,
       myAnalysisVideos: [
         ...(currentUser.myAnalysisVideos || []),
-        ...newAnalysisVideos,
+        ...enrichedVideos,
       ],
     });
-
-    // 썸네일 비동기 생성
-    const startIndex = currentUser.myAnalysisVideos.length || 0;
-    setUser({
-      ...currentUser,
-      myAnalysisVideos: [...currentUser.myAnalysisVideos, ...newAnalysisVideos],
-    });
-
-    const thumbnailPromises = newAnalysisVideos.map(async (video, index) => {
-      try {
-        const { uri } = await VideoThumbnails.getThumbnailAsync(
-          video.videoUrl,
-          {
-            time: 0,
-          },
-        );
-
-        const updatedVideos = [
-          ...useUserStore.getState().user!.myAnalysisVideos,
-        ];
-        updatedVideos[startIndex + index] = {
-          ...updatedVideos[startIndex + index],
-          thumbnailUrl: uri,
-        };
-
-        setUser({
-          ...useUserStore.getState().user!,
-          myAnalysisVideos: updatedVideos,
-        });
-      } catch (err) {
-        console.warn(`썸네일 생성 실패 (id: ${video.id}):`, err);
-      }
-    });
-
-    await Promise.all(thumbnailPromises);
 
     console.log(`${offset + videoData.length}개 영상 불러옴`);
 
     // 다음 배치로 넘어갈지 결정
-    if (videoData.length < limit) {
+    if (videoData.length < dynamicLimit) {
       hasMore = false;
       console.log('모든 영상 불러오기 완료');
     } else {
-      offset += limit;
+      offset += dynamicLimit;
     }
   }
 }

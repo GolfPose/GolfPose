@@ -118,17 +118,19 @@ export default function UploadBox() {
       const fileUri = asset.uri;
       const fileExt = fileUri.split('.').pop()?.toLowerCase();
       const fileName = `${Date.now()}.${fileExt}`;
+      const fileType = asset.mimeType ?? 'video/mp4';
 
       // 1. pre-signed URL 요청
       const presignedBody = {
         fileName,
         userId: user.id,
+        contentType: fileType,
       };
 
       console.log('=== 1. Pre-signed URL 요청 Body ===');
       console.log(JSON.stringify(presignedBody, null, 2));
 
-      const presignRes = await fetch(
+      const presignResult = await fetch(
         process.env.EXPO_PUBLIC_PRESIGNED_URL_ENDPOINT!,
         {
           method: 'POST',
@@ -136,7 +138,7 @@ export default function UploadBox() {
           body: JSON.stringify(presignedBody),
         },
       );
-      const { uploadUrl, fileUrl } = await presignRes.json();
+      const { uploadUrl, fileUrl } = await presignResult.json();
 
       // 2. 파일 읽기 (binary)
       const fileBinary = await FileSystem.readAsStringAsync(fileUri, {
@@ -153,7 +155,7 @@ export default function UploadBox() {
       const uploadRes = await fetch(uploadUrl, {
         method: 'PUT',
         headers: {
-          'Content-Type': asset.mimeType || 'video/mp4',
+          'Content-Type': fileType,
           'Content-Disposition': 'inline',
         },
         body: Buffer.from(fileBinary, 'base64'),
