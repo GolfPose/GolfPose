@@ -31,7 +31,9 @@ export default function UploadBox() {
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertConfirmOnly, setAlertConfirmOnly] = useState(true);
-  const [onAlertConfirm, setOnAlertConfirm] = useState<() => void>(() => () => { });
+  const [onAlertConfirm, setOnAlertConfirm] = useState<() => void>(
+    () => () => {},
+  );
 
   const timeoutRef = useRef<number | null>(null);
   const player = useVideoPlayer(
@@ -52,10 +54,14 @@ export default function UploadBox() {
     };
   }, []);
 
-  const showAlert = (message: string, confirmOnly = true, onConfirm?: () => void) => {
+  const showAlert = (
+    message: string,
+    confirmOnly = true,
+    onConfirm?: () => void,
+  ) => {
     setAlertMessage(message);
     setAlertConfirmOnly(confirmOnly);
-    setOnAlertConfirm(() => onConfirm || (() => { }));
+    setOnAlertConfirm(() => onConfirm || (() => {}));
     setAlertVisible(true);
   };
 
@@ -63,12 +69,21 @@ export default function UploadBox() {
     const user = useUserStore.getState().user;
 
     if (!user || !user?.isLoggedIn) {
-      showAlert('로그인이 필요한 서비스입니다.', true, () => router.replace({ pathname: '/login', params: { fromRedirect: 'true' } }));
+      showAlert('로그인이 필요한 서비스입니다.', true, () =>
+        router.replace({
+          pathname: '/login',
+          params: { fromRedirect: 'true' },
+        }),
+      );
       return;
     }
 
     if (user.credit <= 8) {
-      showAlert('보유 크레딧이 부족하여 분석을 할 수 없습니다. 크레딧을 충전해주세요.', true, () => router.replace({ pathname: '/credit' }));
+      showAlert(
+        '보유 크레딧이 부족하여 분석을 할 수 없습니다. 크레딧을 충전해주세요.',
+        true,
+        () => router.replace({ pathname: '/credit' }),
+      );
       return;
     }
 
@@ -78,7 +93,11 @@ export default function UploadBox() {
   const handlePicking = async () => {
     try {
       setUploadStage('picking');
-      const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['videos'], allowsEditing: false, quality: 1 });
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['videos'],
+        allowsEditing: false,
+        quality: 1,
+      });
       if (!result.canceled && result.assets?.[0]?.uri) {
         const fileUri = result.assets[0].uri;
         const fileExt = fileUri.split('.').pop()?.toLowerCase();
@@ -220,15 +239,15 @@ export default function UploadBox() {
         type: 'USE',
       });
 
-      Alert.alert('분석 요청 성공', '분석이 시작되었습니다!');
+      showAlert('분석이 시작되었습니다!');
       router.replace('/history');
     } catch (error) {
       if (error instanceof Error) {
         console.error('업로드/분석 오류:', error.message);
-        Alert.alert('오류 발생', error.message);
+        showAlert('업로드에 실패하였습니다.\n잠시후에 시도해주세요.');
       } else {
         console.error('알 수 없는 오류:', error);
-        Alert.alert('오류 발생', '알 수 없는 오류가 발생했습니다.');
+        showAlert('알 수 없는 오류가 발생했습니다.');
       }
       setUploadStage('selected'); // 실패 시 선택된 상태로 되돌리기
     }
@@ -254,7 +273,6 @@ export default function UploadBox() {
     });
     setAlertVisible(true);
   };
-
 
   const handleReset = () => {
     setVideoUri(null);
