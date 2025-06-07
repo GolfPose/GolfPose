@@ -130,6 +130,8 @@ export default function UploadBox() {
     }
   };
 
+  const incrementRefreshKey = useUserStore(state => state.incrementRefreshKey);
+
   const handleUploadAndAnalyze = async (user: UserInfo, asset: PickedAsset) => {
     try {
       setUploadStage('uploading');
@@ -239,6 +241,11 @@ export default function UploadBox() {
         type: 'USE',
       });
 
+      // 7. 영상 업데이트
+      incrementRefreshKey();
+
+      setUploadStage('idle');
+      setIsAnalyzing(false);
       showAlert('분석이 시작되었습니다!');
       router.replace('/history');
     } catch (error) {
@@ -250,6 +257,7 @@ export default function UploadBox() {
         showAlert('알 수 없는 오류가 발생했습니다.');
       }
       setUploadStage('selected'); // 실패 시 선택된 상태로 되돌리기
+      setIsAnalyzing(false);
     }
   };
 

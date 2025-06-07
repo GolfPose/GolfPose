@@ -6,6 +6,10 @@ import { AnalysisRecord } from '@/types/analysis';
 interface UserStore {
   user: UserInfo | null;
 
+  // refresh trigger
+  refreshKey: number;
+  incrementRefreshKey: () => void;
+
   // setter
   setUser: (user: UserInfo) => void;
   clearUser: () => void;
@@ -25,6 +29,10 @@ interface UserStore {
 const useUserStore: UseBoundStore<StoreApi<UserStore>> = create<UserStore>(
   (set, get) => ({
     user: null,
+    refreshKey: 0,
+
+    incrementRefreshKey: () =>
+      set(state => ({ refreshKey: state.refreshKey + 1 })),
 
     setUser: user => set({ user }),
 
