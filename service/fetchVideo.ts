@@ -6,6 +6,7 @@ import * as VideoThumbnails from 'expo-video-thumbnails';
 export async function fetchVideo() {
   const storeState = useUserStore.getState();
   const setUser = storeState.setUser;
+  const updateVideoThumbnail = storeState.updateVideoThumbnail;
   const userId = storeState.user?.id;
 
   if (!userId) return;
@@ -34,7 +35,7 @@ export async function fetchVideo() {
       break;
     }
 
-    const newAnalysisVideosBase: AnalysisRecord[] = videoData.map(item => ({
+    const newAnalysisVideos: AnalysisRecord[] = videoData.map(item => ({
       id: item.id.toString(),
       uploadedAt: item.created_at,
       videoUrl: item.original_video_url,
@@ -64,23 +65,22 @@ export async function fetchVideo() {
       avatarUrl: item.avatar_url,
     }));
 
-    const enrichedVideos = await Promise.all(
-      newAnalysisVideosBase.map(async video => {
-        try {
-          const { uri } = await VideoThumbnails.getThumbnailAsync(
-            video.videoUrl,
-            { time: 0 },
-          );
-          return { ...video, thumbnailUrl: uri };
-        } catch (err) {
-          console.warn(`썸네일 생성 실패 (id: ${video.id}):`, err);
-          return { ...video, thumbnailUrl: undefined };
-        }
-      }),
-    );
+    for (const video of newAnalysisVideos) {
+      try {
+        const { uri } = await VideoThumbnails.getThumbnailAsync(
+          video.videoUrl,
+          {
+            time: 0,
+          },
+        );
+        updateVideoThumbnail(video.id, uri);
+        video.thumbnailUrl = uri;
+      } catch (err) {
+        console.warn(`썸네일 생성 실패 (id: ${video.id}):`, err);
+      }
+    }
 
-    allFetchedVideos.push(...enrichedVideos);
-
+    allFetchedVideos.push(...newAnalysisVideos);
     console.log(`${offset + videoData.length}개 영상 불러옴`);
 
     if (videoData.length < dynamicLimit) {
@@ -95,9 +95,7 @@ export async function fetchVideo() {
   if (!currentUser) return;
 
   const merged = [...(currentUser.myAnalysisVideos || []), ...allFetchedVideos];
-
   const unique = Array.from(new Map(merged.map(v => [v.id, v])).values());
-
   const sorted = unique.sort((a, b) =>
     b.uploadedAt.localeCompare(a.uploadedAt),
   );

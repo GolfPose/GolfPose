@@ -20,6 +20,7 @@ interface UserStore {
 
   // video
   addAnalysisVideo: (video: AnalysisRecord) => void;
+  updateVideoThumbnail: (videoId: string, thumbnailUrl: string) => void;
 
   // query
   getVideosByMonth: (year: number, month: number) => AnalysisRecord[];
@@ -70,6 +71,20 @@ const useUserStore: UseBoundStore<StoreApi<UserStore>> = create<UserStore>(
         user: {
           ...currentUser,
           myAnalysisVideos: [...currentUser.myAnalysisVideos, video],
+        },
+      });
+    },
+
+    updateVideoThumbnail: (videoId, thumbnailUrl) => {
+      const currentUser = get().user;
+      if (!currentUser) return;
+      const updatedVideos = currentUser.myAnalysisVideos.map(v =>
+        v.id === videoId ? { ...v, thumbnailUrl } : v,
+      );
+      set({
+        user: {
+          ...currentUser,
+          myAnalysisVideos: updatedVideos,
         },
       });
     },
