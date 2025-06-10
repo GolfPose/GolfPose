@@ -18,7 +18,6 @@ import { signUp } from '@/service/auth';
 import { router } from 'expo-router';
 import { CustomAlert } from '../CustomAlert';
 
-
 export const SignUpForm = () => {
   const theme = useTheme();
   const [email, setEmail] = useState('');
@@ -112,7 +111,9 @@ export const SignUpForm = () => {
       const { success, message } = await signUp(email, password, nickname);
 
       if (success) {
-        setAlertMessage(`${message} 이메일 인증을 완료해주세요.`);
+        setAlertMessage(
+          '회원가입이 완료되었습니다.\n이메일 인증을 완r료해주세요',
+        );
         setAlertVisible(true);
         setAlertAfterSignup(true);
       } else {
