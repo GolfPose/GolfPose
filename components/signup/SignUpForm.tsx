@@ -112,7 +112,7 @@ export const SignUpForm = () => {
 
       if (success) {
         setAlertMessage(
-          '회원가입이 완료되었습니다.\n이메일 인증을 완r료해주세요',
+          '회원가입이 완료되었습니다.\n이메일 인증을 완료해주세요',
         );
         setAlertVisible(true);
         setAlertAfterSignup(true);
