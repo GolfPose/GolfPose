@@ -20,26 +20,29 @@ export const ProfileTab = () => {
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [confirmText, setConfirmText] = useState('확인');
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [alertType, setAlertType] = useState<'save' | 'logout' | 'withdraw' | null>(null);
+  const showCancelButton = alertType !== 'save';
 
   const handleSave = async () => {
     if (!user) return;
     const { success, message } = await updateDisplayName(user.uid, tempName);
-    alert(message);
-    if (success) setIsEditing(false);
+    setAlertType('save');
+    setAlertMessage(success ? '닉네임이 변경되었습니다!' : message);
+    setConfirmText('확인');
+    setAlertVisible(true);
   };
 
   const handleLogoutAlert = () => {
+    setAlertType('logout');
     setAlertMessage('정말 로그아웃 하시겠습니까?');
     setConfirmText('로그아웃');
-    setShowLogoutConfirm(true);
     setAlertVisible(true);
   };
 
   const handleWithdrawAlert = () => {
+    setAlertType('withdraw');
     setAlertMessage('정말로 탈퇴하시겠습니까? \n이 작업은 되돌릴 수 없습니다.');
     setConfirmText('탈퇴하기');
-    setShowLogoutConfirm(false);
     setAlertVisible(true);
   };
 
@@ -54,20 +57,22 @@ export const ProfileTab = () => {
       setAlertMessage('사용자 정보가 없습니다.');
       return;
     }
-
-    if (showLogoutConfirm) {
+    if (alertType === 'save') {
+      setIsEditing(false);
+      setAlertVisible(false);
+    }
+    else if (alertType === 'logout') {
       await logout();
       router.replace('/login');
-    } else {
-      const { success, message } = await withdrawAccount(currentUser.email);
-      setAlertMessage(message);
-      if (success) {
-        setTimeout(() => router.replace('/'), 1000);
-      }
     }
-
-    setAlertVisible(false);
-    setShowLogoutConfirm(false);
+    else if (alertType === 'withdraw') {
+      const currentUser = useUserStore.getState().user;
+      if (!currentUser?.email) return;
+      const { success } = await withdrawAccount(currentUser.email);
+      if (success) setTimeout(() => router.replace('/'), 1000);
+      setAlertVisible(false);
+    }
+    setAlertType(null);  
   };
 
   return (
@@ -145,15 +150,19 @@ export const ProfileTab = () => {
         visible={alertVisible}
         message={alertMessage}
         confirmText={confirmText}
-        cancelText="취소"
+      
+        {...(showCancelButton
+          ? {
+            cancelText: '취소', onCancel: () => {
+              setAlertVisible(false);
+              setAlertType(null);
+            }
+          }
+          : {})}
         onConfirm={handleConfirm}
-        onCancel={() => {
-          setAlertVisible(false);
-          setShowLogoutConfirm(false);
-        }}
         onClose={() => {
           setAlertVisible(false);
-          setShowLogoutConfirm(false);
+          setAlertType(null);
         }}
       />
     </MyPageSection>
