@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, TextInput, Pressable } from 'react-native';
 import { ThemedText } from '../ThemedText';
 import { ThemedView } from '../ThemedView';
@@ -20,8 +20,17 @@ export const ProfileTab = () => {
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [confirmText, setConfirmText] = useState('확인');
-  const [alertType, setAlertType] = useState<'save' | 'logout' | 'withdraw' | null>(null);
+  const [alertType, setAlertType] = useState<
+    'save' | 'logout' | 'withdraw' | null
+  >(null);
   const showCancelButton = alertType !== 'save';
+
+  useEffect(() => {
+    if (!alertVisible) {
+      const timeout = setTimeout(() => setAlertType(null), 100);
+      return () => clearTimeout(timeout);
+    }
+  }, [alertVisible]);
 
   const handleSave = async () => {
     if (!user) return;
@@ -60,19 +69,16 @@ export const ProfileTab = () => {
     if (alertType === 'save') {
       setIsEditing(false);
       setAlertVisible(false);
-    }
-    else if (alertType === 'logout') {
+    } else if (alertType === 'logout') {
       await logout();
       router.replace('/login');
-    }
-    else if (alertType === 'withdraw') {
+    } else if (alertType === 'withdraw') {
       const currentUser = useUserStore.getState().user;
       if (!currentUser?.email) return;
       const { success } = await withdrawAccount(currentUser.email);
       if (success) setTimeout(() => router.replace('/'), 1000);
       setAlertVisible(false);
     }
-    setAlertType(null);  
   };
 
   return (
@@ -150,19 +156,17 @@ export const ProfileTab = () => {
         visible={alertVisible}
         message={alertMessage}
         confirmText={confirmText}
-      
         {...(showCancelButton
           ? {
-            cancelText: '취소', onCancel: () => {
-              setAlertVisible(false);
-              setAlertType(null);
+              cancelText: '취소',
+              onCancel: () => {
+                setAlertVisible(false);
+              },
             }
-          }
           : {})}
         onConfirm={handleConfirm}
         onClose={() => {
           setAlertVisible(false);
-          setAlertType(null);
         }}
       />
     </MyPageSection>

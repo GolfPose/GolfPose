@@ -80,7 +80,7 @@ export default function UploadBox() {
 
     if (user.credit <= 8) {
       showAlert(
-        '보유 크레딧이 부족하여 분석을 할 수 없습니다. 크레딧을 충전해주세요.',
+        '보유 크레딧이 부족하여 분석을 할 수 없습니다.\n크레딧을 충전해주세요.',
         true,
         () => router.replace({ pathname: '/credit' }),
       );
