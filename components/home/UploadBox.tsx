@@ -140,11 +140,13 @@ export default function UploadBox() {
       const fileExt = fileUri.split('.').pop()?.toLowerCase();
       const fileName = `${Date.now()}.${fileExt}`;
       const fileType = asset.mimeType ?? 'video/mp4';
+      const sport = 'golfpose';
 
       // 1. pre-signed URL 요청
       const presignedBody = {
         fileName,
         userId: user.id,
+        sport: sport,
         contentType: fileType,
       };
 
@@ -155,7 +157,10 @@ export default function UploadBox() {
         process.env.EXPO_PUBLIC_PRESIGNED_URL_ENDPOINT!,
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
           body: JSON.stringify(presignedBody),
         },
       );
