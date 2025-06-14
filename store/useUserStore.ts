@@ -6,6 +6,10 @@ import { AnalysisRecord } from '@/types/analysis';
 interface UserStore {
   user: UserInfo | null;
 
+  // refresh trigger
+  refreshKey: number;
+  incrementRefreshKey: () => void;
+
   // setter
   setUser: (user: UserInfo) => void;
   clearUser: () => void;
@@ -16,6 +20,7 @@ interface UserStore {
 
   // video
   addAnalysisVideo: (video: AnalysisRecord) => void;
+  updateVideoThumbnail: (videoId: string, thumbnailUrl: string) => void;
 
   // query
   getVideosByMonth: (year: number, month: number) => AnalysisRecord[];
@@ -25,6 +30,10 @@ interface UserStore {
 const useUserStore: UseBoundStore<StoreApi<UserStore>> = create<UserStore>(
   (set, get) => ({
     user: null,
+    refreshKey: 0,
+
+    incrementRefreshKey: () =>
+      set(state => ({ refreshKey: state.refreshKey + 1 })),
 
     setUser: user => set({ user }),
 
@@ -62,6 +71,20 @@ const useUserStore: UseBoundStore<StoreApi<UserStore>> = create<UserStore>(
         user: {
           ...currentUser,
           myAnalysisVideos: [...currentUser.myAnalysisVideos, video],
+        },
+      });
+    },
+
+    updateVideoThumbnail: (videoId, thumbnailUrl) => {
+      const currentUser = get().user;
+      if (!currentUser) return;
+      const updatedVideos = currentUser.myAnalysisVideos.map(v =>
+        v.id === videoId ? { ...v, thumbnailUrl } : v,
+      );
+      set({
+        user: {
+          ...currentUser,
+          myAnalysisVideos: updatedVideos,
         },
       });
     },

@@ -54,7 +54,7 @@ export const LoginForm = () => {
       setAlertVisible(true);
       setAlertAfterLogin(true);
     } catch (err: any) {
-      setAlertMessage(`로그인 실패: ${err.message}`);
+      setAlertMessage(`이메일 인증이 필요합니다.\n이메일을 확인해주세요.`);
       setAlertVisible(true);
     } finally {
       setLoading(false);
@@ -95,7 +95,7 @@ export const LoginForm = () => {
             }
           });
         }}
-          onClose={() => setAlertVisible(false)}
+        onClose={() => setAlertVisible(false)}
       />
 
       <LoginButton onPress={handleLogin} loading={loading} />

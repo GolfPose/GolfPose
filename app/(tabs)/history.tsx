@@ -36,6 +36,7 @@ export default function HistoryScreen() {
   const [showFixed, setShowFixed] = useState(false);
   const controlBtnY = useRef(0);
   const userId = useUserStore(state => state.user?.id);
+  const refreshKey = useUserStore(state => state.refreshKey);
 
   const allVideos = useUserStore(state => state.user?.myAnalysisVideos) || [];
   const video = useMemo(
@@ -69,7 +70,7 @@ export default function HistoryScreen() {
     if (userId) {
       fetchVideo();
     }
-  }, [userId]);
+  }, [userId, refreshKey]);
 
   useGolfPoseRealtime(userId ?? 0);
 
@@ -132,11 +133,11 @@ export default function HistoryScreen() {
                   video.graphUrls.leftLeg3D,
                   video.graphUrls.rightLeg3D,
                 ].some(url => !!url) && (
-                    <BodyPartGraphSection
-                      video={video}
-                      controlAction={controlAction}
-                    />
-                  )}
+                  <BodyPartGraphSection
+                    video={video}
+                    controlAction={controlAction}
+                  />
+                )}
 
                 {/* 3D 아바타 */}
                 {video.avatarUrl && (
