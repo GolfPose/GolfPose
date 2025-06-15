@@ -6,12 +6,14 @@ import * as VideoThumbnails from 'expo-video-thumbnails';
 export async function fetchVideo() {
   const storeState = useUserStore.getState();
   const setUser = storeState.setUser;
+  const updateVideoThumbnail = storeState.updateVideoThumbnail;
   const userId = storeState.user?.id;
 
   if (!userId) return;
 
   let offset = 0;
   let hasMore = true;
+  const allFetchedVideos: AnalysisRecord[] = [];
 
   while (hasMore) {
     const dynamicLimit = offset < 5 ? 1 : 5;
@@ -33,10 +35,7 @@ export async function fetchVideo() {
       break;
     }
 
-    const currentUser = useUserStore.getState().user;
-    if (!currentUser) return;
-
-    const newAnalysisVideosBase: AnalysisRecord[] = videoData.map(item => ({
+    const newAnalysisVideos: AnalysisRecord[] = videoData.map(item => ({
       id: item.id.toString(),
       uploadedAt: item.created_at,
       videoUrl: item.original_video_url,
@@ -66,37 +65,24 @@ export async function fetchVideo() {
       avatarUrl: item.avatar_url,
     }));
 
-    // 썸네일 생성 시도
-    const enrichedVideos = await Promise.all(
-      newAnalysisVideosBase.map(async video => {
-        try {
-          const { uri } = await VideoThumbnails.getThumbnailAsync(
-            video.videoUrl,
-            {
-              time: 0,
-            },
-          );
+    for (const video of newAnalysisVideos) {
+      try {
+        const { uri } = await VideoThumbnails.getThumbnailAsync(
+          video.videoUrl,
+          {
+            time: 0,
+          },
+        );
+        updateVideoThumbnail(video.id, uri);
+        video.thumbnailUrl = uri;
+      } catch (err) {
+        console.warn(`썸네일 생성 실패 (id: ${video.id}):`, err);
+      }
+    }
 
-          return { ...video, thumbnailUrl: uri };
-        } catch (err) {
-          console.warn(`썸네일 생성 실패 (id: ${video.id}):`, err);
-          return { ...video, thumbnailUrl: undefined };
-        }
-      }),
-    );
-
-    // 이전 데이터와 합쳐서 한 번에 업데이트
-    setUser({
-      ...currentUser,
-      myAnalysisVideos: [
-        ...(currentUser.myAnalysisVideos || []),
-        ...enrichedVideos,
-      ],
-    });
-
+    allFetchedVideos.push(...newAnalysisVideos);
     console.log(`${offset + videoData.length}개 영상 불러옴`);
 
-    // 다음 배치로 넘어갈지 결정
     if (videoData.length < dynamicLimit) {
       hasMore = false;
       console.log('모든 영상 불러오기 완료');
@@ -104,4 +90,20 @@ export async function fetchVideo() {
       offset += dynamicLimit;
     }
   }
+
+  const currentUser = useUserStore.getState().user;
+  if (!currentUser) return;
+
+  const merged = [...(currentUser.myAnalysisVideos || []), ...allFetchedVideos];
+  const unique = Array.from(new Map(merged.map(v => [v.id, v])).values());
+  const sorted = unique.sort((a, b) =>
+    b.uploadedAt.localeCompare(a.uploadedAt),
+  );
+
+  setUser({
+    ...currentUser,
+    myAnalysisVideos: sorted,
+  });
+
+  console.log(`최종 반영된 영상 수: ${sorted.length}`);
 }

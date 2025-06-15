@@ -119,7 +119,7 @@ export async function signUp(
 
   return {
     success: true,
-    message: '회원가입이 완료되었습니다. 이메일을 확인해주세요.',
+    message: '회원가입이 완료되었습니다.\n이메일 인증을 완료해주세요',
   };
 }
 
