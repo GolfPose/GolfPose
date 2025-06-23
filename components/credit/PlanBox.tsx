@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Pressable, } from 'react-native';
+import { StyleSheet, Pressable } from 'react-native';
 import { ThemedView } from '../ThemedView';
 import Typography from '@/constants/Typography';
 import { s, vs } from 'react-native-size-matters';
@@ -16,6 +16,7 @@ interface PlanBoxProps extends Plan {
   price: string;
   creditAmount: string;
   features: string[];
+  onPress: () => void;
 }
 
 export default function PlanBox({
@@ -29,7 +30,7 @@ export default function PlanBox({
   const router = useRouter();
 
   const handlePurchase = () => {
-     router.push({
+    router.push({
       pathname: '/purchase',
       params: {
         title,
@@ -39,12 +40,14 @@ export default function PlanBox({
   };
 
   return (
-     <ThemedView style={styles.planBox}>
+    <ThemedView style={styles.planBox}>
       <ThemedText style={styles.planTitle}>{title}</ThemedText>
 
       <ThemedView style={styles.discountContainer}>
         {originalPrice && (
-          <ThemedText style={styles.originalPrice}>{originalPrice}원</ThemedText>
+          <ThemedText style={styles.originalPrice}>
+            {originalPrice}원
+          </ThemedText>
         )}
         {!!discountLabel && (
           <ThemedText style={styles.discountLabel}>{discountLabel}</ThemedText>
