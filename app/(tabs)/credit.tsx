@@ -7,8 +7,11 @@ import { s, vs } from 'react-native-size-matters';
 import PlanBox from '@/components/credit/PlanBox';
 import { Plans } from '@/constants/Plans';
 import { ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
 
 export default function CreditScreen() {
+  const router = useRouter();
+
   return (
     <RequireLogin>
       <ThemedView style={styles.root}>
@@ -20,8 +23,30 @@ export default function CreditScreen() {
           <ThemedView style={styles.container}>
             <TitleSection title="크레딧 구매" />
             <ThemedView style={styles.innerContainer}>
-              <PlanBox {...Plans.basic} />
-              <PlanBox {...Plans.premium} />
+              <PlanBox
+                {...Plans.basic}
+                onPress={() =>
+                  router.push({
+                    pathname: '/purchase',
+                    params: {
+                      title: Plans.basic.title,
+                      price: Plans.basic.price.toString(),
+                    },
+                  })
+                }
+              />
+              <PlanBox
+                {...Plans.premium}
+                onPress={() =>
+                  router.push({
+                    pathname: '/purchase',
+                    params: {
+                      title: Plans.premium.title,
+                      price: Plans.premium.price.toString(),
+                    },
+                  })
+                }
+              />
             </ThemedView>
           </ThemedView>
         </ScrollView>
