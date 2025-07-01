@@ -1,93 +1,133 @@
-# GolfPose
+# 🏌️ GolfPose
 
-## 깃 브랜치 전략
-깃 브랜치 전략은 `Github-Flow` 를 따릅니다.  
-세부 정책은 다음과 같습니다.
+### 📱 산학협력 캡스톤설계II 프로젝트
 
-### 1. 브랜치 정책
-1. `main` 브랜치에서 작업하지 않는다.
-2. 각 기능은 `feat/이슈번호` 의 브랜치를 만들어 작업한다.
-3. 기능 별 브랜치의 작업이 완료되면 `pull request`를 요청한다.
+> **사용자의 골프 스윙을 촬영하여 AI가 분석해주고, 피드백을 제공하는 영상 기반 스윙 분석 어플리케이션**
 
-### 2. 커밋 메시지
-1. 커밋 메시지에는 이슈번호를 붙여주세요 (예시 : `git commit -m "#이슈번호 작업내용"` )
-2. 이슈 메시지는 첫 줄에는 전체적인 내용을 포함하고 , 줄 바꿈 후 상세한 내용을 적어주세요.
+<p align="center">
+  <img width="100%" alt="스크린샷 2025-07-01 오후 2 08 10" src="https://github.com/user-attachments/assets/d3193062-8dfa-47be-84cb-0016d6261441" />
+</p>
 
-### 3. Prettier
-1. `prettier` 를 사용하여 코드를 포맷팅합니다.
-2. 설치 후 다음과 같은 `.prettierrc` 파일을 루트 파일에 추가합니다.
+---
 
-```
-{
-  "singleQuote": true,
-  "semi": true,
-  "useTabs": false,
-  "tabWidth": 2,
-  "trailingComma": "all",
-  "printWidth": 80,
-  "arrowParens": "avoid"
-}
+## 🛠 기술 스택
 
-```
+<div style={display: flex}>
+  <img src="https://img.shields.io/badge/React_Native-61DAFB.svg?style=for-the-badge&logo=react&logoColor=black" alt="React Native"/>
+  <img src="https://img.shields.io/badge/Expo-000020.svg?style=for-the-badge&logo=expo&logoColor=white" alt="Expo"/>
+  <img src="https://img.shields.io/badge/Supabase-3ECF8E.svg?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase"/>
+  <img src="https://img.shields.io/badge/AWS_S3-569A31.svg?style=for-the-badge&logo=amazonaws&logoColor=white" alt="AWS S3"/>
+</div>
 
-## 파일 네이밍 규칙
+---
 
-[`airbnb`](https://github.com/airbnb/javascript) 자바스크립트 스타일 가이드를 베이스로 한 네이밍 규칙을 따릅니다.
+## 👥 팀원 소개
 
-### 1. 컴포넌트 이름
-- `PascalCase`를 사용하여 컴포넌트의 이름을 작성합니다.
-- 컴포넌트의 이름은 명사로 지정하며, 최상위 부모 컴포넌트의 이름은 애플리케이션과 관련된 이름으로 작성합니다.
+| 이름      | 역할  | 담당 업무                                      |
+| ------- | --- | ------------------------------------------ |
+| **김진홍** | 팀장  | 프로젝트 설계 & 레이아웃 & 다크모드 구현, 파일 업로드 & 분석결과 구현, Supabase & AWS 연동    |
+| **김민정** | 팀원 | 로그인, 회원가입 리팩토링, 크레딧 내역 연동, SafeViewArea 적용 |
+| **정미진** | 팀원 | 조건부 페이지네이션 개선, 코드검증 및 기기별 조사 및 테스트         |
+| **정석현** | 팀원 | 인증 기능, 커스텀 Alert 컴포넌트, 결제 모듈 구현 및 UI 개선    |
 
-### 2. 변수 이름
-- 변수 이름은 `camelCase`를 사용합니다.
-- 상수는 모두 대문자로 작성하며, 단어는 밑줄(_)로 구분합니다.
-```
-// Good
-const userName = "John Doe";
-let itemCount = 5;
-const MAX_COUNT = 10;
+---
+## 분석 흐름도
+<p align="center">
+  <img width="100%" alt="스크린샷 2025-07-01 오후 2 07 18" src="https://github.com/user-attachments/assets/4c769d24-364f-4efc-b58a-4b94ed17b512" />
+</p>
 
-// Bad
-const user_name = "John Doe";
-let ItemCount = 5;
-const maxCount = 10;
-```
+## 🔥 주요 기능
 
-### 3. 함수 이름
-- 변수 이름은 `camelCase`를 사용합니다.
-- 함수 이름은 동사로 시작하여 함수의 동작을 명확히 드러낼 수 있도록 합니다.
-```
-// Good
-function getUserData() {
-  // ...
-}
+### 1️⃣ 랜딩페이지 & 회원가입 / 로그인
 
-// Bad
-function data() {
-  // ...
-}
-```
+* 앱 실행 시 로고와 함께 시작하는 랜딩 화면
+* 비로그인 시 분석 기능을 미리보기로 확인 가능
+* 회원가입 및 이메일 인증 기능 포함
+* 인증 미완료 시 로그인 차단 안내 제공
 
-### 4. 폴더 이름
-- 폴더 이름은 `camelCase`로 작성합니다.
-- 폴더 이름은 컴포넌트와 관련된 기능이나 역할을 잘 나타낼 수 있도록 작성합니다.
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/cc975114-1067-4589-85d1-da99cae357b4" width="90%" alt="1번 기능 이미지">
+  <img src="https://github.com/user-attachments/assets/3452f296-8fde-4a0a-819d-f69edbf03e73" width="90%" alt="2번 기능 이미지">
+</p>
 
-### 5. 타입
-- 변수, 함수, 객체등의 타입을 `types/[name].type.ts` 로 명시적으로 선언합니다.
+---
 
-### 6. 인터페이스
-- 객체의 구조를 명시하기 위해 인터페이스를 사용합니다.
-- 인터페이스 이름은 `PascalCase`를 사용하며 , 기본적으로 해당 객체와 같은 이름을 가집니다.
-- props에 대한 인터페이스는 후미에 props를 붙입니다.
+### 2️⃣ 분석 요청 플로우
 
-```
-interface Component1Props {
-  a: string;
-  b: number;
-  c: boolean;
-}
+* 기기 내 저장된 영상(mp4/mov/avi)을 선택해 업로드
+* 영상 업로드 후 크레딧 차감과 함께 분석 요청 가능
+* 분석 중 로딩 화면 제공
+  
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/5218e6d5-74bc-473a-b10f-9c8551c9c8bc" width="90%" alt="3번 기능 이미지">
+</p>
 
-const Component1 = ({ a, b, c }: ComponentProps) => {
-  // ...
-}
-```
+---
+
+### 3️⃣ 분석 결과 확인 및 히스토리 관리
+
+* 분석된 영상은 '나의 분석 영상' 탭에 자동 저장
+* 날짜별로 영상 리스트와 분석 상태 확인 가능
+* 분석 중/완료 여부를 시각적으로 구분
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/3dd7d316-886e-4eb0-8e35-5f84bca45595" width="90%" alt="4번 기능 이미지">
+</p>
+
+---
+
+### 4️⃣ 분석 상세 확인 (2D/3D/관절 그래프)
+
+* 골프 스윙의 프레임별 2D 자세 확인
+* 부위별 관절 각도 그래프 제공 (팔, 다리 등)
+* 3D 자세 재생 및 복수 영상 동시 비교 기능 포함
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/da924fa1-1372-4093-8248-77de651d56ae" width="90%" alt="5번 기능 이미지">
+</p>
+
+---
+
+### 5️⃣ 마이페이지 및 환경 설정
+
+* 회원 정보 확인 및 닉네임 수정 기능
+* 크레딧 사용 내역 확인
+* 라이트/다크모드 전환 가능 (Zustand 상태 관리 적용)
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/81ffca6a-b56f-4802-b9df-afca01efacc6" width="90%" alt="6번 기능 이미지">
+</p>
+
+---
+
+### 6️⃣ 크레딧 구매 및 결제 시스템
+
+* Basic / Premium 플랜 선택 후 결제 가능
+* NICEPAY 연동을 통한 다양한 카드 결제 옵션 제공
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/f56e497d-6b7c-43e0-bdb1-1c2d92b0a9b4" width="90%" alt="7번 기능 이미지">
+</p>
+
+---
+
+## 🎥 프로젝트 시연 영상
+
+> 썸네일 클릭 시 유튜브로 이동합니다
+
+<table align="center">
+  <tr>
+    <td align="center" width="50%">
+      <a href="https://youtu.be/Y-5wY31P98Q" target="_blank" rel="noopener noreferrer">
+        <img src="https://img.youtube.com/vi/Y-5wY31P98Q/0.jpg" alt="시연 영상 1" width="100%">
+      </a>
+      <br><strong>&lt;시연용&gt;</strong>
+    </td>
+    <td align="center" width="50%">
+      <a href="https://youtu.be/PlHLI7rFYYs" target="_blank" rel="noopener noreferrer">
+        <img src="https://img.youtube.com/vi/PlHLI7rFYYs/0.jpg" alt="시연 영상 2" width="100%">
+      </a>
+      <br><strong>&lt;발표용&gt;</strong>
+    </td>
+  </tr>
+</table>
